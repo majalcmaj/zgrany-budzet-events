@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="pl">
 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dodaj Wydatek</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 </head>
 
@@ -14,7 +16,7 @@
         <form>
             <label for="chapter">
                 Dział
-                <select id="chapter" name="chapter" required>
+                <select id="chapter" name="chapter" hx-get="/fragment/section/chapter" hx-target="#section" required>
                     <option value="" selected disabled>Wybierz dział</option>
                     <option value="750">Administracja i bezpieczeństwo</option>
                     <option value="801">Edukacja i wychowanie</option>
@@ -26,6 +28,7 @@
                 Rozdział
                 <select id="section" name="section" required>
                     <option value="" selected disabled>Wybierz rozdział</option>
+
                 </select>
             </label>
 

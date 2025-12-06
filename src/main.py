@@ -79,8 +79,9 @@ def main_page():
 def health():
     return "OK", 200
 
-@app.route("/fragment/section/chapter/<int:chapter_id>")
-def sections(chapter_id):
+@app.route("/fragment/section/chapter")
+def sections():
+    chapter_id = request.args.get('chapter')
     sections = db.session.query(Section).filter_by(ChapterId=chapter_id).all()
     return render_template('sectionTemplate.html', sections=sections)
 
