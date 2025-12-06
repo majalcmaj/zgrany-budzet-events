@@ -37,11 +37,11 @@ def verify():
     print(f"Current State: {planning_state.status}")
     assert planning_state.status == PlanningStatus.IN_REVIEW
     
-    # 5. Request Correction (Side Effect Check)
-    print("Transitioning to CORRECTION (should reset office approvals)...")
+    # 5. Request NEEDS_CORRECTION (Side Effect Check)
+    print("Transitioning to NEEDS_CORRECTION (should reset office approvals)...")
     planning_state.request_correction()
     print(f"Current State: {planning_state.status}")
-    assert planning_state.status == PlanningStatus.CORRECTION
+    assert planning_state.status == PlanningStatus.NEEDS_CORRECTION
     
     print(f"Office1 Closed: {EXPENSES_CLOSED['office1']}")
     assert EXPENSES_CLOSED['office1'] is False

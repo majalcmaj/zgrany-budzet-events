@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
-
 expenses_bp = Blueprint('expenses', __name__)
 
 EXPENSES = {
@@ -18,8 +17,8 @@ def add_expense():
     if 'role' not in session or session['role'] not in ['office1', 'office2']:
         return redirect(url_for('planning.index'))
 
-    # Allow editing if status is IN_PROGRESS or CORRECTION
-    can_edit = planning_state.status in [PlanningStatus.IN_PROGRESS, PlanningStatus.CORRECTION]
+    # Allow editing if status is IN_PROGRESS
+    can_edit = planning_state.status == PlanningStatus.IN_PROGRESS
     
     if EXPENSES_CLOSED[session['role']] or not can_edit:
         return redirect(url_for('expenses.list_expenses'))
@@ -37,7 +36,7 @@ def add_expense():
 
 @expenses_bp.route('/close', methods=['POST'])
 def close_expenses():
-    can_edit = planning_state.status in [PlanningStatus.IN_PROGRESS, PlanningStatus.CORRECTION]
+    can_edit = planning_state.status in [PlanningStatus.IN_PROGRESS, PlanningStatus.NEEDS_CORRECTION]
     
     if not can_edit:
         return redirect(url_for('expenses.list_expenses'))
