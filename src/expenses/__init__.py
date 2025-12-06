@@ -16,7 +16,7 @@ def add_expense():
         expense = {
             'chapter': request.form.get('chapter'),
             'task_name': request.form.get('task_name'),
-            'financial_needs': request.form.get('financial_needs')
+            'financial_needs': request.form.get('financial_needs', type=int)
         }
         EXPENSES.append(expense)
         return redirect(url_for('expenses.list_expenses'))
@@ -30,4 +30,5 @@ def close_expenses():
 
 @expenses_bp.route('/')
 def list_expenses():
-    return render_template('expenses_list.html', expenses=EXPENSES, closed=EXPENSES_CLOSED)
+    expenses_sum = sum(expense['financial_needs'] for expense in EXPENSES) 
+    return render_template('expenses_list.html', expenses=EXPENSES, closed=EXPENSES_CLOSED, expenses_sum=expenses_sum)

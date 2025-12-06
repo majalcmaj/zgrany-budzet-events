@@ -29,6 +29,14 @@
                     </tr>
                     {% endfor %}
                 </tbody>
+                {% if expenses_sum %}
+                <tfoot>
+                    <tr>
+                        <td colspan="2">Suma</td>
+                        <td>{{ expenses_sum }}</td>
+                    </tr>
+                </tfoot>
+                {% endif %}
             </table>
         </figure>
         {% if not closed %}
