@@ -38,5 +38,35 @@
     </div>
 </article>
 
+<article>
+    <header>Status Biur</header>
+    <table role="grid">
+        <thead>
+            <tr>
+                <th scope="col">Biuro</th>
+                <th scope="col">Status</th>
+                <th scope="col">Liczba zadań</th>
+                <th scope="col">Suma potrzeb (PLN)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for office in offices_status %}
+            <tr>
+                <td>{{ office.name }}</td>
+                <td>
+                    {% if office.status == 'Submitted' %}
+                    <strong style="color: green;">Zatwierdzony</strong>
+                    {% else %}
+                    <strong style="color: orange;">W trakcie</strong>
+                    {% endif %}
+                </td>
+                <td>{{ office.task_count }}</td>
+                <td>{{ office.total_needs }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</article>
+
 <a href="/expenses">Lista Wydatków</a>
 {% endblock %}

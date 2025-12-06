@@ -42,7 +42,7 @@
 {% if not closed %}
 <a href="/expenses/add" role="button">Dodaj nowy wydatek</a>
 <form action="/expenses/close" method="POST" style="display: inline;">
-    <button type="submit" class="contrast">Zamknij listę</button>
+    <button type="submit" class="contrast">Wyślij do akceptacji</button>
 </form>
 {% elif not is_open %}
 <article>
