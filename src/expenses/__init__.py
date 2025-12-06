@@ -15,8 +15,6 @@ from src.planning import planning_state
 
 @expenses_bp.route('/add', methods=['GET', 'POST'])
 def add_expense():
-    print(session)
-    print(session['role'])
     if 'role' not in session or session['role'] not in ['office1', 'office2']:
         return redirect(url_for('planning.index'))
 
@@ -36,6 +34,9 @@ def add_expense():
 
 @expenses_bp.route('/close', methods=['POST'])
 def close_expenses():
+    if not planning_state.is_open:
+        return redirect(url_for('expenses.list_expenses'))
+        
     if 'role' in session and session['role'] in EXPENSES_CLOSED:
         EXPENSES_CLOSED[session['role']] = True
     return redirect(url_for('expenses.list_expenses'))

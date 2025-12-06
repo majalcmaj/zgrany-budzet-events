@@ -39,7 +39,17 @@
         {% endif %}
     </table>
 </figure>
-{% if not closed %}
+{% if not is_open %}
+<article>
+    <header>Proces planowania nie został otwarty</header>
+    Dyrektor (Chief) musi otworzyć proces planowania, zanim będzie można dodawać wydatki.
+</article>
+{% elif closed %}
+<article>
+    <header>Status</header>
+    Lista jest zamknięta. Nie można dodawać nowych wydatków.
+</article>
+{% else %}
 <div class="grid">
     <div>
         <a href="/expenses/add" role="button" style="width: 100%;">Dodaj nowy wydatek</a>
@@ -50,16 +60,6 @@
         </form>
     </div>
 </div>
-{% elif not is_open %}
-<article>
-    <header>Proces planowania nie został otwarty</header>
-    Dyrektor (Chief) musi otworzyć proces planowania, zanim będzie można dodawać wydatki.
-</article>
-{% else %}
-<article>
-    <header>Status</header>
-    Lista jest zamknięta. Nie można dodawać nowych wydatków.
-</article>
 {% endif %}
 
 {% endblock %}
