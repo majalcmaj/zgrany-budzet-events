@@ -21,10 +21,6 @@ def chief_dashboard():
                 planning_state.start_planning()
         elif action == 'submit_minister':
             planning_state.submit_to_minister()
-        elif action == 'request_correction':
-            planning_state.request_correction()
-        elif action == 'approve':
-            planning_state.approve()
         elif action == 'reopen':
             planning_state.reopen()
             
@@ -55,6 +51,16 @@ def chief_dashboard():
 @auth_required
 def minister_dashboard():
     from src.expenses import EXPENSES, EXPENSES_CLOSED
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+        
+        if action == 'request_correction':
+            planning_state.request_correction()
+        elif action == 'approve':
+            planning_state.approve()
+            
+        return redirect(url_for('planning.minister_dashboard'))
     
     offices_status = []
     total_all_needs = 0
@@ -74,7 +80,7 @@ def minister_dashboard():
             'expenses': expenses
         })
 
-    return render_template('minister_dashboard.html', state=planning_state, offices_status=offices_status, total_all_needs=total_all_needs)
+    return render_template('minister_dashboard.html', state=planning_state, offices_status=offices_status, total_all_needs=total_all_needs, PlanningStatus=PlanningStatus)
 
 @planning_bp.route('/')
 def index():

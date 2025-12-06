@@ -23,23 +23,8 @@
     </form>
     {% elif state.status == PlanningStatus.IN_REVIEW %}
     <strong style="color: yellow;">W PRZEGLĄDZIE U MINISTRA</strong>
-    <hr />
-    <div class="grid">
-        <form method="POST">
-            <button type="submit" name="action" value="approve">[MINISTER] Zatwierdź</button>
-        </form>
-        <form method="POST">
-            <button type="submit" name="action" value="request_correction" class="secondary">[MINISTER] Zleć korektę</button>
-        </form>
-    </div>
     {% elif state.status == PlanningStatus.NEEDS_CORRECTION %}
     <strong style="color: orange;">POTRZEBA KOREKTY</strong>
-    <hr />
-    <form method="POST" class="grid">
-        <label for="deadline">Ustaw termin</label>
-        <input type="date" id="deadline" name="deadline" value="{{ state.deadline }}" required>
-        <button type="submit" name="action" value="start">WZNÓW PLANOWANIE</button>
-    </form>
     {% elif state.status == PlanningStatus.FINISHED%}
     <form method="POST">
         <button type="submit" name="action" value="reopen" class="primary">Otwórz ponownie</button>

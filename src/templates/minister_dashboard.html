@@ -6,6 +6,29 @@
 <h1>Panel Ministra - Planowanie Budżetu</h1>
 
 <article>
+    {% if state.status == PlanningStatus.NOT_STARTED %}
+    <strong style="color: gray;">PLANOWANIE NIE ROZPOCZĘTE</strong>
+    {% elif state.status == PlanningStatus.IN_PROGRESS %}
+    <strong style="color: rgb(4, 4, 204);">PLANOWANIE W TOKU</strong>
+    {% elif state.status == PlanningStatus.IN_REVIEW %}
+    <strong style="color: yellow;">DO ZATWIERDZENIA</strong>
+    <hr />
+    <div class="grid">
+        <form method="POST">
+            <button type="submit" name="action" value="approve">Zatwierdź</button>
+        </form>
+        <form method="POST">
+            <button type="submit" name="action" value="request_correction" class="secondary">Zleć korektę</button>
+        </form>
+    </div>
+    {% elif state.status == PlanningStatus.NEEDS_CORRECTION %}
+    <strong style="color: orange;">POTRZEBUJE KOREKTY</strong>
+    {% elif state.status == PlanningStatus.FINISHED%}
+    <strong style="color: green;">PLANOWANIE ZAKOŃCZONE</strong>
+    {% endif %}
+</article>
+
+<article>
     <header>Status Biur</header>
     <table role="grid">
         <thead>
