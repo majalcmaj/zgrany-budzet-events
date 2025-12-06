@@ -1,0 +1,9 @@
+<label for="section">
+    Rozdział
+    <select id="section" name="section" required>
+        <option value="" selected disabled>Wybierz rozdział</option>
+        {% for section in sections %}
+        <option value="{{ section.id }}">{{ section.SectionName }}</option>
+        {% endfor %}
+    </select>
+</label>

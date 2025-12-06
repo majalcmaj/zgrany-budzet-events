@@ -13,12 +13,19 @@
         <h1>Dodaj Wydatek</h1>
         <form>
             <label for="chapter">
-                Rozdział
+                Dział
                 <select id="chapter" name="chapter" required>
+                    <option value="" selected disabled>Wybierz dział</option>
+                    <option value="750">Administracja i bezpieczeństwo</option>
+                    <option value="801">Edukacja i wychowanie</option>
+                    <option value="851">Ochrona zdrowia</option>
+                </select>
+            </label>
+
+            <label for="section">
+                Rozdział
+                <select id="section" name="section" required>
                     <option value="" selected disabled>Wybierz rozdział</option>
-                    <option value="75023">75023 - Urzędy gmin</option>
-                    <option value="80101">80101 - Szkoły podstawowe</option>
-                    <option value="85219">85219 - Ośrodki pomocy społecznej</option>
                 </select>
             </label>
 
