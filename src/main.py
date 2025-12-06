@@ -11,7 +11,12 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 app.config['UPLOAD_FOLDER'] = Path(__file__).parent / 'static' / 'uploads'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///zgrany_budget.db'
 
+
 db = SQLAlchemy(app)
+
+from expenses import expenses_bp
+app.register_blueprint(expenses_bp, url_prefix='/expenses')
+
 
 # Ensure upload folder exists
 app.config['UPLOAD_FOLDER'].mkdir(parents=True, exist_ok=True)

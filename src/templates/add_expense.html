@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dodaj Wydatek</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+
+<body>
+    <main class="container">
+        <h1>Dodaj Wydatek</h1>
+        <form>
+            <label for="chapter">
+                Rozdział
+                <select id="chapter" name="chapter" required>
+                    <option value="" selected disabled>Wybierz rozdział</option>
+                    <option value="75023">75023 - Urzędy gmin</option>
+                    <option value="80101">80101 - Szkoły podstawowe</option>
+                    <option value="85219">85219 - Ośrodki pomocy społecznej</option>
+                </select>
+            </label>
+
+            <label for="task_name">
+                Nazwa zadania
+                <input type="text" id="task_name" name="task_name" placeholder="Np. Zakup materiałów biurowych"
+                    required>
+            </label>
+
+            <label for="financial_needs">
+                Potrzeby finansowe (PLN)
+                <input type="number" id="financial_needs" name="financial_needs" placeholder="0" min="0" step="1"
+                    required>
+            </label>
+
+            <button type="submit">Dodaj</button>
+        </form>
+        <a href="/">Powrót do strony głównej</a>
+    </main>
+</body>
+
+</html>
