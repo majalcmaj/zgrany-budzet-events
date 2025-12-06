@@ -27,7 +27,7 @@ def add_expense():
         expense = {
             'chapter': request.form.get('chapter'),
             'task_name': request.form.get('task_name'),
-            'financial_needs': request.form.get('financial_needs'),
+            'financial_needs': request.form.get('financial_needs', type=int),
             'role': session['role']
         }
         EXPENSES[session['role']].append(expense)
@@ -44,7 +44,9 @@ def close_expenses():
 def list_expenses():
     if 'role' not in session or session['role'] not in ['office1', 'office2']:
         return redirect(url_for('planning.index'))
-    return render_template('expenses_list.html', 
+    expenses_sum = sum(expense['financial_needs'] for expense in EXPENSES)
+    return render_template('expenses_list.html',
                          expenses=EXPENSES[session['role']], 
                          closed=EXPENSES_CLOSED[session['role']],
-                         is_open=planning_state.is_open)
+                         is_open=planning_state.is_open,
+                         expenses_sum=expenses_sum)
