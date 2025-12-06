@@ -3,14 +3,15 @@ from flask import Blueprint, render_template, request, redirect, url_for
 expenses_bp = Blueprint('expenses', __name__)
 
 EXPENSES = []
+EXPENSES_CLOSED = False
 
 from src.planning import planning_state
 
 @expenses_bp.route('/add', methods=['GET', 'POST'])
 def add_expense():
-    if not planning_state.is_open:
-        return "Proces planowania jest zamknięty.", 403
-
+    if EXPENSES_CLOSED or not planning_state.is_open:
+        return redirect(url_for('expenses.list_expenses'))
+        
     if request.method == 'POST':
         expense = {
             'chapter': request.form.get('chapter'),
@@ -21,6 +22,12 @@ def add_expense():
         return redirect(url_for('expenses.list_expenses'))
     return render_template('add_expense.html')
 
+@expenses_bp.route('/close', methods=['POST'])
+def close_expenses():
+    global EXPENSES_CLOSED
+    EXPENSES_CLOSED = True
+    return redirect(url_for('expenses.list_expenses'))
+
 @expenses_bp.route('/')
 def list_expenses():
-    return render_template('expenses_list.html', expenses=EXPENSES)
+    return render_template('expenses_list.html', expenses=EXPENSES, closed=EXPENSES_CLOSED)

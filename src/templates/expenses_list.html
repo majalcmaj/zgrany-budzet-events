@@ -31,7 +31,17 @@
                 </tbody>
             </table>
         </figure>
+        {% if not closed %}
         <a href="/expenses/add" role="button">Dodaj nowy wydatek</a>
+        <form action="/expenses/close" method="POST" style="display: inline;">
+            <button type="submit" class="contrast">Zamknij listę</button>
+        </form>
+        {% else %}
+        <article>
+            <header>Status</header>
+            Lista jest zamknięta. Nie można dodawać nowych wydatków.
+        </article>
+        {% endif %}
         <a href="/" role="button" class="secondary">Powrót do strony głównej</a>
     </main>
 </body>
