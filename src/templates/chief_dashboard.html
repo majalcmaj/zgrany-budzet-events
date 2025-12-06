@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Szefa</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+
+<body>
+    <main class="container">
+        <h1>Panel Szefa - Planowanie Budżetu</h1>
+
+        <article>
+            <header>Status Procesu</header>
+            <p>
+                Status:
+                {% if state.is_open %}
+                <strong style="color: green;">OTWARTY</strong>
+                {% else %}
+                <strong style="color: red;">ZAMKNIĘTY</strong>
+                {% endif %}
+            </p>
+            <p>
+                Termin: <strong>{{ state.deadline if state.deadline else 'Nie ustawiono' }}</strong>
+            </p>
+        </article>
+
+        <article>
+            <header>Zarządzanie</header>
+            <div class="grid">
+                <form method="POST">
+                    <label for="deadline">Ustaw termin</label>
+                    <input type="date" id="deadline" name="deadline" value="{{ state.deadline }}" required>
+                    <button type="submit" name="action" value="open" {% if state.is_open %}disabled{% endif %}>Otwórz
+                        proces</button>
+                </form>
+
+                <form method="POST" style="align-self: end;">
+                    <label>&nbsp;</label> <!-- Spacer for alignment -->
+                    <button type="submit" name="action" value="close" class="secondary" {% if not state.is_open
+                        %}disabled{% endif %}>Zamknij proces</button>
+                </form>
+            </div>
+        </article>
+
+        <a href="/expenses/add">Dodaj Wydatek</a>
+    </main>
+</body>
+
+</html>

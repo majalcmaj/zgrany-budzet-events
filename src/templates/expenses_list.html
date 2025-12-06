@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Wydatków</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+
+<body>
+    <main class="container">
+        <h1>Lista Wydatków</h1>
+        <figure>
+            <table role="grid">
+                <thead>
+                    <tr>
+                        <th scope="col">Rozdział</th>
+                        <th scope="col">Nazwa zadania</th>
+                        <th scope="col">Potrzeby finansowe (PLN)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense.chapter }}</td>
+                        <td>{{ expense.task_name }}</td>
+                        <td>{{ expense.financial_needs }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </figure>
+        {% if not closed %}
+        <a href="/expenses/add" role="button">Dodaj nowy wydatek</a>
+        <form action="/expenses/close" method="POST" style="display: inline;">
+            <button type="submit" class="contrast">Zamknij listę</button>
+        </form>
+        {% else %}
+        <article>
+            <header>Status</header>
+            Lista jest zamknięta. Nie można dodawać nowych wydatków.
+        </article>
+        {% endif %}
+        <a href="/" role="button" class="secondary">Powrót do strony głównej</a>
+    </main>
+</body>
+
+</html>
