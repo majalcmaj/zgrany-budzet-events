@@ -19,10 +19,10 @@
     <p>Termin: <strong>{{ state.deadline if state.deadline else 'Nie ustawiono' }}</strong></p>
     <hr />
     <form method="POST">
-        <button type="submit" name="action" value="submit_minister" class="primary">Przekaż do Ministra</button>
+        <button type="submit" name="action" value="submit_minister" class="primary">Przekaż do Ministerstwa</button>
     </form>
     {% elif state.status == PlanningStatus.IN_REVIEW %}
-    <strong style="color: yellow;">W PRZEGLĄDZIE U MINISTRA</strong>
+    <strong style="color: yellow;">W PRZEGLĄDZIE W MINISTERSTWIE</strong>
     {% elif state.status == PlanningStatus.NEEDS_CORRECTION %}
     <strong style="color: orange;">POTRZEBA KOREKTY</strong>
     {% elif state.status == PlanningStatus.FINISHED%}
