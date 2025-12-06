@@ -1,0 +1,11 @@
+{% if success %}
+<div class="success-message" role="alert">
+    ✓ {{ success }}
+</div>
+{% endif %}
+
+{% if error %}
+<div class="error-message" role="alert">
+    ✗ {{ error }}
+</div>
+{% endif %}

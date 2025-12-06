@@ -1,0 +1,32 @@
+{% if files %}
+{% for file in files %}
+<div class="file-item">
+    <div class="file-info">
+        <div class="file-icon">
+            {% if file.extension == 'pdf' %}
+            📄
+            {% elif file.extension == 'xlsx' %}
+            📊
+            {% else %}
+            📁
+            {% endif %}
+        </div>
+        <div class="file-details">
+            <span class="file-name">{{ file.name }}</span>
+            <span class="file-size">{{ file.size }} • Uploaded: {{ file.uploaded_at }}</span>
+        </div>
+    </div>
+    <div>
+        <a href="/download/{{ file.name }}" role="button" class="outline">Download</a>
+        <button hx-delete="/delete/{{ file.name }}" hx-confirm="Are you sure you want to delete {{ file.name }}?"
+            hx-target="#file-list" hx-swap="innerHTML" class="secondary">
+            Delete
+        </button>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<p style="text-align: center; color: var(--pico-muted-color);">
+    No files uploaded yet. Upload your first file above!
+</p>
+{% endif %}

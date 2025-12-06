@@ -1,0 +1,114 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "ECS Task Definition with parameterized values",
+  "Parameters": {
+    "ContainerImage": {
+      "Type": "String",
+      "Default": "public.ecr.aws/docker/library/httpd:2.4",
+      "Description": "The container image to use for the task"
+    },
+    "ContainerCpu": {
+      "Type": "Number",
+      "Default": 256,
+      "Description": "The number of CPU units to reserve for the container",
+      "AllowedValues": [256, 512, 1024, 2048, 4096]
+    },
+    "ContainerMemory": {
+      "Type": "Number",
+      "Default": 512,
+      "Description": "The amount of memory (in MiB) to reserve for the container",
+      "AllowedValues": [512, 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192]
+    },
+    "TaskFamily": {
+      "Type": "String",
+      "Default": "task-definition-cfn",
+      "Description": "The name of the task definition family"
+    },
+    "ContainerName": {
+      "Type": "String",
+      "Default": "sample-fargate-app",
+      "Description": "The name of the container"
+    },
+    "ContainerPort": {
+      "Type": "Number",
+      "Default": 5000,
+      "Description": "The port number on the container"
+    },
+    "HostPort": {
+      "Type": "Number",
+      "Default": 80,
+      "Description": "The port number on the host"
+    },
+    "ExecutionRoleArn": {
+      "Type": "String",
+      "Default": "arn:aws:iam::aws_account_id:role/ecsTaskExecutionRole",
+      "Description": "The ARN of the task execution role"
+    },
+    "LogGroup": {
+      "Type": "String",
+      "Default": "/ecs/fargate-task-definition",
+      "Description": "The CloudWatch log group for container logs"
+    },
+    "NetworkMode": {
+      "Type": "String",
+      "Default": "awsvpc",
+      "Description": "The Docker networking mode to use",
+      "AllowedValues": ["awsvpc", "bridge", "host", "none"]
+    },
+    "OperatingSystemFamily": {
+      "Type": "String",
+      "Default": "LINUX",
+      "Description": "The operating system for the task",
+      "AllowedValues": ["LINUX"]
+    }
+  },
+  "Resources": {
+    "ECSTaskDefinition": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": {"Ref": "ContainerImage"},
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "mode": "non-blocking",
+                "max-buffer-size": "25m",
+                "awslogs-create-group": "true",
+                "awslogs-group": {"Ref": "LogGroup"},
+                "awslogs-region": {"Ref": "AWS::Region"},
+                "awslogs-stream-prefix": "ecs"
+              }
+            },
+            "Name": {"Ref": "ContainerName"},
+            "PortMappings": [
+              {
+                "ContainerPort": {"Ref": "ContainerPort"},
+                "HostPort": {"Ref": "HostPort"},
+                "Protocol": "tcp"
+              }
+            ]
+          }
+        ],
+        "Cpu": {"Ref": "ContainerCpu"},
+        "ExecutionRoleArn": {"Ref": "ExecutionRoleArn"},
+        "Family": {"Ref": "TaskFamily"},
+        "Memory": {"Ref": "ContainerMemory"},
+        "NetworkMode": {"Ref": "NetworkMode"},
+        "RequiresCompatibilities": [
+          "FARGATE"
+        ],
+        "RuntimePlatform": {
+          "OperatingSystemFamily": {"Ref": "OperatingSystemFamily"}
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "TaskDefinitionArn": {
+      "Description": "The ARN of the created task definition",
+      "Value": {"Ref": "ECSTaskDefinition"}
+    }
+  }
+}

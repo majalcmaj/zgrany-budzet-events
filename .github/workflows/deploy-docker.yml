@@ -1,0 +1,66 @@
+name: Build docker image and publish to lambda
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: "Run checks and build docker image"
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout the code
+      uses: actions/checkout@v5
+
+    - name: Setup python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.12
+    
+    - name: Run image
+      uses: abatilo/actions-poetry@v3
+      with:
+        poetry-version: 2.2.1
+    
+    - name: Install dependencies
+      run: |
+        poetry install
+    
+    - name: Run lint and tests
+      run: |
+        make lint
+        make test
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4.3.1
+      with:
+        aws-region: eu-central-1
+        role-to-assume: arn:aws:iam::513532022998:role/gh-actions-role
+        role-session-name: gh-actions-session
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build and push docker image
+      id: build-image
+      env:
+        IMAGE_TAG: "513532022998.dkr.ecr.eu-central-1.amazonaws.com/hackaton/webapp:latest"
+      run: |
+        docker buildx build --platform linux/amd64 --provenance=false -t ${IMAGE_TAG} .
+        docker push ${IMAGE_TAG}
+
+    - name: Deploy to Amazon ECS
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      with:
+        task-definition: aws/ecs-task.yaml
+        service: webapp-358f
+        cluster: default
+        wait-for-service-stability: true

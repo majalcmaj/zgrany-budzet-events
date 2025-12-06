@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section>
+    <!-- Upload Status Messages -->
+    <div id="upload-status" hx-swap-oob="true">
+        {% if success %}
+        <div class="success-message" role="alert">
+            ✓ {{ success }}
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="error-message" role="alert">
+            ✗ {{ error }}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Upload Form -->
+    <article>
+        <header>
+            <h2>Upload Files</h2>
+        </header>
+
+        <form hx-post="/upload" hx-encoding="multipart/form-data" hx-target="#upload-status" hx-swap="innerHTML"
+            id="upload-form">
+            <div class="upload-zone" id="upload-zone">
+                <input type="file" name="file" id="file-input" accept=".xlsx,.pdf" style="display: none;" required>
+
+                <label for="file-input" style="cursor: pointer; display: block;">
+                    <div>
+                        <p style="font-size: 3rem; margin: 0;">📁</p>
+                        <h3>Click to select or drag & drop files</h3>
+                        <p>Accepted formats: <strong>.xlsx</strong>, <strong>.pdf</strong></p>
+                        <p style="font-size: 0.875rem; color: var(--pico-muted-color);">
+                            Maximum file size: 16MB
+                        </p>
+                    </div>
+                </label>
+            </div>
+
+            <div id="selected-file" style="margin-top: 1rem; display: none;">
+                <p><strong>Selected file:</strong> <span id="file-name"></span></p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <footer style="margin-top: 1rem;">
+                <button type="submit" id="upload-btn" disabled>
+                    Upload File
+                </button>
+            </footer>
+        </form>
+    </article>
+
+    <!-- Uploaded Files List -->
+    <article>
+        <header>
+            <h2>Uploaded Files</h2>
+        </header>
+
+        <div id="file-list" hx-get="/files" hx-trigger="load" hx-swap="innerHTML">
+            <!-- Files will be loaded here -->
+            <p aria-busy="true">Loading files...</p>
+        </div>
+    </article>
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // File input handling
+    const fileInput = document.getElementById('file-input');
+    const uploadZone = document.getElementById('upload-zone');
+    const selectedFileDiv = document.getElementById('selected-file');
+    const fileNameSpan = document.getElementById('file-name');
+    const uploadBtn = document.getElementById('upload-btn');
+    const uploadForm = document.getElementById('upload-form');
+
+    // File selection
+    fileInput.addEventListener('change', function (e) {
+        if (this.files.length > 0) {
+            const file = this.files[0];
+            const fileName = file.name;
+            const fileExt = fileName.split('.').pop().toLowerCase();
+
+            // Validate file type
+            if (fileExt !== 'xlsx' && fileExt !== 'pdf') {
+                alert('Please select a .xlsx or .pdf file');
+                this.value = '';
+                return;
+            }
+
+            // Validate file size (16MB)
+            if (file.size > 16 * 1024 * 1024) {
+                alert('File size must be less than 16MB');
+                this.value = '';
+                return;
+            }
+
+            fileNameSpan.textContent = fileName;
+            selectedFileDiv.style.display = 'block';
+            uploadBtn.disabled = false;
+        } else {
+            selectedFileDiv.style.display = 'none';
+            uploadBtn.disabled = true;
+        }
+    });
+
+    // Drag and drop
+    uploadZone.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        this.classList.add('dragover');
+    });
+
+    uploadZone.addEventListener('dragleave', function (e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+    });
+
+    uploadZone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            fileInput.dispatchEvent(new Event('change'));
+        }
+    });
+
+    // HTMX event handling
+    document.body.addEventListener('htmx:xhr:progress', function (evt) {
+        if (evt.detail.loaded && evt.detail.total) {
+            const percent = (evt.detail.loaded / evt.detail.total) * 100;
+            document.getElementById('progress-fill').style.width = percent + '%';
+        }
+    });
+
+    document.body.addEventListener('htmx:afterRequest', function (evt) {
+        if (evt.detail.successful) {
+            // Reset form
+            uploadForm.reset();
+            selectedFileDiv.style.display = 'none';
+            uploadBtn.disabled = true;
+            document.getElementById('progress-fill').style.width = '0%';
+
+            // Trigger file list refresh
+            document.body.dispatchEvent(new CustomEvent('fileUploaded'));
+        }
+    });
+</script>
+{% endblock %}

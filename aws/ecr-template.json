@@ -1,0 +1,27 @@
+{
+    "prefix": "hackaton-app",
+    "description": "",
+    "encryptionConfiguration": {
+        "encryptionType": "KMS",
+        "kmsKey": ""
+    },
+    "resourceTags": [
+        {
+            "Key": "",
+            "Value": ""
+        }
+    ],
+    "imageTagMutability": "MUTABLE",
+    "imageTagMutabilityExclusionFilters": [
+        {
+            "filterType": "WILDCARD",
+            "filter": ""
+        }
+    ],
+    "repositoryPolicy": "",
+    "lifecyclePolicy": "",
+    "appliedFor": [
+        "REPLICATION"
+    ],
+    "customRoleArn": ""
+}

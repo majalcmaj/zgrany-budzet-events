@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}File Upload{% endblock %}</title>
+    
+    <!-- Pico.css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    
+    <style>
+        .upload-zone {
+            border: 2px dashed var(--pico-primary);
+            border-radius: var(--pico-border-radius);
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .upload-zone:hover {
+            border-color: var(--pico-primary-hover);
+            background-color: var(--pico-primary-background);
+        }
+        
+        .upload-zone.dragover {
+            border-color: var(--pico-primary-hover);
+            background-color: var(--pico-primary-background);
+            transform: scale(1.02);
+        }
+        
+        .file-list {
+            margin-top: 2rem;
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background-color: var(--pico-card-background-color);
+            border-radius: var(--pico-border-radius);
+            border: 1px solid var(--pico-muted-border-color);
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .file-icon {
+            font-size: 2rem;
+        }
+        
+        .file-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .file-name {
+            font-weight: bold;
+        }
+        
+        .file-size {
+            font-size: 0.875rem;
+            color: var(--pico-muted-color);
+        }
+        
+        .success-message {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: var(--pico-ins-color);
+            border-radius: var(--pico-border-radius);
+            color: var(--pico-contrast);
+        }
+        
+        .error-message {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: var(--pico-del-color);
+            border-radius: var(--pico-border-radius);
+            color: var(--pico-contrast);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: var(--pico-muted-border-color);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--pico-primary);
+            transition: width 0.3s ease;
+        }
+        
+        #upload-status {
+            min-height: 2rem;
+        }
+    </style>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <main class="container">
+        <header>
+            <hgroup>
+                <h1>{% block heading %}File Upload System{% endblock %}</h1>
+                <p>{% block subheading %}Upload your .xlsx and .pdf files{% endblock %}</p>
+            </hgroup>
+        </header>
+        
+        {% block content %}{% endblock %}
+    </main>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
