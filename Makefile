@@ -10,3 +10,5 @@ lint:
 test:
 	cd src && poetry run pytest
 
+init-db:
+	poetry run python src/init_db.py

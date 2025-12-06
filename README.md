@@ -29,7 +29,7 @@ $(poetry env activate)
 
 ## Initialize the database
 ```
-python src/init_db.py
+make init-db
 ```
 
 ## Run with Docker
