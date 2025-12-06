@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Panel Ministra{% endblock %}
+
+{% block content %}
+<h1>Panel Ministra - Planowanie Budżetu</h1>
+
+<article>
+    <header>Status Biur</header>
+    <table role="grid">
+        <thead>
+            <tr>
+                <th scope="col">Biuro</th>
+                <th scope="col">Status</th>
+                <th scope="col">Liczba zadań</th>
+                <th scope="col">Suma potrzeb (PLN)</th>
+                <th scope="col">Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for office in offices_status %}
+            <tr>
+                <td>{{ office.name }}</td>
+                <td>
+                    {% if office.status == 'Submitted' %}
+                    <strong style="color: green;">Zatwierdzony</strong>
+                    {% else %}
+                    <strong style="color: orange;">W trakcie</strong>
+                    {% endif %}
+                </td>
+                <td>{{ office.task_count }}</td>
+                <td>{{ office.total_needs }}</td>
+                <td>
+                    <button class="outline" onclick="toggleDetails('{{ office.name }}')">Pokaż szczegóły</button>
+                </td>
+            </tr>
+            <tr id="details-{{ office.name }}" style="display: none;">
+                <td colspan="5">
+                    <article>
+                        <header>Wydatki - {{ office.name }}</header>
+                        {% if office.expenses %}
+                        <table role="grid">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Rozdział</th>
+                                    <th scope="col">Nazwa zadania</th>
+                                    <th scope="col">Kwota (PLN)</th>
+                                    <th scope="col">Akcje</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for expense in office.expenses %}
+                                <tr id="expense-{{ expense.task_name }}">
+                                    <td>{{ expense.chapter }}</td>
+                                    <td>{{ expense.task_name }}</td>
+                                    <td>{{ expense.financial_needs }}</td>
+                                    <td>
+                                        {% if expense.status == null %}
+                                        <button class="outline"
+                                            onclick="acceptExpense('{{ expense.task_name }}')">TAK</button>
+                                        <button class="outline"
+                                            onclick="rejectExpense('{{ expense.task_name }}')">NIE</button>
+                                        {% else %}
+                                        <strong>{{ expense.status }}</strong>
+                                        {% endif %}
+
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <p>Brak wydatków.</p>
+                        {% endif %}
+                    </article>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th scope="row" colspan="3">Suma całkowita</th>
+                <td><strong>{{ total_all_needs }}</strong></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script>
+        function toggleDetails(officeName) {
+            var detailsRow = document.getElementById('details-' + officeName);
+            if (detailsRow.style.display === 'none') {
+                detailsRow.style.display = 'table-row';
+            } else {
+                detailsRow.style.display = 'none';
+            }
+        }
+
+        function acceptExpense(expenseName, officeName) {
+
+            var expenseRow = document.getElementById('expense-' + expenseName);
+            expenseRow.style.display = 'none';
+        }
+
+        function rejectExpense(expenseName, officeName) {
+            var expenseRow = document.getElementById('expense-' + expenseName);
+            expenseRow.style.display = 'none';
+        }
+    </script>
+</article>
+
+<a href="/expenses">Lista Wydatków</a>
+{% endblock %}
