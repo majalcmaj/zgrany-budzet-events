@@ -40,10 +40,16 @@
     </table>
 </figure>
 {% if not closed %}
-<a href="/expenses/add" role="button">Dodaj nowy wydatek</a>
-<form action="/expenses/close" method="POST" style="display: inline;">
-    <button type="submit" class="contrast">Wyślij do akceptacji</button>
-</form>
+<div class="grid">
+    <div>
+        <a href="/expenses/add" role="button" style="width: 100%;">Dodaj nowy wydatek</a>
+    </div>
+    <div>
+        <form action="/expenses/close" method="POST" style="display: inline;">
+            <button type="submit" class="secondary">Wyślij do akceptacji</button>
+        </form>
+    </div>
+</div>
 {% elif not is_open %}
 <article>
     <header>Proces planowania nie został otwarty</header>
