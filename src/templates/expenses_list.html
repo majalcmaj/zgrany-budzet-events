@@ -4,6 +4,7 @@
 
 {% block content %}
 <h1>Lista Wydatków</h1>
+<a href="/">Powrót do strony głównej</a>
 <figure>
     <table role="grid">
         <thead>
@@ -14,6 +15,11 @@
             </tr>
         </thead>
         <tbody>
+            {% if not expenses %}
+            <tr>
+                <td colspan="3">Brak wydatków</td>
+            </tr>
+            {% else %}
             {% for expense in expenses %}
             <tr>
                 <td>{{ expense.chapter }}</td>
@@ -21,6 +27,7 @@
                 <td>{{ expense.financial_needs }}</td>
             </tr>
             {% endfor %}
+            {% endif %}
         </tbody>
         {% if expenses_sum %}
         <tfoot>
@@ -32,7 +39,7 @@
         {% endif %}
     </table>
 </figure>
-{% if not closed and is_open %}
+{% if not closed %}
 <a href="/expenses/add" role="button">Dodaj nowy wydatek</a>
 <form action="/expenses/close" method="POST" style="display: inline;">
     <button type="submit" class="contrast">Zamknij listę</button>
@@ -48,5 +55,5 @@
     Lista jest zamknięta. Nie można dodawać nowych wydatków.
 </article>
 {% endif %}
-<a href="/" role="button" class="secondary">Powrót do strony głównej</a>
+
 {% endblock %}
