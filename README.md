@@ -27,6 +27,11 @@ make lint
 $(poetry env activate)
 ```
 
+## Initialize the database
+```
+python src/init_db.py
+```
+
 ## Run with Docker
 
 1. **Build the image:**
