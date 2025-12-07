@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from src.auth import auth_required
 from .planning_workflow import PlanningState, PlanningStatus
+from src.constants import OFFICES
 # from src.expenses import EXPENSES, EXPENSES_CLOSED # Moved to inside functions to avoid circular import
 
 planning_bp = Blueprint('planning', __name__)
@@ -29,7 +30,7 @@ def chief_dashboard():
     from src.expenses import EXPENSES, EXPENSES_CLOSED
     offices_status = []
     total_all_needs = 0
-    for office in ['office1', 'office2']:
+    for office in OFFICES:
         expenses = EXPENSES.get(office, [])
         total_needs = sum(e.financial_needs for e in expenses if e.financial_needs is not None)
         task_count = len(expenses)
@@ -64,7 +65,7 @@ def minister_dashboard():
     
     offices_status = []
     total_all_needs = 0
-    for office in ['office1', 'office2']:
+    for office in OFFICES:
         expenses = EXPENSES.get(office, [])
         total_needs = sum(e.financial_needs for e in expenses if e.financial_needs is not None)
         task_count = len(expenses)
@@ -84,7 +85,7 @@ def minister_dashboard():
 
 @planning_bp.route('/')
 def index():
-    return render_template('role_selection.html')
+    return render_template('role_selection.html', OFFICES=OFFICES)
 
 @planning_bp.route('/set_role', methods=['POST'])
 def set_role():
@@ -93,7 +94,7 @@ def set_role():
         session['role'] = role
         if role == 'chief':
             return redirect(url_for('planning.chief_dashboard'))
-        elif role in ['office1', 'office2']:
+        elif role in OFFICES:
             return redirect(url_for('expenses.list_expenses'))
         elif role == 'minister':
             return redirect(url_for('planning.minister_dashboard'))
