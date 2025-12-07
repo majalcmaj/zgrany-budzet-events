@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "icons.html" as icons %}
 
 {% block title %}Panel Szefa{% endblock %}
 
@@ -8,11 +9,7 @@
 <article>
     {% if state.status == PlanningStatus.NOT_STARTED %}
     <strong style="color: gray; display: inline-flex; align-items: center; gap: 0.5rem;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-            <path
-                d="M5 6.5A1.5 1.5 0 0 1 6.5 5h3A1.5 1.5 0 0 1 11 6.5v3A1.5 1.5 0 0 1 9.5 11h-3A1.5 1.5 0 0 1 5 9.5v-3z" />
-        </svg>
+        {{ icons.icon_planning_not_started() }}
         PLANOWANIE NIE ROZPOCZĘTE
     </strong>
     <hr />
@@ -31,10 +28,7 @@
 
     {% elif state.status == PlanningStatus.IN_PROGRESS %}
     <strong style="color: rgb(4, 4, 204); display: inline-flex; align-items: center; gap: 0.5rem;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-            <path fill-rule="evenodd"
-                d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
-        </svg>
+        {{ icons.icon_planning_in_progress() }}
         PLANOWANIE W TOKU
     </strong>
     <p>Termin: <strong>{{ state.deadline if state.deadline else 'Nie ustawiono' }}</strong></p>
@@ -44,18 +38,12 @@
     </form>
     {% elif state.status == PlanningStatus.IN_REVIEW %}
     <strong style="color: yellow; display: inline-flex; align-items: center; gap: 0.5rem;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-            <path
-                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-        </svg>
+        {{ icons.icon_planning_in_review() }}
         W PRZEGLĄDZIE W MINISTERSTWIE
     </strong>
     {% elif state.status == PlanningStatus.NEEDS_CORRECTION %}
     <strong style="color: orange; display: inline-flex; align-items: center; gap: 0.5rem;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-            <path
-                d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-        </svg>
+        {{ icons.icon_planning_needs_correction() }}
         POTRZEBA KOREKTY
     </strong>
     {% elif state.status == PlanningStatus.FINISHED%}
@@ -84,21 +72,12 @@
                 <td>
                     {% if office.status == 'Submitted' %}
                     <strong style="color: green; display: inline-flex; align-items: center; gap: 0.5rem;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            viewBox="0 0 16 16">
-                            <path
-                                d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
-                        </svg>
+                        {{ icons.icon_office_submitted() }}
                         Zatwierdzony
                     </strong>
                     {% else %}
                     <strong style="color: orange; display: inline-flex; align-items: center; gap: 0.5rem;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            viewBox="0 0 16 16">
-                            <path
-                                d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" />
-                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z" />
-                        </svg>
+                        {{ icons.icon_office_in_progress() }}
                         W trakcie
                     </strong>
                     {% endif %}
