@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from src.auth import auth_required
 from .planning_workflow import PlanningState, PlanningStatus
-from src.constants import OFFICES
+from src.constants import OFFICES, CHIEF
 # from src.expenses import EXPENSES, EXPENSES_CLOSED # Moved to inside functions to avoid circular import
 
 planning_bp = Blueprint('planning', __name__)
@@ -85,14 +85,14 @@ def minister_dashboard():
 
 @planning_bp.route('/')
 def index():
-    return render_template('role_selection.html', OFFICES=OFFICES)
+    return render_template('role_selection.html', OFFICES=OFFICES, CHIEF=CHIEF)
 
 @planning_bp.route('/set_role', methods=['POST'])
 def set_role():
     role = request.form.get('role')
     if role:
         session['role'] = role
-        if role == 'chief':
+        if role == CHIEF:
             return redirect(url_for('planning.chief_dashboard'))
         elif role in OFFICES:
             return redirect(url_for('expenses.list_expenses'))

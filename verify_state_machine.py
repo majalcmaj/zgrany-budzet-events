@@ -26,10 +26,10 @@ def verify():
     
     # 3. Simulate Office Submission
     print("Simulating office submission...")
-    EXPENSES_CLOSED['office1'] = True
-    EXPENSES_CLOSED['office2'] = True
-    print(f"Office1 Closed: {EXPENSES_CLOSED['office1']}")
-    assert EXPENSES_CLOSED['office1'] is True
+    EXPENSES_CLOSED['Departament A'] = True
+    EXPENSES_CLOSED['Departament B'] = True
+    print(f"Office1 Closed: {EXPENSES_CLOSED['Departament A']}")
+    assert EXPENSES_CLOSED['Departament A'] is True
     
     # 4. Submit to Minister
     print("Transitioning to IN_REVIEW...")
@@ -43,9 +43,9 @@ def verify():
     print(f"Current State: {planning_state.status}")
     assert planning_state.status == PlanningStatus.NEEDS_CORRECTION
     
-    print(f"Office1 Closed: {EXPENSES_CLOSED['office1']}")
-    assert EXPENSES_CLOSED['office1'] is False
-    assert EXPENSES_CLOSED['office2'] is False
+    print(f"Office1 Closed: {EXPENSES_CLOSED['Departament A']}")
+    assert EXPENSES_CLOSED['Departament A'] is False
+    assert EXPENSES_CLOSED['Departament B'] is False
     print("Side effect verified: Office approvals reset.")
     
     # 6. Submit Correction
