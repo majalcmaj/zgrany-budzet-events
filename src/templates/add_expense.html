@@ -49,9 +49,11 @@
         </div>
     </label>
 
-    <button role="accept" type="submit">Dodaj</button>
+    <div class="grid">
+        <button role="accept" type="submit">Dodaj</button>
+        <button role="reject" type="button" onclick="window.history.back()">Anuluj</button>
+    </div>
 </form>
 
 
-<a href="/">Powrót do strony głównej</a>
 {% endblock %}

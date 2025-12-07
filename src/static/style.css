@@ -6,13 +6,11 @@
     --pico-padding: 0.75rem;
 }
 
-*[role="accept"] {
-    width: 50%;
+*[role*="accept"] {
     background-color: var(--pico-color-green-500);
 }
 
-*[role="reject"] {
-    width: 50%;
+*[role*="reject"] {
     background-color: var(--pico-color-red-500);
 }
 
@@ -80,4 +78,16 @@
     display: block;
     animation: fadeOut 6s forwards;
     /* Fade out after 4 seconds */
+}
+
+button.halfsize {
+    width: 50%;
+}
+
+button.center {
+    justify-self: center;
+}
+
+form.centered {
+    display: grid;
 }

@@ -27,15 +27,19 @@
     </form>
 
     {% elif state.status == PlanningStatus.IN_PROGRESS %}
-    <strong style="color: rgb(4, 4, 204); display: inline-flex; align-items: center; gap: 0.5rem;">
-        {{ icons.icon_planning_in_progress() }}
-        PLANOWANIE W TOKU
-    </strong>
-    <p>Termin: <strong>{{ state.deadline if state.deadline else 'Nie ustawiono' }}</strong></p>
-    <hr />
-    <form method="POST">
-        <button type="submit" role="accept" name="action" value="submit_minister" class="primary">Przekaż do Ministerstwa</button>
-    </form>
+    <div class="grid">
+        <div>
+            <strong style="color: rgb(4, 4, 204); display: inline-flex; align-items: center; gap: 0.5rem;">
+                {{ icons.icon_planning_in_progress() }}
+                PLANOWANIE W TOKU
+            </strong>
+            <p>Termin: <strong>{{ state.deadline if state.deadline else 'Nie ustawiono' }}</strong></p>
+        </div>
+        <form method="POST">
+            <button type="submit" role="accept" name="action" value="submit_minister" class="primary">Przekaż do
+                Ministerstwa</button>
+        </form>
+    </div>
     {% elif state.status == PlanningStatus.IN_REVIEW %}
     <strong style="color: yellow; display: inline-flex; align-items: center; gap: 0.5rem;">
         {{ icons.icon_planning_in_review() }}
@@ -47,8 +51,8 @@
         POTRZEBA KOREKTY
     </strong>
     {% elif state.status == PlanningStatus.FINISHED%}
-    <form method="POST">
-        <button type="submit" name="action" value="reopen" class="primary">Otwórz ponownie</button>
+    <form method="POST" class="centered">
+        <button type="submit" name="action" value="reopen" class="primary halfsize center">Nowe planowanie</button>
     </form>
     {% endif %}
 </article>
