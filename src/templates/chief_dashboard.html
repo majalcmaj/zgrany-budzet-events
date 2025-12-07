@@ -4,7 +4,7 @@
 {% block title %}Panel Szefa{% endblock %}
 
 {% block content %}
-<h1>Panel Szefa - Planowanie Budżetu</h1>
+<h1 class="header-with-icon">{{ icons.icon_role_chief(width=48, height=48) }} Panel Szefa - Planowanie Budżetu</h1>
 
 <article>
     {% if state.status == PlanningStatus.NOT_STARTED %}

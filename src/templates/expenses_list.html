@@ -2,8 +2,9 @@
 
 {% block title %}Lista Wydatków{% endblock %}
 
+{% import "icons.html" as icons %}
 {% block content %}
-<h1>Lista Wydatków</h1>
+<h1 class="header-with-icon">{{ icons.icon_role_office(width=48, height=48) }} Lista Wydatków</h1>
 <figure>
     <table role="grid">
         <thead>
@@ -72,7 +73,7 @@
             <input type="file" class="secondary" />
             <button type="submit" class="secondary">Pobierz dane z pliku</button>
         </div>
-</form>
+    </form>
 </article>
 
 {% endif %}

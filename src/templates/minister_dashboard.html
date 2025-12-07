@@ -4,7 +4,8 @@
 {% block title %}Panel Ministerstwa{% endblock %}
 
 {% block content %}
-<h1>Panel Ministerstwa - Planowanie Budżetu</h1>
+<h1 class="header-with-icon">{{ icons.icon_role_minister(width=48, height=48) }} Panel Ministerstwa - Planowanie Budżetu
+</h1>
 
 <article>
     {% if state.status == PlanningStatus.NOT_STARTED %}

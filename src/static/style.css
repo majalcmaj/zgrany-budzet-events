@@ -104,3 +104,9 @@ button.center {
 form.centered {
     display: grid;
 }
+
+.header-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
