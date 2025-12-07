@@ -11,7 +11,7 @@ window.addEventListener('load', function () {
             detailsRow.style.display = 'table-row';
             event.target.innerHTML = 'Ukryj szczegóły';
         } else {
-            event.target.innerHTML = 'Pokaż sczegóły';
+            event.target.innerHTML = 'Pokaż szczegóły';
             detailsRow.style.display = 'none';
         }
 
