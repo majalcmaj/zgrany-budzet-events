@@ -1,7 +1,17 @@
+from dataclasses import dataclass
+
 from flask import Blueprint, render_template, request, redirect, url_for, session
+
 expenses_bp = Blueprint('expenses', __name__)
 
-EXPENSES = {
+@dataclass
+class Expense:
+    chapter: int
+    task_name: str
+    financial_needs: int
+    role: str
+
+EXPENSES: dict[str, list[Expense]] = {
     'office1': [],
     'office2': []
 }
@@ -24,12 +34,12 @@ def add_expense():
         return redirect(url_for('expenses.list_expenses'))
         
     if request.method == 'POST':
-        expense = {
-            'chapter': request.form.get('chapter'),
-            'task_name': request.form.get('task_name'),
-            'financial_needs': request.form.get('financial_needs', type=int),
-            'role': session['role']
-        }
+        expense = Expense(
+            chapter = request.form.get('chapter'),
+            task_name = request.form.get('task_name'),
+            financial_needs = request.form.get('financial_needs', type=int),
+            role = session['role']
+        )
         EXPENSES[session['role']].append(expense)
         return redirect(url_for('expenses.list_expenses'))
     return render_template('add_expense.html')
@@ -50,7 +60,7 @@ def list_expenses():
     if 'role' not in session or session['role'] not in ['office1', 'office2']:
         return redirect(url_for('planning.index'))
     current_expenses = EXPENSES[session['role']]
-    expenses_sum = sum(e['financial_needs'] for e in current_expenses if e['financial_needs'] is not None)
+    expenses_sum = sum(e.financial_needs for e in current_expenses if e.financial_needs is not None)
     return render_template('expenses_list.html', 
                          expenses=current_expenses, 
                          closed=EXPENSES_CLOSED[session['role']],
