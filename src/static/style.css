@@ -6,6 +6,16 @@
     --pico-padding: 0.75rem;
 }
 
+*[role="accept"] {
+    width: 50%;
+    background-color: var(--pico-color-green-500);
+}
+
+*[role="reject"] {
+    width: 50%;
+    background-color: var(--pico-color-red-500);
+}
+
 .expense-details {
     padding: 0;
 }

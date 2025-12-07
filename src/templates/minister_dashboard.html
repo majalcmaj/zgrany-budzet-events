@@ -36,7 +36,7 @@
                 <th scope="col">Biuro</th>
                 <th scope="col">Status</th>
                 <th scope="col">Liczba zadań</th>
-                <th scope="col">Suma potrzeb (tys. zł)</th>
+                <th scope="col">Suma potrzeb</th>
                 <th scope="col">Akcje</th>
             </tr>
         </thead>
@@ -52,11 +52,9 @@
                     {% endif %}
                 </td>
                 <td>{{ office.task_count }}</td>
-                <td>{{ office.total_needs }}</td>
+                <td>{{ office.total_needs }} tys. zł</td>
                 <td>
                     <button class="outline" onclick="toggleDetails('{{ office.name }}')">Pokaż szczegóły</button>
-                    <button class="outline" onclick="acceptOfficeExpenses('{{ office.name }}')">Zaakceptuj</button>
-                    <button class="outline" onclick="rejectOfficeExpenses('{{ office.name }}')">Odrzuć</button>
                 </td>
             </tr>
             <tr id="details-{{ office.name }}" style="display: none;">

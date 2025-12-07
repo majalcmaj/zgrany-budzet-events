@@ -31,6 +31,10 @@ class PlanningState:
 
     def request_correction(self):
         self.status = PlanningStatus.NEEDS_CORRECTION
+        # Side effect: Reset office approvals
+        from src.expenses import EXPENSES_CLOSED
+        for office in EXPENSES_CLOSED:
+            EXPENSES_CLOSED[office] = False
 
     def approve(self):
         self.status = PlanningStatus.FINISHED

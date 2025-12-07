@@ -57,7 +57,6 @@ def minister_dashboard():
 
     if request.method == 'POST':
         action = request.form.get('action')
-        
         if action == 'request_correction':
             planning_state.request_correction()
         elif action == 'approve':
