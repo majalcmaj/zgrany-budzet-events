@@ -30,8 +30,12 @@
         </label>
 
         <label for="departament">
-            Departament
-            <input type="text" id="departament" name="departament" placeholder="Np. BA">
+            Departament <span style="color: red;">*</span>
+            <input type="text" id="departament" name="departament" placeholder="Np. BA" required
+                title="Podaj kod departamentu">
+            <div class="invalid-feedback">
+                Podaj kod departamentu
+            </div>
         </label>
 
         <label for="task_name">
@@ -44,14 +48,21 @@
         </label>
 
         <label for="opis_projektu">
-            Opis projektu
-            <textarea id="opis_projektu" name="opis_projektu" rows="3"
-                placeholder="Szczegółowy opis projektu"></textarea>
+            Opis projektu <span style="color: red;">*</span>
+            <textarea id="opis_projektu" name="opis_projektu" rows="3" placeholder="Szczegółowy opis projektu" required
+                title="Podaj szczegółowy opis projektu"></textarea>
+            <div class="invalid-feedback">
+                Podaj szczegółowy opis projektu
+            </div>
         </label>
 
         <label for="termin_realizacji">
-            Termin realizacji
-            <input type="text" id="termin_realizacji" name="termin_realizacji" placeholder="Np. 24 miesiące">
+            Termin realizacji <span style="color: red;">*</span>
+            <input type="text" id="termin_realizacji" name="termin_realizacji" placeholder="Np. 24 miesiące" required
+                title="Podaj termin realizacji projektu">
+            <div class="invalid-feedback">
+                Podaj termin realizacji projektu
+            </div>
         </label>
     </fieldset>
 
@@ -101,8 +112,12 @@
 
         <div class="grid">
             <label for="budget_2025">
-                2025
-                <input type="number" id="budget_2025" name="budget_2025" placeholder="0" min="0" step="1">
+                2025 <span style="color: red;">*</span>
+                <input type="number" id="budget_2025" name="budget_2025" placeholder="0" min="0" step="1" required
+                    title="Podaj kwotę w tysiącach złotych dla roku 2025">
+                <div class="invalid-feedback">
+                    Podaj kwotę w tysiącach złotych dla roku 2025
+                </div>
             </label>
 
             <label for="budget_2026">
@@ -115,18 +130,30 @@
             </label>
 
             <label for="budget_2027">
-                2027
-                <input type="number" id="budget_2027" name="budget_2027" placeholder="0" min="0" step="1">
+                2027 <span style="color: red;">*</span>
+                <input type="number" id="budget_2027" name="budget_2027" placeholder="0" min="0" step="1" required
+                    title="Podaj kwotę w tysiącach złotych dla roku 2027">
+                <div class="invalid-feedback">
+                    Podaj kwotę w tysiącach złotych dla roku 2027
+                </div>
             </label>
 
             <label for="budget_2028">
-                2028
-                <input type="number" id="budget_2028" name="budget_2028" placeholder="0" min="0" step="1">
+                2028 <span style="color: red;">*</span>
+                <input type="number" id="budget_2028" name="budget_2028" placeholder="0" min="0" step="1" required
+                    title="Podaj kwotę w tysiącach złotych dla roku 2028">
+                <div class="invalid-feedback">
+                    Podaj kwotę w tysiącach złotych dla roku 2028
+                </div>
             </label>
 
             <label for="budget_2029">
-                2029
-                <input type="number" id="budget_2029" name="budget_2029" placeholder="0" min="0" step="1">
+                2029 <span style="color: red;">*</span>
+                <input type="number" id="budget_2029" name="budget_2029" placeholder="0" min="0" step="1" required
+                    title="Podaj kwotę w tysiącach złotych dla roku 2029">
+                <div class="invalid-feedback">
+                    Podaj kwotę w tysiącach złotych dla roku 2029
+                </div>
             </label>
         </div>
     </fieldset>
@@ -136,8 +163,12 @@
         <legend>Informacje o umowie</legend>
 
         <label for="nr_umowy">
-            Numer umowy
-            <input type="text" id="nr_umowy" name="nr_umowy" placeholder="Np. 80/BA/24">
+            Numer umowy <span style="color: red;">*</span>
+            <input type="text" id="nr_umowy" name="nr_umowy" placeholder="Np. 80/BA/24" required
+                title="Podaj numer umowy">
+            <div class="invalid-feedback">
+                Podaj numer umowy
+            </div>
         </label>
     </fieldset>
 
