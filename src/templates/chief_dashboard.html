@@ -50,6 +50,12 @@
         {{ icons.icon_planning_needs_correction() }}
         POTRZEBA KOREKTY
     </strong>
+    {% if state.correction_comment %}
+    <p>
+        <strong>Komentarz od Ministra:</strong>
+        <span style="font-style: italic;">{{ state.correction_comment }}</span>
+    </p>
+    {% endif %}
     <hr />
     <form method="POST" class="grid needs-validation" novalidate>
         <label for="deadline">Ustaw termin <span style="color: red;">*</span></label>

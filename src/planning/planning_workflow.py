@@ -11,12 +11,14 @@ class PlanningState:
     def __init__(self):
         self.deadline = None
         self.status = PlanningStatus.NOT_STARTED
+        self.correction_comment = None
 
     def set_deadline(self, date_str):
         self.deadline = date_str
 
     def start_planning(self):
         self.status = PlanningStatus.IN_PROGRESS
+        self.correction_comment = None
         # Side effect: Reset office approvals
         from src.expenses import EXPENSES_CLOSED
         for office in EXPENSES_CLOSED:
@@ -29,8 +31,9 @@ class PlanningState:
         for office in EXPENSES_CLOSED:
             EXPENSES_CLOSED[office] = True
 
-    def request_correction(self):
+    def request_correction(self, comment=None):
         self.status = PlanningStatus.NEEDS_CORRECTION
+        self.correction_comment = comment
         # Side effect: Reset office approvals
         from src.expenses import EXPENSES_CLOSED
         for office in EXPENSES_CLOSED:
