@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from src.constants import OFFICES
+from src.constants import OFFICES, OFFICES_GENITIVE
 expenses_bp = Blueprint('expenses', __name__)
 
 @dataclass
@@ -69,7 +69,8 @@ def list_expenses():
                          closed=EXPENSES_CLOSED[session['role']],
                          state=planning_state,
                          PlanningStatus=PlanningStatus,
-                         expenses_sum=expenses_sum)
+                         expenses_sum=expenses_sum,
+                         offices_genitive=OFFICES_GENITIVE)
 
 @expenses_bp.route('/import', methods=['POST'])
 def import_data():

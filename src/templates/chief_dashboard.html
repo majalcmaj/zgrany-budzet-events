@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% import "icons.html" as icons %}
 
-{% block title %}Panel Szefa{% endblock %}
+{% block title %}Panel Administracyjny{% endblock %}
 
 {% block content %}
-<h1 class="header-with-icon">{{ icons.icon_role_chief(width=48, height=48) }} Panel Szefa - Planowanie Budżetu</h1>
+<h1 class="header-with-icon">{{ icons.icon_role_chief(width=48, height=48) }} Panel Administracyjny - Planowanie Budżetu
+</h1>
 
 <article>
     {% if state.status == PlanningStatus.NOT_STARTED %}

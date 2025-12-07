@@ -4,7 +4,8 @@
 
 {% import "icons.html" as icons %}
 {% block content %}
-<h1 class="header-with-icon">{{ icons.icon_role_office(width=48, height=48) }} Lista Wydatków</h1>
+<h1 class="header-with-icon">{{ icons.icon_role_office(width=48, height=48) }} Panel {{
+    offices_genitive[session['role']] }} - Lista Wydatków</h1>
 <figure>
     <table role="grid">
         <thead>
