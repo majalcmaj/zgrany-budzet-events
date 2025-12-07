@@ -28,9 +28,6 @@
         <form method="POST">
             <button type="submit" role="accept" name="action" value="approve">Zatwierdź</button>
         </form>
-        <form method="POST">
-            <button type="submit" role="accept" name="action" value="approve">Zatwierdź</button>
-        </form>
         <button type="button" class="secondary" onclick="openCorrectionModal()">Zleć korektę</button>
     </div>
 
@@ -45,9 +42,14 @@
                     <label for="comment">Komentarz do korekty:</label>
                     <textarea id="comment" name="comment" placeholder="Wpisz powód korekty..." required></textarea>
                 </p>
-                <footer>
-                    <button type="button" class="secondary" onclick="closeCorrectionModal()">Anuluj</button>
-                    <button type="submit" name="action" value="request_correction">Wyślij</button>
+                <footer class="grid">
+                    <div>
+                        <button type="button" role="button reject" class="secondary" style="width: 100%;"
+                            onclick="closeCorrectionModal()">Anuluj</button>
+                    </div>
+                    <div>
+                        <button type="submit" role="button accept" name="action accept" value="request_correction">Wyślij</button>
+                    </div>
                 </footer>
             </form>
         </article>
