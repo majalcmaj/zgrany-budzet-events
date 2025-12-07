@@ -75,10 +75,18 @@ def list_expenses():
 def import_data():
     role = session['role']
 
-    EXPENSES[role].append(Expense(chapter=75001, task_name="Audyt bezpieczeństwa informacji zgodnie z normą ISO 27001", financial_needs=5, role=role))
-    EXPENSES[role].append(Expense(chapter=75001, task_name="Organizacja konferencji", financial_needs=20, role=role))
-    EXPENSES[role].append(Expense(chapter=75001, task_name="Zakup 1 szt. komputerów", financial_needs=120, role=role))
-    EXPENSES[role].append(Expense(chapter=75001, task_name="Umowa-zlecenie na opracowanie ekspertyzy dot. dezinformacji", financial_needs=5, role=role))
-    EXPENSES[role].append(Expense(chapter=75001, task_name="Szkolenia dla pracowników", financial_needs=7, role=role))
+    for e in create_expenses(role, 10):
+        EXPENSES[role].append(e)
 
     return redirect(url_for('expenses.list_expenses'))
+
+from itertools import islice, cycle
+
+def create_expenses(role: str, n: int):
+    return islice(cycle([
+        Expense(chapter=75001, task_name="Audyt bezpieczeństwa informacji zgodnie z normą ISO 27001", financial_needs=5, role=role),
+        Expense(chapter=75001, task_name="Organizacja konferencji", financial_needs=20, role=role),
+        Expense(chapter=75001, task_name="Zakup 1 szt. komputerów", financial_needs=120, role=role),
+        Expense(chapter=75001, task_name="Umowa-zlecenie na opracowanie ekspertyzy dot. dezinformacji", financial_needs=5, role=role),
+        Expense(chapter=75001, task_name="Szkolenia dla pracowników", financial_needs=7, role=role)
+    ]), n)
