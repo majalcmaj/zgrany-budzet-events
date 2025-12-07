@@ -5,11 +5,11 @@ import os
 sys.path.append(os.path.join(os.getcwd(), 'src'))
 
 # Mock Flask session and request context if needed, but we might be able to test logic directly
-# However, the side effects depend on EXPENSES_CLOSED which is in src.expenses
+# However, the side effects depend on EXPENSES_CLOSED which is in expenses
 # Let's try to import the state and expenses module
 
-from src.planning import planning_state, PlanningStatus
-from src.expenses import EXPENSES_CLOSED
+from planning import planning_state, PlanningStatus
+from expenses import EXPENSES_CLOSED
 
 def verify():
     print("Starting verification...")

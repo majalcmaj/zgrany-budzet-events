@@ -21,14 +21,14 @@ class PlanningState:
         self.status = PlanningStatus.IN_PROGRESS
         self.correction_comment = None
         # Side effect: Reset office approvals
-        from src.expenses import EXPENSES_CLOSED
+        from expenses import EXPENSES_CLOSED
         for office in EXPENSES_CLOSED:
             EXPENSES_CLOSED[office] = False
 
     def submit_to_minister(self):
         self.status = PlanningStatus.IN_REVIEW
         # Side effect: Reset office approvals
-        from src.expenses import EXPENSES_CLOSED
+        from expenses import EXPENSES_CLOSED
         for office in EXPENSES_CLOSED:
             EXPENSES_CLOSED[office] = True
 
@@ -36,7 +36,7 @@ class PlanningState:
         self.status = PlanningStatus.NEEDS_CORRECTION
         self.correction_comment = comment
         # Side effect: Reset office approvals
-        from src.expenses import EXPENSES_CLOSED
+        from expenses import EXPENSES_CLOSED
         for office in EXPENSES_CLOSED:
             EXPENSES_CLOSED[office] = False
 

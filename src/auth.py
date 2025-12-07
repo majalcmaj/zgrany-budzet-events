@@ -3,7 +3,7 @@ from flask import request, Response
 
 def check_auth(username, password):
     """Check if a username/password combination is valid."""
-    return username == 'knurr' and password == 'oink1234'
+    return username == 'mc' and password == 'MiniCyfr1!'
 
 
 def authenticate():

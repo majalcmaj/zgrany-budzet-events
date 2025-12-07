@@ -4,9 +4,9 @@ import os
 # Add src to path
 sys.path.append(os.path.join(os.getcwd(), 'src'))
 
-from src.planning import planning_state
-from src.planning.planning_workflow import PlanningStatus
-from src.expenses import EXPENSES_CLOSED, OFFICES
+from planning import planning_state
+from planning.planning_workflow import PlanningStatus
+from expenses import EXPENSES_CLOSED, OFFICES
 
 def verify():
     print("Starting Minister Workflow Verification...")

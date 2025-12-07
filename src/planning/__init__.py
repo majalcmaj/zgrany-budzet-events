@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from src.auth import auth_required
+from auth import auth_required
 from .planning_workflow import PlanningState, PlanningStatus
-from src.constants import OFFICES, CHIEF, OFFICES_NAME, OFFICES_SINGLE
-# from src.expenses import EXPENSES, EXPENSES_CLOSED # Moved to inside functions to avoid circular import
+from constants import OFFICES, CHIEF, OFFICES_NAME, OFFICES_SINGLE
+# from expenses import EXPENSES, EXPENSES_CLOSED # Moved to inside functions to avoid circular import
 
 planning_bp = Blueprint('planning', __name__)
 
@@ -29,7 +29,7 @@ def chief_dashboard():
             
         return redirect(url_for('planning.chief_dashboard'))
     
-    from src.expenses import EXPENSES, EXPENSES_CLOSED
+    from expenses import EXPENSES, EXPENSES_CLOSED
     offices_status = []
     total_all_needs = 0
     for office in OFFICES:
@@ -53,7 +53,7 @@ def chief_dashboard():
 @planning_bp.route('/minister_dashboard', methods=['GET', 'POST'])
 @auth_required
 def minister_dashboard():
-    from src.expenses import EXPENSES, EXPENSES_CLOSED
+    from expenses import EXPENSES, EXPENSES_CLOSED
 
     if request.method == 'POST':
         action = request.form.get('action')
@@ -86,10 +86,12 @@ def minister_dashboard():
     return render_template('minister_dashboard.html', state=planning_state, offices_status=offices_status, total_all_needs=total_all_needs, PlanningStatus=PlanningStatus)
 
 @planning_bp.route('/')
+@auth_required
 def index():
     return render_template('role_selection.html', OFFICES=OFFICES, CHIEF=CHIEF, OFFICES_NAME=OFFICES_NAME, OFFICES_SINGLE=OFFICES_SINGLE)
 
 @planning_bp.route('/set_role', methods=['POST'])
+@auth_required
 def set_role():
     role = request.form.get('role')
     if role:
@@ -103,10 +105,11 @@ def set_role():
     return redirect(url_for('planning.index'))
 
 @planning_bp.route('/file_import', methods=["POST"])
+@auth_required
 def import_file():
-    from src.expenses import EXPENSES, Expense
+    from expenses import EXPENSES, Expense
     from random import randrange
-    from src.expenses import create_expenses
+    from expenses import create_expenses
 
     for role, expense_list in EXPENSES.items():
         for new_expense in create_expenses(role, randrange(1, 40)):

@@ -1,8 +1,9 @@
+from auth import auth_required
 from dataclasses import dataclass
 from typing import Optional
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from src.constants import OFFICES, OFFICES_GENITIVE
+from constants import OFFICES, OFFICES_GENITIVE
 expenses_bp = Blueprint('expenses', __name__)
 
 @dataclass
@@ -37,10 +38,11 @@ class Expense:
 EXPENSES: dict[str, list[Expense]] = {office: [] for office in OFFICES}
 EXPENSES_CLOSED = {office: False for office in OFFICES}
 
-from src.planning import planning_state, PlanningStatus
+from planning import planning_state, PlanningStatus
 
 
 @expenses_bp.route('/api/classifications', methods=['GET'])
+@auth_required
 def get_classifications():
     """Get działów and rozdziałów classification data."""
     data_dir = Path(__file__).parent.parent / "data"
@@ -64,6 +66,7 @@ def get_classifications():
     }
 
 @expenses_bp.route('/add', methods=['GET', 'POST'])
+@auth_required
 def add_expense():
     if 'role' not in session or session['role'] not in OFFICES:
         return redirect(url_for('planning.index'))
@@ -117,6 +120,7 @@ def add_expense():
     return render_template('add_expense.html')
 
 @expenses_bp.route('/close', methods=['POST'])
+@auth_required
 def close_expenses():
     can_edit = planning_state.status in [PlanningStatus.IN_PROGRESS, PlanningStatus.NEEDS_CORRECTION]
     
@@ -128,6 +132,7 @@ def close_expenses():
     return redirect(url_for('expenses.list_expenses'))
 
 @expenses_bp.route('/')
+@auth_required
 def list_expenses():
     if 'role' not in session or session['role'] not in OFFICES:
         return redirect(url_for('planning.index'))
@@ -142,6 +147,7 @@ def list_expenses():
                          offices_genitive=OFFICES_GENITIVE)
 
 @expenses_bp.route('/import', methods=['POST'])
+@auth_required
 def import_data():
     role = session['role']
 
