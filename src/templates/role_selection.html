@@ -1,70 +1,160 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Select Role</title>
+    <title>Wybór Roli</title>
     <style>
+        :root {
+            --primary-color: #007bff;
+            --primary-hover: #0056b3;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-color: #333;
+        }
+
         body {
-            font-family: sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #f0f2f5;
+            min-height: 100vh;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
         }
 
         .container {
-            background: white;
+            width: 100%;
+            max-width: 1200px;
             padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
-        select,
-        button {
-            padding: 10px;
-            margin: 10px;
-            font-size: 16px;
+        h1 {
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: #2c3e50;
+        }
+
+        .role-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .role-card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .role-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .role-icon {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .role-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .role-form {
+            width: 100%;
+            margin-top: auto;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            background-color: #fff;
         }
 
         button {
-            background-color: #007bff;
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            font-weight: 600;
             color: white;
+            background-color: var(--primary-color);
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
+            transition: background-color 0.2s ease;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: var(--primary-hover);
         }
     </style>
 </head>
 
 <body>
+    {% import "icons.html" as icons %}
+
     <div class="container">
-        <h1>Select Your Role</h1>
+        <h1>Wybierz swoją rolę</h1>
 
-        <form action="/set_role" method="POST" class="needs-validation" novalidate>
-            <label for="role">Wybierz rolę <span style="color: red;">*</span></label>
-            <select name="role" id="role" required title="Wybierz rolę, aby przejść do odpowiedniego panelu">
-                <option value="" disabled selected>Wybierz rolę...</option>
-                <option value="{{ CHIEF }}">{{ CHIEF }}</option>
-                <option value="minister">Minister</option>
-                {% for office in OFFICES %}
-                <option value="{{ office }}">{{ office }}</option>
-                {% endfor %}
-            </select>
-            <div class="invalid-feedback">
-                Wybierz rolę, aby przejść do odpowiedniego panelu
+        <div class="role-container">
+            <!-- Chief Card -->
+            <div class="role-card">
+                <div class="role-icon">
+                    {{ icons.icon_role_chief() }}
+                </div>
+                <div class="role-title">{{ CHIEF }}</div>
+                <form action="/set_role" method="POST" class="role-form">
+                    <input type="hidden" name="role" value="{{ CHIEF }}">
+                    <button type="submit">Wybierz</button>
+                </form>
             </div>
-            <br>
-            <button type="submit">Continue</button>
-        </form>
 
+            <!-- Minister Card -->
+            <div class="role-card">
+                <div class="role-icon">
+                    {{ icons.icon_role_minister() }}
+                </div>
+                <div class="role-title">Minister</div>
+                <form action="/set_role" method="POST" class="role-form">
+                    <input type="hidden" name="role" value="minister">
+                    <button type="submit">Wybierz</button>
+                </form>
+            </div>
+
+            <!-- Office Card -->
+            <div class="role-card">
+                <div class="role-icon">
+                    {{ icons.icon_role_office() }}
+                </div>
+                <div class="role-title">{{ OFFICES_NAME }}</div>
+                <form action="/set_role" method="POST" class="role-form">
+                    <select name="role" required>
+                        <option value="" disabled selected>Wybierz {{ OFFICES_SINGLE }}...</option>
+                        {% for office in OFFICES %}
+                        <option value="{{ office }}">{{ office }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Wybierz</button>
+                </form>
+            </div>
+        </div>
     </div>
 </body>
 
