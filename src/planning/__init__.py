@@ -100,3 +100,16 @@ def set_role():
         elif role == 'minister':
             return redirect(url_for('planning.minister_dashboard'))
     return redirect(url_for('planning.index'))
+
+@planning_bp.route('/file_import', methods=["POST"])
+def import_file():
+    from src.expenses import EXPENSES, Expense
+
+    for role, expense_list in EXPENSES.items():
+        expense_list.append(Expense(chapter=75001, task_name="Audyt bezpieczeństwa informacji zgodnie z normą ISO 27001", financial_needs=5, role=role))
+        expense_list.append(Expense(chapter=75001, task_name="Organizacja konferencji", financial_needs=20, role=role))
+        expense_list.append(Expense(chapter=75001, task_name="Zakup 1 szt. komputerów", financial_needs=120, role=role))
+        expense_list.append(Expense(chapter=75001, task_name="Umowa-zlecenie na opracowanie ekspertyzy dot. dezinformacji", financial_needs=5, role=role))
+        expense_list.append(Expense(chapter=75001, task_name="Szkolenia dla pracowników", financial_needs=7, role=role))
+
+    return redirect(url_for('planning.chief_dashboard'))

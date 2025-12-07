@@ -50,6 +50,19 @@
         {{ icons.icon_planning_needs_correction() }}
         POTRZEBA KOREKTY
     </strong>
+    <hr />
+    <form method="POST" class="grid needs-validation" novalidate>
+        <label for="deadline">Ustaw termin <span style="color: red;">*</span></label>
+        <div style="position: relative; display: inline-block; width: 100%;">
+            <input type="date" id="deadline" name="deadline" value="{{ state.deadline }}" required
+                title="Wybierz datę zakończenia zbierania zapotrzebowania">
+            <div class="invalid-feedback"
+                style="left: 100%; top: 0; margin-left: 10px; margin-top: 0; width: max-content;">
+                Wybierz datę zakończenia zbierania zapotrzebowania
+            </div>
+        </div>
+        <button type="submit" name="action" value="start">Wznów planowanie</button>
+    </form>
     {% elif state.status == PlanningStatus.FINISHED%}
     <div class="grid">
         <div>
@@ -136,6 +149,16 @@
             </tr>
         </tfoot>
     </table>
+</article>
+
+<article>
+    <header>Import z pliku</header>
+    <form action="/file_import" method="POST">
+        <div class="grid">
+            <input required type="file" class="secondary" />
+            <button type="submit" class="secondary">Pobierz dane z pliku</button>
+        </div>
+    </form>
 </article>
 
 {% endblock %}

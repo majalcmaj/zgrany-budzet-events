@@ -63,12 +63,17 @@
             <button type="submit" role="accept" class="secondary">Wyślij do akceptacji</button>
         </form>
     </div>
-    <div>
-      <form action="/expenses/import" method="POST">
-        <button type="submit" class="secondary">Pobierz dane z pliku</button>
-      </form>
-
-    </div>
 </div>
+
+<article>
+    <header>Import z pliku</header>
+    <form action="/expenses/import" method="POST">
+        <div class="grid">
+            <input type="file" class="secondary" />
+            <button type="submit" class="secondary">Pobierz dane z pliku</button>
+        </div>
+</form>
+</article>
+
 {% endif %}
 {% endblock %}
