@@ -19,10 +19,13 @@
     <hr />
     <form method="POST" class="grid needs-validation" novalidate>
         <label for="deadline">Ustaw termin <span style="color: red;">*</span></label>
-        <input type="date" id="deadline" name="deadline" value="{{ state.deadline }}" required
-            title="Wybierz datę zakończenia zbierania zapotrzebowania">
-        <div class="invalid-feedback">
-            Wybierz datę zakończenia zbierania zapotrzebowania
+        <div style="position: relative; display: inline-block; width: 100%;">
+            <input type="date" id="deadline" name="deadline" value="{{ state.deadline }}" required
+                title="Wybierz datę zakończenia zbierania zapotrzebowania">
+            <div class="invalid-feedback"
+                style="left: 100%; top: 0; margin-left: 10px; margin-top: 0; width: max-content;">
+                Wybierz datę zakończenia zbierania zapotrzebowania
+            </div>
         </div>
         <button type="submit" name="action" value="start">Rozpocznij planowanie</button>
     </form>
