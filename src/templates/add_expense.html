@@ -3,36 +3,55 @@
 {% block title %}Dodaj Wydatek{% endblock %}
 {% block content %}
 <h1>Dodaj Wydatek</h1>
-<form method="POST">
+
+
+<form method="POST" class="needs-validation" novalidate>
     <label for="chapter">
-        Dział
-        <select id="chapter" name="chapter" hx-get="/fragment/section/chapter" hx-target="#section" required>
+        Dział <span style="color: red;">*</span>
+        <select id="chapter" name="chapter" hx-get="/fragment/section/chapter" hx-target="#section" required
+            title="Wybierz dział klasyfikacji budżetowej, np. 801 - Oświata">
             <option value="" selected disabled>Wybierz dział</option>
             <option value="750">750 - Administracja i bezpieczeństwo</option>
             <option value="801">801 - Edukacja i wychowanie</option>
             <option value="851">851 - Ochrona zdrowia</option>
         </select>
+        <div class="invalid-feedback">
+            Wybierz dział klasyfikacji budżetowej, np. 801 - Oświata
+        </div>
     </label>
 
     <label for="section">
-        Rozdział
-        <select id="section" name="section" required>
+        Rozdział <span style="color: red;">*</span>
+        <select id="section" name="section" required title="Wybierz rozdział odpowiedni dla wybranego działu">
             <option value="" selected disabled>Wybierz rozdział</option>
 
         </select>
+        <div class="invalid-feedback">
+            Wybierz rozdział odpowiedni dla wybranego działu
+        </div>
     </label>
 
     <label for="task_name">
-        Nazwa zadania
-        <input type="text" id="task_name" name="task_name" placeholder="Np. Zakup materiałów biurowych" required>
+        Nazwa zadania <span style="color: red;">*</span>
+        <input type="text" id="task_name" name="task_name" placeholder="Np. Zakup materiałów biurowych" required
+            title="Wpisz krótką, opisową nazwę zadania, np. Remont sali gimnastycznej">
+        <div class="invalid-feedback">
+            Wpisz krótką, opisową nazwę zadania, np. Remont sali gimnastycznej
+        </div>
     </label>
 
     <label for="financial_needs">
-        Potrzeby finansowe (tys. zł)
-        <input type="number" id="financial_needs" name="financial_needs" placeholder="0" min="0" step="1" required>
+        Potrzeby finansowe (tys. zł) <span style="color: red;">*</span>
+        <input type="number" id="financial_needs" name="financial_needs" placeholder="0" min="0" step="1" required
+            title="Podaj kwotę w tysiącach złotych, np. 50 dla 50 000 zł">
+        <div class="invalid-feedback">
+            Podaj kwotę w tysiącach złotych, np. 50 dla 50 000 zł
+        </div>
     </label>
 
     <button type="submit">Dodaj</button>
 </form>
+
+
 <a href="/">Powrót do strony głównej</a>
 {% endblock %}

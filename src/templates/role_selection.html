@@ -47,17 +47,23 @@
 <body>
     <div class="container">
         <h1>Select Your Role</h1>
-        <form action="/set_role" method="POST">
-            <select name="role" required>
-                <option value="" disabled selected>Choose a role...</option>
+
+        <form action="/set_role" method="POST" class="needs-validation" novalidate>
+            <label for="role">Wybierz rolę <span style="color: red;">*</span></label>
+            <select name="role" id="role" required title="Wybierz rolę, aby przejść do odpowiedniego panelu">
+                <option value="" disabled selected>Wybierz rolę...</option>
                 <option value="office1">Office 1</option>
                 <option value="office2">Office 2</option>
                 <option value="chief">Chief</option>
                 <option value="minister">Minister</option>
             </select>
+            <div class="invalid-feedback">
+                Wybierz rolę, aby przejść do odpowiedniego panelu
+            </div>
             <br>
             <button type="submit">Continue</button>
         </form>
+
     </div>
 </body>
 

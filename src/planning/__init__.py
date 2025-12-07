@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from src.auth import auth_required
 from .planning_workflow import PlanningState, PlanningStatus
 # from src.expenses import EXPENSES, EXPENSES_CLOSED # Moved to inside functions to avoid circular import
@@ -16,7 +16,9 @@ def chief_dashboard():
         
         if action == 'start':
             deadline = request.form.get('deadline')
-            if deadline:
+            if not deadline:
+                flash('Termin jest wymagany!', 'error')
+            else:
                 planning_state.set_deadline(deadline)
                 planning_state.start_planning()
         elif action == 'submit_minister':
@@ -31,7 +33,7 @@ def chief_dashboard():
     total_all_needs = 0
     for office in ['office1', 'office2']:
         expenses = EXPENSES.get(office, [])
-        total_needs = sum(e['financial_needs'] for e in expenses if e['financial_needs'] is not None)
+        total_needs = sum(e.financial_needs for e in expenses if e.financial_needs is not None)
         task_count = len(expenses)
         is_submitted = EXPENSES_CLOSED.get(office, False)
         
@@ -66,7 +68,7 @@ def minister_dashboard():
     total_all_needs = 0
     for office in ['office1', 'office2']:
         expenses = EXPENSES.get(office, [])
-        total_needs = sum(e['financial_needs'] for e in expenses if e['financial_needs'] is not None)
+        total_needs = sum(e.financial_needs for e in expenses if e.financial_needs is not None)
         task_count = len(expenses)
         is_submitted = EXPENSES_CLOSED.get(office, False)
         

@@ -9,11 +9,16 @@
     {% if state.status == PlanningStatus.NOT_STARTED %}
     <strong style="color: gray;">PLANOWANIE NIE ROZPOCZĘTE</strong>
     <hr />
-    <form method="POST" class="grid">
-        <label for="deadline">Ustaw termin</label>
-        <input type="date" id="deadline" name="deadline" value="{{ state.deadline }}" required>
+    <form method="POST" class="grid needs-validation" novalidate>
+        <label for="deadline">Ustaw termin <span style="color: red;">*</span></label>
+        <input type="date" id="deadline" name="deadline" value="{{ state.deadline }}" required
+            title="Wybierz datę zakończenia zbierania zapotrzebowania">
+        <div class="invalid-feedback">
+            Wybierz datę zakończenia zbierania zapotrzebowania
+        </div>
         <button type="submit" name="action" value="start">Rozpocznij planowanie</button>
     </form>
+
     {% elif state.status == PlanningStatus.IN_PROGRESS %}
     <strong style="color: rgb(4, 4, 204);">PLANOWANIE W TOKU</strong>
     <p>Termin: <strong>{{ state.deadline if state.deadline else 'Nie ustawiono' }}</strong></p>

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 
 expenses_bp = Blueprint('expenses', __name__)
 
@@ -34,10 +34,18 @@ def add_expense():
         return redirect(url_for('expenses.list_expenses'))
         
     if request.method == 'POST':
+        chapter = request.form.get('chapter')
+        task_name = request.form.get('task_name')
+        financial_needs = request.form.get('financial_needs', type=int)
+        
+        if not chapter or not task_name or financial_needs is None:
+            flash('Wszystkie pola są wymagane!', 'error')
+            return render_template('add_expense.html')
+
         expense = Expense(
-            chapter = request.form.get('chapter'),
-            task_name = request.form.get('task_name'),
-            financial_needs = request.form.get('financial_needs', type=int),
+            chapter = chapter,
+            task_name = task_name,
+            financial_needs = financial_needs,
             role = session['role']
         )
         EXPENSES[session['role']].append(expense)
