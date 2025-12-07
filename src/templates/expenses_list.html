@@ -4,14 +4,13 @@
 
 {% block content %}
 <h1>Lista Wydatków</h1>
-<a href="/">Powrót do strony głównej</a>
 <figure>
     <table role="grid">
         <thead>
             <tr>
                 <th scope="col">Rozdział</th>
                 <th scope="col">Nazwa zadania</th>
-                <th scope="col">Potrzeby finansowe (tys. zł)</th>
+                <th scope="col">Potrzeby finansowe</th>
             </tr>
         </thead>
         <tbody>
@@ -24,7 +23,7 @@
             <tr>
                 <td>{{ expense.chapter }}</td>
                 <td>{{ expense.task_name }}</td>
-                <td>{{ expense.financial_needs }}</td>
+                <td>{{ expense.financial_needs }} tys. zł</td>
             </tr>
             {% endfor %}
             {% endif %}
@@ -33,7 +32,7 @@
         <tfoot>
             <tr>
                 <td colspan="2">Suma</td>
-                <td>{{ expenses_sum }}</td>
+                <td>{{ expenses_sum }} tys. zł</td>
             </tr>
         </tfoot>
         {% endif %}
@@ -66,5 +65,4 @@
     </div>
 </div>
 {% endif %}
-
 {% endblock %}
