@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 
 from flask import Blueprint, render_template, request, redirect, url_for, session
-from src.constants import OFFICES
+<<<<<<< HEAD
+
 expenses_bp = Blueprint('expenses', __name__)
 
 @dataclass
@@ -11,8 +12,21 @@ class Expense:
     financial_needs: int
     role: str
 
-EXPENSES: dict[str, list[Expense]] = {office: [] for office in OFFICES}
+EXPENSES: dict[str, list[Expense]] = {
+    'office1': [],
+    'office2': []
+}
+EXPENSES_CLOSED = {
+    'office1': False,
+    'office2': False
+}
+=======
+from src.constants import OFFICES
+expenses_bp = Blueprint('expenses', __name__)
+
+EXPENSES = {office: [] for office in OFFICES}
 EXPENSES_CLOSED = {office: False for office in OFFICES}
+>>>>>>> a454236 (Added all offices)
 
 from src.planning import planning_state, PlanningStatus
 
