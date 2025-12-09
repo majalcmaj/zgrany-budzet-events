@@ -1,12 +1,5 @@
 # File Upload Application
 
-## Skrócony opis uruchamiania
--zainstaluj poetry (https://python-poetry.org/docs/)
--potem wykonaj komendy
-```
-poetry install
-make
-```
 ## Installation
 
 Install [Poetry](https://python-poetry.org/docs/) first. 
