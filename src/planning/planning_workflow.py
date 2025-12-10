@@ -1,11 +1,13 @@
-
 from enum import Enum
+
+
 class PlanningStatus(Enum):
     NOT_STARTED = "planning_not_started"
     IN_PROGRESS = "planning_in_progress"
     IN_REVIEW = "in_review_by_minister"
     NEEDS_CORRECTION = "needs_correction"
     FINISHED = "finished"
+
 
 class PlanningState:
     def __init__(self):
@@ -21,6 +23,7 @@ class PlanningState:
         self.status = PlanningStatus.IN_PROGRESS
         # Side effect: Reset office approvals
         from expenses import EXPENSES_CLOSED
+
         for office in EXPENSES_CLOSED:
             EXPENSES_CLOSED[office] = False
 
@@ -28,6 +31,7 @@ class PlanningState:
         self.status = PlanningStatus.IN_REVIEW
         # Side effect: Reset office approvals
         from expenses import EXPENSES_CLOSED
+
         for office in EXPENSES_CLOSED:
             EXPENSES_CLOSED[office] = True
 
@@ -38,6 +42,7 @@ class PlanningState:
         self.status = PlanningStatus.NEEDS_CORRECTION
         # Side effect: Reset office approvals
         from expenses import EXPENSES_CLOSED
+
         for office in EXPENSES_CLOSED:
             EXPENSES_CLOSED[office] = False
 

@@ -8,6 +8,7 @@ import json
 import sys
 from pathlib import Path
 
+
 def safe_int(value):
     """Safely convert value to int, return None if not possible."""
     if value is None:
@@ -20,6 +21,7 @@ def safe_int(value):
     except (ValueError, TypeError):
         return None
 
+
 def safe_str(value):
     """Safely convert value to string, return None if empty."""
     if value is None:
@@ -27,50 +29,53 @@ def safe_str(value):
     str_value = str(value).strip()
     return str_value if str_value else None
 
+
 def convert_excel_to_json(excel_path):
     """Convert Excel file to JSON format."""
     # Validate file exists
     if not excel_path.exists():
         print(f"Error: File not found: {excel_path}")
         sys.exit(1)
-    
+
     # Validate file extension
-    if excel_path.suffix.lower() != '.xlsx':
+    if excel_path.suffix.lower() != ".xlsx":
         print(f"Error: File must have .xlsx extension, got: {excel_path.suffix}")
         sys.exit(1)
-    
+
     print(f"Loading Excel file: {excel_path}")
-    
+
     try:
         workbook = openpyxl.load_workbook(excel_path)
     except Exception as e:
         print(f"Error loading Excel file: {e}")
         sys.exit(1)
-    
+
     # Get the "podział limitów" sheet
     if "podział limitów" not in workbook.sheetnames:
         print(f"Error: Sheet 'podział limitów' not found in workbook")
         print(f"Available sheets: {workbook.sheetnames}")
         sys.exit(1)
-    
+
     sheet = workbook["podział limitów"]
-    
+
     expenses = []
-    
+
     for row in sheet.iter_rows(min_row=2, values_only=True):
         # Skip empty rows
         if not any(row):
             continue
-        
+
         # Extract required fields (using 0-based indexing)
         chapter = safe_int(row[7]) if len(row) > 7 else None  # Column H (index 7)
         task_name = safe_str(row[11]) if len(row) > 11 else None  # Column L (index 11)
-        financial_needs = safe_int(row[14]) if len(row) > 14 else None  # Column O (index 14)
-        
+        financial_needs = (
+            safe_int(row[14]) if len(row) > 14 else None
+        )  # Column O (index 14)
+
         # Skip if required fields are missing
         if not chapter or not task_name or not financial_needs or financial_needs <= 0:
             continue
-        
+
         # Extract all additional fields
         expense_data = {
             "chapter": chapter,
@@ -99,27 +104,28 @@ def convert_excel_to_json(excel_path):
             "z_kim_zawarta": safe_str(row[21]) if len(row) > 21 else None,
             "uwagi": safe_str(row[22]) if len(row) > 22 else None,
         }
-        
+
         expenses.append(expense_data)
-    
+
     # Determine output path
     output_path = Path(__file__).parent.parent / "data" / "expenses_template.json"
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     # Save to JSON
-    with open(output_path, 'w', encoding='utf-8') as f:
+    with open(output_path, "w", encoding="utf-8") as f:
         json.dump(expenses, f, ensure_ascii=False, indent=2)
-    
+
     print(f"Successfully converted {len(expenses)} expenses")
     print(f"Saved to: {output_path}")
-    
+
     return len(expenses)
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python convert_expenses.py <path_to_excel_file.xlsx>")
         print("Example: python convert_expenses.py docs/expenses.xlsx")
         sys.exit(1)
-    
+
     excel_file = Path(sys.argv[1])
     convert_excel_to_json(excel_file)

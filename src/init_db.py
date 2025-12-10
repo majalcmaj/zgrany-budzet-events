@@ -1,6 +1,7 @@
 import sqlite3
 import os
 
+
 def init_database():
     """
     Initialize the database by executing create_tables.sql and populate.sql.
@@ -10,19 +11,19 @@ def init_database():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     # Project root (parent of src/)
     project_root = os.path.dirname(base_dir)
-    
+
     # Database path (instance/zgrany_budget.db)
-    instance_dir = os.path.join(project_root, 'instance')
-    db_path = os.path.join(instance_dir, 'zgrany_budget.db')
-    
+    instance_dir = os.path.join(project_root, "instance")
+    db_path = os.path.join(instance_dir, "zgrany_budget.db")
+
     # Ensure instance directory exists
     if not os.path.exists(instance_dir):
         os.makedirs(instance_dir)
         print(f"Created directory: {instance_dir}")
 
     # Paths to SQL files
-    create_tables_path = os.path.join(base_dir, 'sql_scripts', 'create_tables.sql')
-    populate_path = os.path.join(base_dir, 'sql_scripts', 'populate.sql')
+    create_tables_path = os.path.join(base_dir, "sql_scripts", "create_tables.sql")
+    populate_path = os.path.join(base_dir, "sql_scripts", "populate.sql")
 
     # Check if SQL files exist
     if not os.path.exists(create_tables_path):
@@ -36,27 +37,28 @@ def init_database():
         # Connect to SQLite database
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-        
+
         print(f"Connected to database at: {db_path}")
 
         print("Creating tables...")
-        with open(create_tables_path, 'r', encoding='utf-8') as f:
+        with open(create_tables_path, "r", encoding="utf-8") as f:
             create_sql = f.read()
             cursor.executescript(create_sql)
-        
+
         print("Populating database...")
-        with open(populate_path, 'r', encoding='utf-8') as f:
+        with open(populate_path, "r", encoding="utf-8") as f:
             populate_sql = f.read()
             cursor.executescript(populate_sql)
-        
+
         conn.commit()
         print("Database initialized successfully!")
-        
+
     except sqlite3.Error as e:
         print(f"An error occurred: {e}")
     finally:
         if conn:
             conn.close()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     init_database()

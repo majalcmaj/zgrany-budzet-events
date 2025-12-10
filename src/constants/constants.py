@@ -1,37 +1,54 @@
-OFFICE1 = 'Jednostka A'
-OFFICE1_GENITIVE = 'Jednostki A'
-OFFICE2 = 'Jednostka B'
-OFFICE2_GENITIVE = 'Jednostki B'
-OFFICE3 = 'Jednostka C'
-OFFICE3_GENITIVE = 'Jednostki C'
-OFFICE4 = 'Jednostka D'
-OFFICE4_GENITIVE = 'Jednostki D'
-OFFICE5 = 'Jednostka E'
-OFFICE5_GENITIVE = 'Jednostki E'
-OFFICE6 = 'Jednostka F'
-OFFICE6_GENITIVE = 'Jednostki F'
-OFFICE7 = 'Jednostka G'
-OFFICE7_GENITIVE = 'Jednostki G'
-OFFICE8 = 'Jednostka H'
-OFFICE8_GENITIVE = 'Jednostki H'
-OFFICE9 = 'Jednostka I'
-OFFICE9_GENITIVE = 'Jednostki I'
-OFFICE10 = 'Jednostka J'
-OFFICE10_GENITIVE = 'Jednostki J'
-OFFICE11 = 'Jednostka K'
-OFFICE11_GENITIVE = 'Jednostki K'
-OFFICE12 = 'Jednostka L'
-OFFICE12_GENITIVE = 'Jednostki L'
-OFFICE13 = 'Jednostka M'
-OFFICE13_GENITIVE = 'Jednostki M'
-OFFICE14 = 'Jednostka N'
-OFFICE14_GENITIVE = 'Jednostki N'
-OFFICE15 = 'Jednostka O'
-OFFICE15_GENITIVE = 'Jednostki O'
-OFFICE16 = 'Jednostka P'
-OFFICE16_GENITIVE = 'Jednostki P'
+OFFICE1 = "Jednostka A"
+OFFICE1_GENITIVE = "Jednostki A"
+OFFICE2 = "Jednostka B"
+OFFICE2_GENITIVE = "Jednostki B"
+OFFICE3 = "Jednostka C"
+OFFICE3_GENITIVE = "Jednostki C"
+OFFICE4 = "Jednostka D"
+OFFICE4_GENITIVE = "Jednostki D"
+OFFICE5 = "Jednostka E"
+OFFICE5_GENITIVE = "Jednostki E"
+OFFICE6 = "Jednostka F"
+OFFICE6_GENITIVE = "Jednostki F"
+OFFICE7 = "Jednostka G"
+OFFICE7_GENITIVE = "Jednostki G"
+OFFICE8 = "Jednostka H"
+OFFICE8_GENITIVE = "Jednostki H"
+OFFICE9 = "Jednostka I"
+OFFICE9_GENITIVE = "Jednostki I"
+OFFICE10 = "Jednostka J"
+OFFICE10_GENITIVE = "Jednostki J"
+OFFICE11 = "Jednostka K"
+OFFICE11_GENITIVE = "Jednostki K"
+OFFICE12 = "Jednostka L"
+OFFICE12_GENITIVE = "Jednostki L"
+OFFICE13 = "Jednostka M"
+OFFICE13_GENITIVE = "Jednostki M"
+OFFICE14 = "Jednostka N"
+OFFICE14_GENITIVE = "Jednostki N"
+OFFICE15 = "Jednostka O"
+OFFICE15_GENITIVE = "Jednostki O"
+OFFICE16 = "Jednostka P"
+OFFICE16_GENITIVE = "Jednostki P"
 
-OFFICES = [OFFICE1, OFFICE2, OFFICE3, OFFICE4, OFFICE5, OFFICE6, OFFICE7, OFFICE8, OFFICE9, OFFICE10, OFFICE11, OFFICE12, OFFICE13, OFFICE14, OFFICE15, OFFICE16]
+OFFICES = [
+    OFFICE1,
+    OFFICE2,
+    OFFICE3,
+    OFFICE4,
+    OFFICE5,
+    OFFICE6,
+    OFFICE7,
+    OFFICE8,
+    OFFICE9,
+    OFFICE10,
+    OFFICE11,
+    OFFICE12,
+    OFFICE13,
+    OFFICE14,
+    OFFICE15,
+    OFFICE16,
+]
 
 OFFICES_GENITIVE = {
     OFFICE1: OFFICE1_GENITIVE,
@@ -52,6 +69,6 @@ OFFICES_GENITIVE = {
     OFFICE16: OFFICE16_GENITIVE,
 }
 
-CHIEF = 'Administracja'
-OFFICES_NAME = 'Jednostki'
-OFFICES_SINGLE = 'Jednostka'
+CHIEF = "Administracja"
+OFFICES_NAME = "Jednostki"
+OFFICES_SINGLE = "Jednostka"
