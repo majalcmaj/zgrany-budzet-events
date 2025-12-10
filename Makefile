@@ -7,6 +7,9 @@ run:
 lint:
 	poetry run black --check src/
 
+lint-fix:
+	poetry run black src/
+
 test:
 	poetry run pytest
 
