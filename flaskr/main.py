@@ -5,22 +5,22 @@ from flask import (
     render_template,
     request,
 )
+from expenses import expenses_bp
 from extensions import db
 from auth import auth_required
 from planning import planning_bp
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="web/templates", static_folder="web/static")
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size
 app.config["UPLOAD_FOLDER"] = Path(__file__).parent / "static" / "uploads"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///zgrany_budget.db"
 app.secret_key = "super_secret_key_for_demo_only"
 
-
 db.init_app(app)
 
-from expenses import expenses_bp
 
 app.register_blueprint(expenses_bp, url_prefix="/expenses")
+app.register_blueprint(planning_bp, url_prefix="/")
 
 
 # Ensure upload folder exists
@@ -52,9 +52,6 @@ def get_uploaded_files():
     # Sort by upload time (newest first)
     files.sort(key=lambda x: x["uploaded_at"], reverse=True)
     return files
-
-
-app.register_blueprint(planning_bp, url_prefix="/")
 
 
 @app.route("/health")

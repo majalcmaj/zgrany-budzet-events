@@ -1,7 +1,7 @@
 export PYTHONPATH=flaskr
 
 debug:
-	poetry run python -m flask --app devserver run --debug
+	poetry run python -m flask --app main run --debug
 
 run:
 	gunicorn --bind 0.0.0.0:5000 --workers 1 --threads 8 flaskr.main:app
