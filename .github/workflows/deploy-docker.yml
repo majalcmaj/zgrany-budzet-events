@@ -22,17 +22,20 @@ jobs:
     - name: Setup python
       uses: actions/setup-python@v5
       with:
-        python-version: 3.12
+        python-version: 3.13
     
-    - name: Run image
+    - name: Install dependencies
+      run: |
+        poetry install
+
+    - name: Run virtual env
       uses: abatilo/actions-poetry@v3
       with:
         poetry-version: 2.2.1
     
     - name: Install dependencies
       run: |
-        poetry install
-        python -m playwright install
+        python -m playwright install chromium-headless-shell
     
     - name: Run lint and tests
       run: |
