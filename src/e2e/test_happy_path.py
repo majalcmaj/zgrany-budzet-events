@@ -31,7 +31,7 @@ def test_budget_planning_flow(browser: Browser, base_url: str):
     print("Step 2: Chief starts planning")
     # Login as Chief
     page.goto(f"{base_url}/")
-    page.click("div.role-card:has-text('Dyrektor Generalny') button")
+    page.click("div.role-card:has-text('Administracja') button")
     
     # Check status "Planning Not Started"
     expect(page.locator("text=PLANOWANIE NIE ROZPOCZĘTE")).to_be_visible()
@@ -40,7 +40,7 @@ def test_budget_planning_flow(browser: Browser, base_url: str):
     expect(page.locator("text=Komentarz od Ministra: Proszę o oszczędne planowanie.")).to_be_visible()
     
     # Set deadline and click "Start Planning"
-    page.fill("#deadline", "2025-12-31")
+    page.fill(".date-input", "2025-12-31")
     page.click("button[value='start']")
     
     # Verify status changes to "Planning In Progress"
@@ -51,7 +51,7 @@ def test_budget_planning_flow(browser: Browser, base_url: str):
     # Login as an Office (e.g., "Jednostka A")
     page.goto(f"{base_url}/")
     page.select_option("select[name='role']", "Jednostka A")
-    page.click("div.role-card:has-text('Jednostki') button")
+    page.click("div.role-card:has(select[name='role']) button")
     
     # Add 1st expense
     page.click("text=Dodaj nowy wydatek")
@@ -106,11 +106,11 @@ def test_budget_planning_flow(browser: Browser, base_url: str):
     print("Step 4: Chief submits for review")
     # Login as Chief
     page.goto(f"{base_url}/")
-    page.click("div.role-card:has-text('Dyrektor Generalny') button")
+    page.click("div.role-card:has-text('Administracja') button")
     
     # Verify Office status is "Submitted"
-    # We need to find the row for Biuro Administracyjne and check for "Zatwierdzony"
-    row = page.locator("tr:has-text('Biuro Administracyjne')")
+    # We need to find the row for Jednostka A and check for "Zatwierdzony"
+    row = page.locator("tr:has-text('Jednostka A')")
     expect(row.locator("text=Zatwierdzony")).to_be_visible()
     
     # Verify total sum
@@ -145,7 +145,7 @@ def test_budget_planning_flow(browser: Browser, base_url: str):
     print("Step 6: Chief restarts planning")
     # Login as Chief
     page.goto(f"{base_url}/")
-    page.click("div.role-card:has-text('Dyrektor Generalny') button")
+    page.click("div.role-card:has-text('Administracja') button")
     
     # Verify status is "Needs Correction"
     expect(page.locator("text=POTRZEBA KOREKTY")).to_be_visible()
@@ -154,7 +154,7 @@ def test_budget_planning_flow(browser: Browser, base_url: str):
     expect(page.locator("text=Komentarz od Ministra: Proszę zmniejszyć wydatki o 50 tys.")).to_be_visible()
     
     # Set new deadline and click "Resume Planning"
-    page.fill("#deadline", "2026-01-15")
+    page.fill(".date-input", "2026-01-15")
     page.click("button[value='start']")
     
     # Verify status is "Planning In Progress"
@@ -164,8 +164,8 @@ def test_budget_planning_flow(browser: Browser, base_url: str):
     print("Step 7: Office adds expense")
     # Login as Office
     page.goto(f"{base_url}/")
-    page.select_option("select[name='role']", "Biuro Administracyjne")
-    page.click("div.role-card:has-text('Biura') button")
+    page.select_option("select[name='role']", "Jednostka A")
+    page.click("div.role-card:has(select[name='role']) button")
     
     # Verify status allows editing
     expect(page.locator("text=Dodaj nowy wydatek")).to_be_visible()
@@ -194,7 +194,7 @@ def test_budget_planning_flow(browser: Browser, base_url: str):
     print("Step 8: Chief submits for review again")
     # Login as Chief
     page.goto(f"{base_url}/")
-    page.click("div.role-card:has-text('Dyrektor Generalny') button")
+    page.click("div.role-card:has-text('Administracja') button")
     
     # Submit to Minister
     page.click("button[value='submit_minister']")
