@@ -19,4 +19,4 @@ test-headed:
 	poetry run pytest --headed
 
 init-db:
-	poetry run python flaskr/init_db.py
+	poetry run python flaskr/scripts/init_db.py

@@ -22,8 +22,8 @@ def init_database():
         print(f"Created directory: {instance_dir}")
 
     # Paths to SQL files
-    create_tables_path = os.path.join(base_dir, "sql_scripts", "create_tables.sql")
-    populate_path = os.path.join(base_dir, "sql_scripts", "populate.sql")
+    create_tables_path = os.path.join(base_dir, "sql", "create_tables.sql")
+    populate_path = os.path.join(base_dir, "sql", "populate.sql")
 
     # Check if SQL files exist
     if not os.path.exists(create_tables_path):
