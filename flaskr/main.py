@@ -8,7 +8,6 @@ from flask import (
 from extensions import db
 from auth import auth_required
 from planning import planning_bp
-from schema.schema import Section
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size
