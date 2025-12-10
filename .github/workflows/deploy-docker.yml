@@ -24,18 +24,15 @@ jobs:
       with:
         python-version: 3.13
     
-    - name: Install dependencies
-      run: |
-        poetry install
-
-    - name: Run virtual env
+    - name: Setup Poetry
       uses: abatilo/actions-poetry@v3
       with:
         poetry-version: 2.2.1
     
     - name: Install dependencies
       run: |
-        python -m playwright install chromium-headless-shell
+        poetry install
+        poetry run playwright install chromium-headless-shell
     
     - name: Run lint and tests
       run: |
