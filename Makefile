@@ -5,7 +5,7 @@ run:
 	cd src && poetry run python -m flask --app main run
 
 lint:
-	poetry run black src/
+	poetry run black --check src/
 
 test:
 	poetry run pytest
