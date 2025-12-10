@@ -5,7 +5,7 @@ from flask import (
     render_template,
     request,
 )
-from expenses import expenses_bp
+from planning.expenses import expenses_bp
 from db import db
 from auth import auth_required
 from planning import planning_bp

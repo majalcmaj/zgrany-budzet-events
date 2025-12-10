@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from auth import auth_required
-from chief import chief_bp
+from .chief import chief_bp
 from .planning_workflow import PlanningState, PlanningStatus
 from constants import OFFICES, CHIEF, OFFICES_NAME, OFFICES_SINGLE
 
@@ -16,7 +16,7 @@ planning_state = PlanningState()
 @planning_bp.route("/minister_dashboard", methods=["GET", "POST"])
 @auth_required
 def minister_dashboard():
-    from planning.expenses import EXPENSES, EXPENSES_CLOSED
+    from .expenses import EXPENSES, EXPENSES_CLOSED
 
     if request.method == "POST":
         action = request.form.get("action")
@@ -78,7 +78,7 @@ def set_role():
     if role:
         session["role"] = role
         if role == CHIEF:
-            return redirect(url_for("planning.chief_dashboard"))
+            return redirect(url_for("planning.chief.chief_dashboard"))
         elif role in OFFICES:
             return redirect(url_for("expenses.list_expenses"))
         elif role == "minister":
@@ -89,12 +89,12 @@ def set_role():
 @planning_bp.route("/file_import", methods=["POST"])
 @auth_required
 def import_file():
-    from expenses import EXPENSES, Expense
+    from .expenses import EXPENSES, Expense
     from random import randrange
-    from expenses import create_expenses
+    from .expenses import create_expenses
 
     for role, expense_list in EXPENSES.items():
         for new_expense in create_expenses(role, randrange(1, 40)):
             expense_list.append(new_expense)
 
-    return redirect(url_for("planning.chief_dashboard"))
+    return redirect(url_for("planning.chief.chief_dashboard"))

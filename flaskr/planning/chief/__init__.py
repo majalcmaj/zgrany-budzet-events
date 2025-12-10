@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, redirect, url_for, flash
-from flask_login import auth_required
-from planning import planning_state
-from planning.constants import OFFICES
+from auth import auth_required
+
+from constants import OFFICES
 from planning.planning_workflow import PlanningState, PlanningStatus
 
 chief_bp = Blueprint("chief", __name__)
@@ -10,6 +10,8 @@ chief_bp = Blueprint("chief", __name__)
 @chief_bp.route("/chief_dashboard", methods=["GET", "POST"])
 @auth_required
 def chief_dashboard():
+    from planning import planning_state
+
     if request.method == "POST":
         action = request.form.get("action")
 
@@ -25,9 +27,9 @@ def chief_dashboard():
         elif action == "reopen":
             planning_state.reopen()
 
-        return redirect(url_for("planning.chief_dashboard"))
+        return redirect(url_for("planning.chief.chief_dashboard"))
 
-    from expenses import EXPENSES, EXPENSES_CLOSED
+    from ..expenses import EXPENSES, EXPENSES_CLOSED
 
     offices_status = []
     total_all_needs = 0

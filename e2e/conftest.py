@@ -5,7 +5,7 @@ import time
 from werkzeug.serving import make_server
 from main import app, db
 from planning.planning_workflow import PlanningState, PlanningStatus
-from expenses import EXPENSES, EXPENSES_CLOSED
+from planning.expenses import EXPENSES, EXPENSES_CLOSED
 from constants import OFFICES
 
 
