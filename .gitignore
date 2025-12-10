@@ -210,3 +210,5 @@ src/static/uploads/
 # Excel
 *.xlsx
 *.pdf
+
+test_output.txt

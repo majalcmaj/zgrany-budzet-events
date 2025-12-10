@@ -8,7 +8,10 @@ lint:
 	poetry run black src/
 
 test:
-	cd src && poetry run pytest
+	poetry run pytest
+
+test-headed:
+	poetry run pytest --headed
 
 init-db:
 	poetry run python src/init_db.py

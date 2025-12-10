@@ -16,6 +16,9 @@ dependencies = [
 [tool.poetry]
 package-mode = false
 
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
@@ -23,5 +26,7 @@ build-backend = "poetry.core.masonry.api"
 [dependency-groups]
 dev = [
     "black (>=25.11.0,<26.0.0)",
-    "pytest (>=9.0.1,<10.0.0)"
+    "pytest (>=9.0.1,<10.0.0)",
+    "pytest-playwright (>=0.7.2,<0.8.0)",
+    "playwright (>=1.57.0,<2.0.0)"
 ]
