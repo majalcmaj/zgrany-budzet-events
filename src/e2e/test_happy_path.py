@@ -57,7 +57,7 @@ def test_budget_planning_flow(browser: Browser, base_url: str):
     page.click("text=Dodaj nowy wydatek")
     
     # Wait for classification data to load
-    page.wait_for_selector("#dzial option[value='750']")
+    page.wait_for_selector("#dzial option[value='750']", state="attached")
     
     page.select_option("#dzial", "750")
     page.select_option("#chapter", "75001")
