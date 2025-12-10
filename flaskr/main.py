@@ -6,7 +6,7 @@ from flask import (
     request,
 )
 from expenses import expenses_bp
-from extensions import db
+from db import db
 from auth import auth_required
 from planning import planning_bp
 
