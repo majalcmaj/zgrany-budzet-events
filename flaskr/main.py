@@ -1,20 +1,14 @@
-from schema.schema import Section
 from datetime import datetime
 from pathlib import Path
 from flask import (
     Flask,
     render_template,
     request,
-    send_file,
-    jsonify,
-    redirect,
-    url_for,
-    Response,
 )
-from werkzeug.utils import secure_filename
 from extensions import db
 from auth import auth_required
 from planning import planning_bp
+from schema.schema import Section
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size
@@ -60,8 +54,6 @@ def get_uploaded_files():
     files.sort(key=lambda x: x["uploaded_at"], reverse=True)
     return files
 
-
-from planning import planning_bp
 
 app.register_blueprint(planning_bp, url_prefix="/")
 

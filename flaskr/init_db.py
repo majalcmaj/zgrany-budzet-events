@@ -7,9 +7,9 @@ def init_database():
     Initialize the database by executing create_tables.sql and populate.sql.
     This script is standalone and does not depend on the Flask app.
     """
-    # Base directory (src/)
+    # Base directory (flaskr/)
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    # Project root (parent of src/)
+    # Project root (parent of flaskr/)
     project_root = os.path.dirname(base_dir)
 
     # Database path (instance/zgrany_budget.db)

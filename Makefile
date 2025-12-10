@@ -1,14 +1,16 @@
+export PYTHONPATH=flaskr
+
 debug:
-	cd flaskr && poetry run python -m flask --app main run --debug
+	poetry run python -m flask --app main run --debug
 
 run:
-	cd flaskr && poetry run python -m flask --app main run
+	poetry run python -m flask --app main run
 
 lint:
-	poetry run black --check flaskr/
+	poetry run black --check .
 
 lint-fix:
-	poetry run black flaskr/
+	poetry run black .
 
 test:
 	poetry run pytest
