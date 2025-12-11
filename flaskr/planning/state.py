@@ -1,5 +1,5 @@
-from planning.types import Expense, PlanningStatus
-from constants import OFFICES
+from .types import Expense, PlanningStatus
+from ..constants import OFFICES
 
 EXPENSES: dict[str, list[Expense]] = {office: [] for office in OFFICES}
 EXPENSES_CLOSED = {office: False for office in OFFICES}

@@ -1,12 +1,12 @@
-from auth import auth_required
+from ...auth import auth_required
 import json
 import random
 from pathlib import Path
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from constants import OFFICES, OFFICES_GENITIVE
-from planning.state import planning_state, PlanningStatus, EXPENSES, EXPENSES_CLOSED
-from planning.types import Expense
+from ...constants import OFFICES, OFFICES_GENITIVE
+from ..state import planning_state, PlanningStatus, EXPENSES, EXPENSES_CLOSED
+from ..types import Expense
 
 expenses_bp = Blueprint("expenses", __name__)
 

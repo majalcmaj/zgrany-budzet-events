@@ -3,9 +3,9 @@ import threading
 import time
 
 from werkzeug.serving import make_server
-from main import app, db
-from planning.state import planning_state, PlanningStatus, EXPENSES, EXPENSES_CLOSED
-from constants import OFFICES
+from flaskr.main import app, db
+from flaskr.planning.state import planning_state, PlanningStatus, EXPENSES, EXPENSES_CLOSED
+from flaskr.constants import OFFICES
 
 
 class ServerThread(threading.Thread):

@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from auth import auth_required
+from ..auth import auth_required
 from .chief import chief_bp
 from .minister import minister_bp
-from constants import OFFICES, CHIEF, OFFICES_NAME, OFFICES_SINGLE
+from ..constants import OFFICES, CHIEF, OFFICES_NAME, OFFICES_SINGLE
 
 planning_bp = Blueprint("planning", __name__)
 planning_bp.register_blueprint(chief_bp, url_prefix="/chief")

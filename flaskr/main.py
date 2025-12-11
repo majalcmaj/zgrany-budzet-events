@@ -5,10 +5,10 @@ from flask import (
     render_template,
     request,
 )
-from planning.expenses import expenses_bp
-from db import db
-from auth import auth_required
-from planning import planning_bp
+from .planning.expenses import expenses_bp
+from .db import db, Section
+from .auth import auth_required
+from .planning import planning_bp
 
 app = Flask(__name__, template_folder="web/templates", static_folder="web/static")
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size

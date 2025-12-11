@@ -1,8 +1,8 @@
 from flask import Blueprint, request, render_template, redirect, url_for, flash
-from auth import auth_required
+from ...auth import auth_required
 
-from constants import OFFICES
-from planning.state import planning_state, PlanningStatus, EXPENSES, EXPENSES_CLOSED
+from ...constants import OFFICES
+from ..state import planning_state, PlanningStatus, EXPENSES, EXPENSES_CLOSED
 
 chief_bp = Blueprint("chief", __name__)
 
