@@ -1,3 +1,5 @@
+MAKEFLAGS += --always-make
+
 debug:
 	poetry run python -m flask --app flaskr.main run --debug
 
