@@ -1,9 +1,15 @@
 from .types import Expense, PlanningStatus
 from ..constants import OFFICES
-from ..events import EventStore, events
+from ..events import events
+from dataclasses import dataclass
 
 EXPENSES: dict[str, list[Expense]] = {office: [] for office in OFFICES}
 EXPENSES_CLOSED = {office: False for office in OFFICES}
+
+
+@dataclass
+class _PlanningStartedEvent:
+    deadline: str
 
 
 class PlanningState:
@@ -14,14 +20,24 @@ class PlanningState:
         self.status = PlanningStatus.NOT_STARTED
         self.correction_comment = None
         self.planning_year = 2025
+        self.event_store.add_subscriber(self.handle_planning_started)
 
-    def set_deadline(self, date_str):
-        self.deadline = date_str
-
-    def start_planning(self):
+    def start_planning(self, deadline: str):
+        if self.status not in (
+            PlanningStatus.NOT_STARTED,
+            PlanningStatus.NEEDS_CORRECTION,
+        ):
+            raise ValueError(
+                f"Planning is in state {self.status}, cannot start unless it is in state NOT_STARTED or NEEDS_CORRECTION"
+            )
+        self.event_store.emit(_PlanningStartedEvent(deadline))
         self.status = PlanningStatus.IN_PROGRESS
-        # Side effect: Reset office approvals
 
+    def handle_planning_started(self, event: _PlanningStartedEvent):
+        self.deadline = event.deadline
+        self.status = PlanningStatus.IN_PROGRESS
+
+        # Side effect: Reset office approvals - shouls be refactored?
         for office in EXPENSES_CLOSED:
             EXPENSES_CLOSED[office] = False
 

@@ -18,7 +18,6 @@ def dashboard():
             if not deadline:
                 flash("Termin jest wymagany!", "error")
             else:
-                planning_state.set_deadline(deadline)
                 planning_state.start_planning()
         elif action == "submit_minister":
             planning_state.submit_to_minister()

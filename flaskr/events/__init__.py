@@ -13,7 +13,7 @@ def init_event_extension(app):
     app.extensions["event-extension"] = EventStore()
 
 
-def events():
+def events() -> EventStore:
     if "event-extension" not in current_app.extensions:
         raise ValueError("EventExtension is not registered")
     return current_app.extensions["event-extension"]
