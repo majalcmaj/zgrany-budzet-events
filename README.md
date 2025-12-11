@@ -40,5 +40,5 @@ make init-db
 
 2. **Run the container:**
    ```bash
-   docker run -d -p 5000:5000 --name budget -v $(pwd)/uploads:/app/src/static/uploads budget
+   docker run -d -p 5000:5000 --name budget -v $(pwd)/uploads:/app/flaskr/static/uploads budget
    ```
