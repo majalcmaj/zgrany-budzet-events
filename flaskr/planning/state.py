@@ -1,12 +1,8 @@
-from enum import Enum
+from planning.types import Expense, PlanningStatus
+from constants import OFFICES
 
-
-class PlanningStatus(Enum):
-    NOT_STARTED = "planning_not_started"
-    IN_PROGRESS = "planning_in_progress"
-    IN_REVIEW = "in_review_by_minister"
-    NEEDS_CORRECTION = "needs_correction"
-    FINISHED = "finished"
+EXPENSES: dict[str, list[Expense]] = {office: [] for office in OFFICES}
+EXPENSES_CLOSED = {office: False for office in OFFICES}
 
 
 class PlanningState:
@@ -22,7 +18,6 @@ class PlanningState:
     def start_planning(self):
         self.status = PlanningStatus.IN_PROGRESS
         # Side effect: Reset office approvals
-        from .expenses import EXPENSES_CLOSED
 
         for office in EXPENSES_CLOSED:
             EXPENSES_CLOSED[office] = False
@@ -30,7 +25,6 @@ class PlanningState:
     def submit_to_minister(self):
         self.status = PlanningStatus.IN_REVIEW
         # Side effect: Reset office approvals
-        from .expenses import EXPENSES_CLOSED
 
         for office in EXPENSES_CLOSED:
             EXPENSES_CLOSED[office] = True
@@ -41,8 +35,6 @@ class PlanningState:
             return
         self.status = PlanningStatus.NEEDS_CORRECTION
         # Side effect: Reset office approvals
-        from .expenses import EXPENSES_CLOSED
-
         for office in EXPENSES_CLOSED:
             EXPENSES_CLOSED[office] = False
 
@@ -53,3 +45,6 @@ class PlanningState:
 
     def reopen(self):
         self.status = PlanningStatus.NOT_STARTED
+
+
+planning_state = PlanningState()

@@ -1,54 +1,21 @@
 from auth import auth_required
-from dataclasses import dataclass
-from typing import Optional
+import json
+import random
+from pathlib import Path
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from constants import OFFICES, OFFICES_GENITIVE
+from planning.state import planning_state, PlanningStatus, EXPENSES, EXPENSES_CLOSED
+from planning.types import Expense
 
 expenses_bp = Blueprint("expenses", __name__)
-
-
-@dataclass
-class Expense:
-    chapter: int
-    task_name: str
-    financial_needs: int
-    role: str
-    # Additional fields from Excel
-    czesc: Optional[int] = None  # część
-    departament: Optional[str] = None  # departament
-    rodzaj_projektu: Optional[str] = None  # rodzaj projektu
-    opis_projektu: Optional[str] = None  # opis projektu
-    data_zlozenia: Optional[str] = None  # DATA ZŁOŻENIA WNIOSKU
-    program_operacyjny: Optional[str] = None  # PROGRAM OPERACYJNY/INICJATYWA
-    termin_realizacji: Optional[str] = None  # termin realizacji
-    zrodlo_fin: Optional[int] = None  # źródło fin.
-    bz: Optional[str] = None  # bz
-    beneficjent: Optional[str] = None  # Beneficjent
-    szczegolowe_uzasadnienie: Optional[str] = None  # Szczegółowe uzasadnienie
-    budget_2025: Optional[int] = None  # 2025
-    budget_2026: Optional[int] = None  # 2026
-    budget_2027: Optional[int] = None  # 2027
-    budget_2028: Optional[int] = None  # 2028
-    budget_2029: Optional[int] = None  # 2029
-    etap_dzialan: Optional[str] = None  # etap działań
-    umowy: Optional[str] = None  # umowy
-    nr_umowy: Optional[str] = None  # nr umowy
-    z_kim_zawarta: Optional[str] = None  # z kim zawarta
-    uwagi: Optional[str] = None  # Uwagi
-
-
-EXPENSES: dict[str, list[Expense]] = {office: [] for office in OFFICES}
-EXPENSES_CLOSED = {office: False for office in OFFICES}
-
-from planning import planning_state, PlanningStatus
 
 
 @expenses_bp.route("/api/classifications", methods=["GET"])
 @auth_required
 def get_classifications():
     """Get działów and rozdziałów classification data."""
-    data_dir = Path(__file__).parent.parent / "data"
+    data_dir = Path(__file__).parent.parent.parent / "data"
 
     # Load działów
     with open(data_dir / "dzialy.json", "r", encoding="utf-8") as f:
@@ -170,11 +137,6 @@ def import_data():
         EXPENSES[role].append(e)
 
     return redirect(url_for("expenses.list_expenses"))
-
-
-import json
-import random
-from pathlib import Path
 
 
 def create_expenses(role: str, n: int):

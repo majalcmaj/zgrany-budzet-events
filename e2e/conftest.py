@@ -4,8 +4,7 @@ import time
 
 from werkzeug.serving import make_server
 from main import app, db
-from planning.planning_workflow import PlanningState, PlanningStatus
-from planning.expenses import EXPENSES, EXPENSES_CLOSED
+from planning.state import planning_state, PlanningStatus, EXPENSES, EXPENSES_CLOSED
 from constants import OFFICES
 
 
@@ -53,10 +52,6 @@ def server():
 
 @pytest.fixture(autouse=True)
 def reset_state():
-    # Reset application state before each test
-    from planning import planning_state
-
-    # Reset planning state
     planning_state.status = PlanningStatus.NOT_STARTED
     planning_state.deadline = None
     planning_state.correction_comment = None

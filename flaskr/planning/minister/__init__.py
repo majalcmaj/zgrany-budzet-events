@@ -1,32 +1,22 @@
-from flask import Blueprint, request, render_template, redirect, url_for, flash
+from flask import Blueprint, request, render_template, redirect, url_for, session, flash
 from auth import auth_required
-
-from constants import OFFICES
 from planning.state import planning_state, PlanningStatus, EXPENSES, EXPENSES_CLOSED
+from constants import OFFICES
 
-chief_bp = Blueprint("chief", __name__)
+minister_bp = Blueprint("minister", __name__)
 
 
-@chief_bp.route("/dashboard", methods=["GET", "POST"])
+@minister_bp.route("/dashboard", methods=["GET", "POST"])
 @auth_required
 def dashboard():
-
     if request.method == "POST":
         action = request.form.get("action")
-
-        if action == "start":
-            deadline = request.form.get("deadline")
-            if not deadline:
-                flash("Termin jest wymagany!", "error")
-            else:
-                planning_state.set_deadline(deadline)
-                planning_state.start_planning()
-        elif action == "submit_minister":
-            planning_state.submit_to_minister()
-        elif action == "reopen":
-            planning_state.reopen()
-
-        return redirect(url_for("planning.chief.dashboard"))
+        if action == "request_correction":
+            comment = request.form.get("comment")
+            planning_state.request_correction(comment)
+        elif action == "approve":
+            planning_state.approve()
+        return redirect(url_for("planning.minister.dashboard"))
 
     offices_status = []
     total_all_needs = 0
@@ -51,7 +41,7 @@ def dashboard():
         )
 
     return render_template(
-        "chief_dashboard.html",
+        "minister_dashboard.html",
         state=planning_state,
         offices_status=offices_status,
         total_all_needs=total_all_needs,

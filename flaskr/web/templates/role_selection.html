@@ -119,7 +119,7 @@
                     {{ icons.icon_role_chief() }}
                 </div>
                 <div class="role-title">{{ CHIEF }}</div>
-                <form action="/set_role" method="POST" class="role-form">
+                <form action="/role" method="POST" class="role-form">
                     <input type="hidden" name="role" value="{{ CHIEF }}">
                     <button type="submit">Wybierz</button>
                 </form>
@@ -131,7 +131,7 @@
                     {{ icons.icon_role_office() }}
                 </div>
                 <div class="role-title">{{ OFFICES_NAME }}</div>
-                <form action="/set_role" method="POST" class="role-form">
+                <form action="/role" method="POST" class="role-form">
                     <select name="role" required>
                         <option value="" disabled selected>Wybierz {{ OFFICES_SINGLE }}...</option>
                         {% for office in OFFICES %}
@@ -148,7 +148,7 @@
                     {{ icons.icon_role_minister() }}
                 </div>
                 <div class="role-title">Ministerstwo</div>
-                <form action="/set_role" method="POST" class="role-form">
+                <form action="/role" method="POST" class="role-form">
                     <input type="hidden" name="role" value="minister">
                     <button type="submit">Wybierz</button>
                 </form>
