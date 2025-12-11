@@ -11,29 +11,24 @@ from planning.types import Expense
 expenses_bp = Blueprint("expenses", __name__)
 
 
-@expenses_bp.route("/api/classifications", methods=["GET"])
+@expenses_bp.route("/")
 @auth_required
-def get_classifications():
-    """Get działów and rozdziałów classification data."""
-    data_dir = Path(__file__).parent.parent.parent / "data"
-
-    # Load działów
-    with open(data_dir / "dzialy.json", "r", encoding="utf-8") as f:
-        dzialy = json.load(f)
-
-    # Load rozdziały
-    with open(data_dir / "rozdzialy.json", "r", encoding="utf-8") as f:
-        rozdzialy = json.load(f)
-
-    # Load dział-rozdział mapping
-    with open(data_dir / "dzial_rozdzial_mapping.json", "r", encoding="utf-8") as f:
-        dzial_rozdzial_mapping = json.load(f)
-
-    return {
-        "dzialy": dzialy,
-        "rozdzialy": rozdzialy,
-        "dzial_rozdzial_mapping": dzial_rozdzial_mapping,
-    }
+def list_expenses():
+    if "role" not in session or session["role"] not in OFFICES:
+        return redirect(url_for("planning.index"))
+    current_expenses = EXPENSES[session["role"]]
+    expenses_sum = sum(
+        e.financial_needs for e in current_expenses if e.financial_needs is not None
+    )
+    return render_template(
+        "expenses_list.html",
+        expenses=current_expenses,
+        closed=EXPENSES_CLOSED[session["role"]],
+        state=planning_state,
+        PlanningStatus=PlanningStatus,
+        expenses_sum=expenses_sum,
+        offices_genitive=OFFICES_GENITIVE,
+    )
 
 
 @expenses_bp.route("/add", methods=["GET", "POST"])
@@ -92,6 +87,31 @@ def add_expense():
     return render_template("add_expense.html")
 
 
+@expenses_bp.route("/api/classifications", methods=["GET"])
+@auth_required
+def get_classifications():
+    """Get działów and rozdziałów classification data."""
+    data_dir = Path(__file__).parent.parent.parent / "data"
+
+    # Load działów
+    with open(data_dir / "dzialy.json", "r", encoding="utf-8") as f:
+        dzialy = json.load(f)
+
+    # Load rozdziały
+    with open(data_dir / "rozdzialy.json", "r", encoding="utf-8") as f:
+        rozdzialy = json.load(f)
+
+    # Load dział-rozdział mapping
+    with open(data_dir / "dzial_rozdzial_mapping.json", "r", encoding="utf-8") as f:
+        dzial_rozdzial_mapping = json.load(f)
+
+    return {
+        "dzialy": dzialy,
+        "rozdzialy": rozdzialy,
+        "dzial_rozdzial_mapping": dzial_rozdzial_mapping,
+    }
+
+
 @expenses_bp.route("/close", methods=["POST"])
 @auth_required
 def close_expenses():
@@ -106,26 +126,6 @@ def close_expenses():
     if "role" in session and session["role"] in EXPENSES_CLOSED:
         EXPENSES_CLOSED[session["role"]] = True
     return redirect(url_for("expenses.list_expenses"))
-
-
-@expenses_bp.route("/")
-@auth_required
-def list_expenses():
-    if "role" not in session or session["role"] not in OFFICES:
-        return redirect(url_for("planning.index"))
-    current_expenses = EXPENSES[session["role"]]
-    expenses_sum = sum(
-        e.financial_needs for e in current_expenses if e.financial_needs is not None
-    )
-    return render_template(
-        "expenses_list.html",
-        expenses=current_expenses,
-        closed=EXPENSES_CLOSED[session["role"]],
-        state=planning_state,
-        PlanningStatus=PlanningStatus,
-        expenses_sum=expenses_sum,
-        offices_genitive=OFFICES_GENITIVE,
-    )
 
 
 @expenses_bp.route("/import", methods=["POST"])
