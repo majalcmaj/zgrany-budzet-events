@@ -12,6 +12,9 @@ lint:
 lint-fix:
 	poetry run black .
 
+typecheck:
+	poetry run mypy flaskr
+
 test:
 	poetry run pytest
 
