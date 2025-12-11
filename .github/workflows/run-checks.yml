@@ -1,4 +1,4 @@
-name: Build docker image and publish to lambda
+name: Run checks
 
 permissions:
   id-token: write
@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    name: "Run checks and build docker image"
+    name: "Run checks"
     runs-on: ubuntu-latest
     steps:
 
@@ -34,7 +34,7 @@ jobs:
         poetry install
         poetry run playwright install chromium-headless-shell
     
-    - name: Run lint and tests
+    - name: Run lint, typecheck and tests
       run: |
         make lint
         make typecheck

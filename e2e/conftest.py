@@ -4,7 +4,12 @@ import time
 
 from werkzeug.serving import make_server
 from flaskr.main import app, db
-from flaskr.planning.state import planning_state, PlanningStatus, EXPENSES, EXPENSES_CLOSED
+from flaskr.planning.state import (
+    planning_state,
+    PlanningStatus,
+    EXPENSES,
+    EXPENSES_CLOSED,
+)
 from flaskr.constants import OFFICES
 
 
