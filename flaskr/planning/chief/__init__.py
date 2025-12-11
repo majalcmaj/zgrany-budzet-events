@@ -10,7 +10,6 @@ chief_bp = Blueprint("chief", __name__)
 @chief_bp.route("/dashboard", methods=["GET", "POST"])
 @auth_required
 def dashboard():
-
     if request.method == "POST":
         action = request.form.get("action")
 

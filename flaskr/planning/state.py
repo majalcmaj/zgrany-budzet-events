@@ -1,5 +1,6 @@
 from .types import Expense, PlanningStatus
 from ..constants import OFFICES
+from ..events import EventStore, events
 
 EXPENSES: dict[str, list[Expense]] = {office: [] for office in OFFICES}
 EXPENSES_CLOSED = {office: False for office in OFFICES}
@@ -7,6 +8,8 @@ EXPENSES_CLOSED = {office: False for office in OFFICES}
 
 class PlanningState:
     def __init__(self):
+        # TODO: Move to main.py after cleanup
+        self.event_store = events()
         self.deadline = None
         self.status = PlanningStatus.NOT_STARTED
         self.correction_comment = None

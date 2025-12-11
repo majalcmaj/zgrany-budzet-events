@@ -5,10 +5,9 @@ from flask import (
     render_template,
     request,
 )
-from .planning.expenses import expenses_bp
 from .db import db, Section
 from .auth import auth_required
-from .planning import planning_bp
+from .events import init_event_extension
 
 app = Flask(__name__, template_folder="web/templates", static_folder="web/static")
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size
@@ -17,10 +16,13 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///zgrany_budget.db"
 app.secret_key = "super_secret_key_for_demo_only"
 
 db.init_app(app)
+with app.app_context():
+    init_event_extension(app)
+    from .planning.expenses import expenses_bp
+    from .planning import planning_bp
 
-
-app.register_blueprint(expenses_bp, url_prefix="/expenses")
-app.register_blueprint(planning_bp, url_prefix="/")
+    app.register_blueprint(expenses_bp, url_prefix="/expenses")
+    app.register_blueprint(planning_bp, url_prefix="/")
 
 
 # Ensure upload folder exists
