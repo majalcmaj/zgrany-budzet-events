@@ -1,14 +1,16 @@
 from typing import Callable, Any
 import inspect
-import json
-import importlib
+from .event_database import EventDatabase
+from logging import getLogger
+
+logger = getLogger(__name__)
 
 
 class EventStore:
     def __init__(self):
         # Dictionary mapping event types to lists of handler functions
         self._subscribers: dict[type, list[Callable[[Any], None]]] = {}
-        self._events_file = open("events.jsonl", "w")
+        self._event_database = EventDatabase("events.jsonl")
 
     def add_subscriber(self, handler: Callable[[Any], None]) -> None:
         """
@@ -43,30 +45,14 @@ class EventStore:
         # Get all handlers for this event type
         handlers = self._subscribers.get(event_type, [])
 
-        # Serialize event to JSON
-        event_json = json.dumps(
-            {
-                "module": event_type.__module__,
-                "type": event_type.__name__,
-                "payload": event.__dict__,
-            }
-        )
-        self._events_file.write(event_json + "\n")
+        self._event_database.store(event)
 
         # Call each handler with the event
         for handler in handlers:
-            handler(event)
-
-    def replay_events(self, file_path: str):
-        with open(file_path, "r") as file:
-            for line in file:
-                event_data = json.loads(line)
-                event_type = event_data["type"]
-                event_module = event_data["module"]
-                event_class = getattr(importlib.import_module(event_module), event_type)
-                event = event_class(**event_data["payload"])
-                self.emit(event)
+            try:
+                handler(event)
+            except Exception as e:
+                logger.error(f"Handler {handler} failed with exception: {e}")
 
     def destroy(self):
-        self._events_file.flush()
-        self._events_file.close()
+        self._event_database.destroy()

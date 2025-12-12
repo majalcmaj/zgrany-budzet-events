@@ -61,7 +61,6 @@ class PlanningState:
             raise ValueError("Deadline is required")
 
         self.event_store.emit(_PlanningStartedEvent(deadline))
-        self.status = PlanningStatus.IN_PROGRESS
 
     def _handle_planning_started(self, event: _PlanningStartedEvent):
         self.deadline = event.deadline
