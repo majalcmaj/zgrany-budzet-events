@@ -212,3 +212,6 @@ src/static/uploads/
 *.pdf
 
 test_output.txt
+
+# TODO: handle this differently
+events.jsonl 

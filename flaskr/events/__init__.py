@@ -1,6 +1,7 @@
 from flask import current_app
 from .event_store import EventStore
 from logging import getLogger
+import atexit
 
 logger = getLogger(__name__)
 
@@ -10,7 +11,9 @@ def init_event_extension(app):
     if "event-extension" in app.extensions:
         raise ValueError("EventExtension is already registered")
     logger.info("EventExtension is registered")
-    app.extensions["event-extension"] = EventStore()
+    event_store = EventStore()
+    app.extensions["event-extension"] = event_store
+    atexit.register(event_store.destroy)
 
 
 def events() -> EventStore:

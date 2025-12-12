@@ -1,6 +1,6 @@
 from .types import Expense, PlanningStatus
 from ..constants import OFFICES
-from ..events import events
+from ..events import events, EventStore
 from dataclasses import dataclass
 
 EXPENSES: dict[str, list[Expense]] = {office: [] for office in OFFICES}
@@ -35,12 +35,12 @@ class _PlanningReopenedEvent:
 
 
 class PlanningState:
-    def __init__(self):
+    def __init__(self, event_store: EventStore | None = None):
         # TODO: Move to main.py after cleanup
-        self.event_store = events()
-        self.deadline = None
+        self.event_store = event_store or events()
+        self.deadline: str | None = None
         self.status = PlanningStatus.NOT_STARTED
-        self.correction_comment = None
+        self.correction_comment: str | None = None
         self.planning_year = 2025
         self.event_store.add_subscriber(self._handle_planning_started)
         self.event_store.add_subscriber(self._handle_submitted_to_minister)
