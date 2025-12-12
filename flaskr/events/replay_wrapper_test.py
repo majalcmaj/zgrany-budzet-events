@@ -1,5 +1,6 @@
 from .replay_wrapper import ReplayWrapper
 from .event_store import DefaultEventStore, EventStore
+from .replay_wrapper import NoopEventRepository
 
 
 class MockEvent:
@@ -22,7 +23,7 @@ class MockSubscriber:
 
 
 def test_replay():
-    event_store = ReplayWrapper(DefaultEventStore())
+    event_store = ReplayWrapper(DefaultEventStore(NoopEventRepository()))
     subscriber = MockSubscriber(event_store)
 
     event_store.replay_events("test_data/test_replay.jsonl")
