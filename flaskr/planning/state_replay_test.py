@@ -6,6 +6,6 @@ def test_replay():
     event_store = EventStore()
     planning_state = PlanningState(event_store)
 
-    event_store.replay_events("test_data/events.jsonl")
+    event_store.replay_events("test_data/test_events.jsonl")
 
     assert planning_state.status == PlanningStatus.FINISHED
