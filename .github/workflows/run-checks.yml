@@ -36,6 +36,4 @@ jobs:
     
     - name: Run lint, typecheck and tests
       run: |
-        make lint
-        make typecheck
-        make test
+        make all-checks

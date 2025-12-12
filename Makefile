@@ -6,6 +6,8 @@ debug:
 run:
 	gunicorn --bind 0.0.0.0:5000 --workers 1 --threads 8 flaskr.main:app
 
+all-checks: lint typecheck test
+
 lint:
 	poetry run black --check .
 
