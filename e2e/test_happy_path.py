@@ -6,8 +6,9 @@ import pytest
 def test_budget_planning_flow(browser: Browser, base_url: str):
 
     context = browser.new_context(
-        http_credentials={"username": "mc", "password": "MiniCyfr1!"}
+        http_credentials={"username": "mc", "password": "MiniCyfr1!"},
     )
+    context.set_default_timeout(5_000)
     page = context.new_page()
     # 1. Minister initial comment
     print("Step 1: Minister initial comment")

@@ -41,7 +41,7 @@ def add_expense():
     can_edit = planning_state.status == PlanningStatus.IN_PROGRESS
 
     if EXPENSES_CLOSED[session["role"]] or not can_edit:
-        return redirect(url_for("expenses.list_expenses"))
+        return redirect(url_for("planning.expenses.list_expenses"))
 
     if request.method == "POST":
         # Extract required fields
@@ -83,7 +83,7 @@ def add_expense():
             uwagi=request.form.get("uwagi") or None,
         )
         EXPENSES[session["role"]].append(expense)
-        return redirect(url_for("expenses.list_expenses"))
+        return redirect(url_for("planning.expenses.list_expenses"))
     return render_template("add_expense.html")
 
 
@@ -112,6 +112,14 @@ def get_classifications():
     }
 
 
+@expenses_bp.route("/fragment/section/chapter")
+@auth_required
+def sections():
+    chapter_id = request.args.get("chapter")
+    sections = db.session.query(Section).filter_by(ChapterId=chapter_id).all()
+    return render_template("sectionTemplate.html", sections=sections)
+
+
 @expenses_bp.route("/close", methods=["POST"])
 @auth_required
 def close_expenses():
@@ -121,11 +129,11 @@ def close_expenses():
     ]
 
     if not can_edit:
-        return redirect(url_for("expenses.list_expenses"))
+        return redirect(url_for("planning.expenses.list_expenses"))
 
     if "role" in session and session["role"] in EXPENSES_CLOSED:
         EXPENSES_CLOSED[session["role"]] = True
-    return redirect(url_for("expenses.list_expenses"))
+    return redirect(url_for("planning.expenses.list_expenses"))
 
 
 @expenses_bp.route("/import", methods=["POST"])
@@ -136,7 +144,7 @@ def import_data():
     for e in create_expenses(role, 10):
         EXPENSES[role].append(e)
 
-    return redirect(url_for("expenses.list_expenses"))
+    return redirect(url_for("planning.expenses.list_expenses"))
 
 
 def create_expenses(role: str, n: int):

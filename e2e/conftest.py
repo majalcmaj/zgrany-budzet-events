@@ -47,7 +47,7 @@ def server():
     st = ServerThread(app)
     st.start()
 
-    # Give it a moment to start
+    # Give it a moment to start #TODO: remove the sleep!!!
     time.sleep(1)
 
     yield st

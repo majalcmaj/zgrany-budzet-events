@@ -3,10 +3,12 @@ from ..auth import auth_required
 from .chief import chief_bp
 from .minister import minister_bp
 from ..constants import OFFICES, CHIEF, OFFICES_NAME, OFFICES_SINGLE
+from .expenses import expenses_bp
 
 planning_bp = Blueprint("planning", __name__)
 planning_bp.register_blueprint(chief_bp, url_prefix="/chief")
 planning_bp.register_blueprint(minister_bp, url_prefix="/minister")
+planning_bp.register_blueprint(expenses_bp, url_prefix="/expenses")
 
 
 @planning_bp.route("/")
@@ -30,7 +32,7 @@ def set_role():
         if role == CHIEF:
             return redirect(url_for("planning.chief.dashboard"))
         elif role in OFFICES:
-            return redirect(url_for("expenses.list_expenses"))
+            return redirect(url_for("planning.expenses.list_expenses"))
         elif role == "minister":
             return redirect(url_for("planning.minister.dashboard"))
     return redirect(url_for("planning.index"))
