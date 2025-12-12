@@ -1,3 +1,4 @@
+from typing import Protocol
 from typing import Callable, Any
 import inspect
 from .event_database import EventDatabase
@@ -6,8 +7,14 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
-class EventStore:
-    def __init__(self):
+class EventStore(Protocol):
+    def add_subscriber(self, handler: Callable[[Any], None]) -> None: ...
+    def emit(self, event: Any) -> None: ...
+    def destroy(self) -> None: ...
+
+
+class DefaultEventStore(EventStore):
+    def __init__(self) -> None:
         # Dictionary mapping event types to lists of handler functions
         self._subscribers: dict[type, list[Callable[[Any], None]]] = {}
         self._event_database = EventDatabase("events.jsonl")

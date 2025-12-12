@@ -1,4 +1,4 @@
-from .event_store import EventStore
+from .event_store import DefaultEventStore
 
 
 class MockEvent:
@@ -34,7 +34,7 @@ class Subscriber:
 
 
 def test_single_event_multiple_subscribers():
-    event_store = EventStore()
+    event_store = DefaultEventStore()
     subscriber1 = Subscriber()
     subscriber2 = Subscriber()
     event_store.add_subscriber(subscriber1.handle_test_event)
@@ -47,7 +47,7 @@ def test_single_event_multiple_subscribers():
 
 
 def test_many_events():
-    event_store = EventStore()
+    event_store = DefaultEventStore()
     subscriber1 = Subscriber()
     subscriber2 = Subscriber()
     event_store.add_subscriber(subscriber1.handle_test_event)
@@ -64,7 +64,7 @@ def test_many_events():
 
 
 def test_different_events():
-    event_store = EventStore()
+    event_store = DefaultEventStore()
     subscriber1 = Subscriber()
     subscriber2 = Subscriber()
     event_store.add_subscriber(subscriber1.handle_test_event)
@@ -81,7 +81,7 @@ def test_different_events():
 
 
 def test_non_class_method():
-    event_store = EventStore()
+    event_store = DefaultEventStore()
     events_handled = []
 
     def handle_test_event(event: MockEvent):
