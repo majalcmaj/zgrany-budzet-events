@@ -1,4 +1,27 @@
-# File Upload Application
+# Zgrany Budżet
+
+Authors: Grzegorz Krajewski, Artur Pawelczyk, Wojciech Skwierawski, Michał Ciesielski
+
+## Flow
+
+```mermaid
+---
+config:
+  look: handDrawn
+---
+flowchart TD
+    Start((Start)) --> MinBefore
+    MinBefore[&lt;optional&gt;Minister may decide on the guidelines upfront] --> A
+    A[Administrator starts the planning process, sets a deadline] --> B
+    B[Department fills out forms] --> C
+    C[Once the department finishes editing the form, they cannot edit it afterwards.] --> D
+    D[Administrator generates a summary] --> E
+    E[Minister reviews, accepts or rejects] --> F
+    F{Minister accepts?} --> |No. They receive new guidelines|B
+    F --> |No. Administrator receives new guidelines|D
+    F --> |Yes|Stop
+    Stop((Stop))
+```
 
 ## Installation
 
