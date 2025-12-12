@@ -3,7 +3,7 @@ from ..planning.state import PlanningState, PlanningStatus
 from ..events.replay_wrapper import ReplayWrapper, NoopEventRepository
 
 
-def test_replay():
+def test_state_replay() -> None:
     event_store = ReplayWrapper(DefaultEventStore(NoopEventRepository()))
     planning_state = PlanningState(event_store)
 

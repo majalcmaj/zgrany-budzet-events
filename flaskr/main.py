@@ -2,6 +2,8 @@ from flask import Flask
 from .db import db
 from .events import init_event_extension
 
+__all__ = ["app", "db"]
+
 app = Flask(__name__, template_folder="web/templates", static_folder="web/static")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///zgrany_budget.db"
 app.secret_key = "super_secret_key_for_demo_only"
@@ -15,7 +17,7 @@ with app.app_context():
 
 
 @app.route("/health")
-def health():
+def health() -> tuple[str, int]:
     return "OK", 200
 
 

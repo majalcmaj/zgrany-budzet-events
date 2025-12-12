@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 
 
-def extract_dzialy():
+def extract_dzialy() -> dict[str, str]:
     """Extract działów (divisions) from PDF."""
     pdf_path = (
         Path(__file__).parent.parent.parent
@@ -41,7 +41,7 @@ def extract_dzialy():
     return dzialy
 
 
-def extract_rozdzialy():
+def extract_rozdzialy() -> dict[str, str]:
     """Extract rozdziałów (chapters) from PDF."""
     pdf_path = (
         Path(__file__).parent.parent.parent
@@ -73,9 +73,9 @@ def extract_rozdzialy():
     return rozdzialy
 
 
-def create_dzial_rozdzial_mapping(rozdzialy):
+def create_dzial_rozdzial_mapping(rozdzialy: dict[str, str]) -> dict[str, list[str]]:
     """Create mapping from dział code to its rozdziały."""
-    mapping = {}
+    mapping: dict[str, list[str]] = {}
     for rozdzial_code in rozdzialy.keys():
         # First 3 digits are the dział code
         dzial_code = rozdzial_code[:3]

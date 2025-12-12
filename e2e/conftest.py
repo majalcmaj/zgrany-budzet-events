@@ -1,6 +1,9 @@
 import pytest
 import threading
 import time
+from typing import Generator
+
+from flask import Flask
 
 from werkzeug.serving import make_server
 from flaskr.main import app, db
@@ -14,26 +17,26 @@ from flaskr.constants import OFFICES
 
 
 class ServerThread(threading.Thread):
-    def __init__(self, app):
+    def __init__(self, app: Flask) -> None:
         threading.Thread.__init__(self)
         self.server = make_server("127.0.0.1", 5001, app)
         self.ctx = app.app_context()
         self.ctx.push()
 
-    def run(self):
+    def run(self) -> None:
         self.server.serve_forever()
 
-    def shutdown(self):
+    def shutdown(self) -> None:
         self.server.shutdown()
 
 
 @pytest.fixture(scope="session")
-def base_url():
+def base_url() -> str:
     return "http://127.0.0.1:5001"
 
 
 @pytest.fixture(scope="session", autouse=True)
-def server():
+def server() -> Generator[ServerThread, None, None]:
     # Configure app for testing
     app.config["TESTING"] = True
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
@@ -56,7 +59,7 @@ def server():
 
 
 @pytest.fixture(autouse=True)
-def reset_state():
+def reset_state() -> Generator[None, None, None]:
     planning_state.status = PlanningStatus.NOT_STARTED
     planning_state.deadline = None
     planning_state.correction_comment = None

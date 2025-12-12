@@ -4,16 +4,20 @@ import random
 from pathlib import Path
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from werkzeug.wrappers import Response
 from ...constants import OFFICES, OFFICES_GENITIVE
 from ..state import planning_state, PlanningStatus, EXPENSES, EXPENSES_CLOSED
 from ..types import Expense
+from ...db import db, Section
+
+__all__ = ["expenses_bp", "create_expenses"]
 
 expenses_bp = Blueprint("expenses", __name__)
 
 
 @expenses_bp.route("/")
 @auth_required
-def list_expenses():
+def list_expenses() -> str | Response:
     if "role" not in session or session["role"] not in OFFICES:
         return redirect(url_for("planning.index"))
     current_expenses = EXPENSES[session["role"]]
@@ -33,7 +37,7 @@ def list_expenses():
 
 @expenses_bp.route("/add", methods=["GET", "POST"])
 @auth_required
-def add_expense():
+def add_expense() -> str | Response:
     if "role" not in session or session["role"] not in OFFICES:
         return redirect(url_for("planning.index"))
 
@@ -89,7 +93,7 @@ def add_expense():
 
 @expenses_bp.route("/api/classifications", methods=["GET"])
 @auth_required
-def get_classifications():
+def get_classifications() -> dict[str, object]:
     """Get działów and rozdziałów classification data."""
     data_dir = Path(__file__).parent.parent.parent / "data"
 
@@ -114,7 +118,7 @@ def get_classifications():
 
 @expenses_bp.route("/fragment/section/chapter")
 @auth_required
-def sections():
+def sections() -> str | Response:
     chapter_id = request.args.get("chapter")
     sections = db.session.query(Section).filter_by(ChapterId=chapter_id).all()
     return render_template("sectionTemplate.html", sections=sections)
@@ -122,7 +126,7 @@ def sections():
 
 @expenses_bp.route("/close", methods=["POST"])
 @auth_required
-def close_expenses():
+def close_expenses() -> str | Response:
     can_edit = planning_state.status in [
         PlanningStatus.IN_PROGRESS,
         PlanningStatus.NEEDS_CORRECTION,
@@ -138,7 +142,7 @@ def close_expenses():
 
 @expenses_bp.route("/import", methods=["POST"])
 @auth_required
-def import_data():
+def import_data() -> str | Response:
     role = session["role"]
 
     for e in create_expenses(role, 10):
@@ -147,7 +151,7 @@ def import_data():
     return redirect(url_for("planning.expenses.list_expenses"))
 
 
-def create_expenses(role: str, n: int):
+def create_expenses(role: str, n: int) -> list[Expense]:
     """Load expense data from JSON file and return n random expenses."""
     json_path = Path(__file__).parent.parent / "data" / "expenses_template.json"
 

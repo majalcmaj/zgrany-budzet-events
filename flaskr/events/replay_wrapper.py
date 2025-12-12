@@ -18,7 +18,7 @@ class ReplayWrapper(EventStore):
     def emit(self, event: Any) -> None:
         pass
 
-    def destroy(self):
+    def destroy(self) -> None:
         self._event_store.destroy()
 
     def replay_events(self, file_path: str) -> None:

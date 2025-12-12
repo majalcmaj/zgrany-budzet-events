@@ -1,4 +1,5 @@
 from flask import Blueprint, request, render_template, redirect, url_for, flash
+from werkzeug.wrappers import Response
 from ...auth import auth_required
 
 from ...constants import OFFICES
@@ -9,13 +10,14 @@ chief_bp = Blueprint("chief", __name__)
 
 @chief_bp.route("/dashboard", methods=["GET", "POST"])
 @auth_required
-def dashboard():
+def dashboard() -> str | Response:
     if request.method == "POST":
         action = request.form.get("action")
 
         if action == "start":
             deadline = request.form.get("deadline")
-            planning_state.start_planning(deadline)
+            if deadline:
+                planning_state.start_planning(deadline)
         elif action == "submit_minister":
             planning_state.submit_to_minister()
         elif action == "reopen":

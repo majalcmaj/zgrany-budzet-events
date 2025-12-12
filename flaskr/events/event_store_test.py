@@ -7,7 +7,7 @@ class MockEvent:
     def __init__(self, id: int):
         self.id = id
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, MockEvent) and self.id == other.id
 
 
@@ -22,27 +22,27 @@ class MockEvent3(MockEvent):
 
 
 class Subscriber:
-    def __init__(self):
-        self.handled_events = []
+    def __init__(self) -> None:
+        self.handled_events: list[MockEvent] = []
 
-    def handle_test_event(self, event: MockEvent):
+    def handle_test_event(self, event: MockEvent) -> None:
         self.handled_events.append(event)
 
-    def handle_test_event2(self, event: MockEvent2):
+    def handle_test_event2(self, event: MockEvent2) -> None:
         self.handled_events.append(event)
 
-    def handle_test_event3(self, event: MockEvent3):
+    def handle_test_event3(self, event: MockEvent3) -> None:
         self.handled_events.append(event)
 
 
 @pytest.fixture
-def event_store():
+def event_store() -> DefaultEventStore:  # type: ignore[misc]
     store = DefaultEventStore(NoopEventRepository())
     yield store
     store.destroy()
 
 
-def test_single_event_multiple_subscribers(event_store):
+def test_single_event_multiple_subscribers(event_store: DefaultEventStore) -> None:
     subscriber1 = Subscriber()
     subscriber2 = Subscriber()
     event_store.add_subscriber(subscriber1.handle_test_event)
@@ -54,7 +54,7 @@ def test_single_event_multiple_subscribers(event_store):
     assert subscriber2.handled_events == [MockEvent(1)]
 
 
-def test_many_events(event_store):
+def test_many_events(event_store: DefaultEventStore) -> None:
     subscriber1 = Subscriber()
     subscriber2 = Subscriber()
     event_store.add_subscriber(subscriber1.handle_test_event)
@@ -70,7 +70,7 @@ def test_many_events(event_store):
     assert subscriber2.handled_events == [MockEvent(1), MockEvent2(1), MockEvent(2)]
 
 
-def test_different_events(event_store):
+def test_different_events(event_store: DefaultEventStore) -> None:
     subscriber1 = Subscriber()
     subscriber2 = Subscriber()
     event_store.add_subscriber(subscriber1.handle_test_event)
@@ -86,10 +86,10 @@ def test_different_events(event_store):
     assert subscriber2.handled_events == [MockEvent2(2), MockEvent3(3)]
 
 
-def test_non_class_method(event_store):
-    events_handled = []
+def test_non_class_method(event_store: DefaultEventStore) -> None:
+    events_handled: list[MockEvent] = []
 
-    def handle_test_event(event: MockEvent):
+    def handle_test_event(event: MockEvent) -> None:
         events_handled.append(event)
 
     event_store.add_subscriber(handle_test_event)
@@ -99,7 +99,7 @@ def test_non_class_method(event_store):
     assert events_handled == [MockEvent(1)]
 
 
-def test_remove_subscriber(event_store):
+def test_remove_subscriber(event_store: DefaultEventStore) -> None:
     """Test that remove_subscriber correctly removes handlers."""
     subscriber1 = Subscriber()
     subscriber2 = Subscriber()

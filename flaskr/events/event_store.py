@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Protocol, runtime_checkable
 from typing import Callable, Any
 import inspect
 from .event_repository import EventRepository
@@ -7,7 +7,10 @@ import threading
 
 logger = getLogger(__name__)
 
+__all__ = ["EventStore", "DefaultEventStore"]
 
+
+@runtime_checkable
 class EventStore(Protocol):
     def add_subscriber(self, handler: Callable[[Any], None]) -> None: ...
     def remove_subscriber(self, handler: Callable[[Any], None]) -> bool: ...
@@ -101,5 +104,5 @@ class DefaultEventStore(EventStore):
                     exc_info=True,
                 )
 
-    def destroy(self):
+    def destroy(self) -> None:
         self._event_repository.destroy()

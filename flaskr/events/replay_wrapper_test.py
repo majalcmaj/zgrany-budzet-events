@@ -7,7 +7,7 @@ class MockEvent:
     def __init__(self, id: int):
         self.id = id
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, MockEvent) and self.id == other.id
 
 
@@ -17,12 +17,12 @@ class MockSubscriber:
         event_store.add_subscriber(self.handle_test_event)
         self.event_store = event_store
 
-    def handle_test_event(self, event: MockEvent):
+    def handle_test_event(self, event: MockEvent) -> None:
         self.handled_events.append(event)
         self.event_store.emit(MockEvent(21))
 
 
-def test_replay():
+def test_replay() -> None:
     event_store = ReplayWrapper(DefaultEventStore(NoopEventRepository()))
     subscriber = MockSubscriber(event_store)
 

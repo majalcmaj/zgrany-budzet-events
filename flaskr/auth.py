@@ -1,13 +1,16 @@
 from functools import wraps
 from flask import request, Response
+from typing import Callable, Any, TypeVar, cast
+
+F = TypeVar("F", bound=Callable[..., Any])
 
 
-def check_auth(username, password):
+def check_auth(username: str, password: str) -> bool:
     """Check if a username/password combination is valid."""
     return username == "mc" and password == "MiniCyfr1!"
 
 
-def authenticate():
+def authenticate() -> Response:
     """Sends a 401 response that enables basic auth"""
     return Response(
         "Could not verify your access level for that URL.\n"
@@ -17,12 +20,12 @@ def authenticate():
     )
 
 
-def auth_required(f):
+def auth_required(f: F) -> F:
     @wraps(f)
-    def decorated(*args, **kwargs):
+    def decorated(*args: Any, **kwargs: Any) -> Any:
         auth = request.authorization
-        if not auth or not check_auth(auth.username, auth.password):
+        if not auth or not check_auth(auth.username or "", auth.password or ""):
             return authenticate()
         return f(*args, **kwargs)
 
-    return decorated
+    return cast(F, decorated)

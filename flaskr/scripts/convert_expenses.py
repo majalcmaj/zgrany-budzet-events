@@ -7,9 +7,10 @@ import openpyxl
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 
-def safe_int(value):
+def safe_int(value: Any) -> int | None:
     """Safely convert value to int, return None if not possible."""
     if value is None:
         return None
@@ -22,7 +23,7 @@ def safe_int(value):
         return None
 
 
-def safe_str(value):
+def safe_str(value: Any) -> str | None:
     """Safely convert value to string, return None if empty."""
     if value is None:
         return None
@@ -30,7 +31,7 @@ def safe_str(value):
     return str_value if str_value else None
 
 
-def convert_excel_to_json(excel_path):
+def convert_excel_to_json(excel_path: Path) -> int:
     """Convert Excel file to JSON format."""
     # Validate file exists
     if not excel_path.exists():

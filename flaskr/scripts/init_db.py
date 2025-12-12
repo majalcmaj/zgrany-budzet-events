@@ -2,7 +2,7 @@ import sqlite3
 import os
 
 
-def init_database():
+def init_database() -> None:
     """
     Initialize the database by executing create_tables.sql and populate.sql.
     This script is standalone and does not depend on the Flask app.

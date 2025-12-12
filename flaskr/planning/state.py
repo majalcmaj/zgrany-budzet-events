@@ -3,6 +3,14 @@ from ..constants import OFFICES
 from ..events import events, EventStore
 from dataclasses import dataclass
 
+__all__ = [
+    "PlanningStatus",
+    "EXPENSES",
+    "EXPENSES_CLOSED",
+    "planning_state",
+    "PlanningState",
+]
+
 EXPENSES: dict[str, list[Expense]] = {office: [] for office in OFFICES}
 EXPENSES_CLOSED = {office: False for office in OFFICES}
 
@@ -49,7 +57,7 @@ class PlanningState:
         self.event_store.add_subscriber(self._handle_minister_correction_requested)
         self.event_store.add_subscriber(self._handle_planning_reopened)
 
-    def start_planning(self, deadline: str):
+    def start_planning(self, deadline: str) -> None:
         if self.status not in (
             PlanningStatus.NOT_STARTED,
             PlanningStatus.NEEDS_CORRECTION,
@@ -62,7 +70,7 @@ class PlanningState:
 
         self.event_store.emit(_PlanningStartedEvent(deadline))
 
-    def _handle_planning_started(self, event: _PlanningStartedEvent):
+    def _handle_planning_started(self, event: _PlanningStartedEvent) -> None:
         self.deadline = event.deadline
         self.status = PlanningStatus.IN_PROGRESS
 
@@ -70,58 +78,60 @@ class PlanningState:
         for office in EXPENSES_CLOSED:
             EXPENSES_CLOSED[office] = False
 
-    def submit_to_minister(self):
+    def submit_to_minister(self) -> None:
         if self.status != PlanningStatus.IN_PROGRESS:
             raise ValueError(
                 f"Planning is in state {self.status}, cannot submit unless it is in state IN_PROGRESS"
             )
         self.event_store.emit(_PlanningSubmittedEvent())
 
-    def _handle_submitted_to_minister(self, _event: _PlanningSubmittedEvent):
+    def _handle_submitted_to_minister(self, _event: _PlanningSubmittedEvent) -> None:
         self.status = PlanningStatus.IN_REVIEW
         # Side effect: Reset office approvals
 
         for office in EXPENSES_CLOSED:
             EXPENSES_CLOSED[office] = True
 
-    def request_correction(self, comment):
+    def request_correction(self, comment: str) -> None:
         if self.status == PlanningStatus.NOT_STARTED:
             self.event_store.emit(_InitialMinisterGuidanceEvent(comment))
         elif self.status == PlanningStatus.IN_REVIEW:
             self.event_store.emit(_MinisterCorrectionRequestedEvent(comment))
 
-    def _handle_initial_minister_guidance(self, event: _InitialMinisterGuidanceEvent):
+    def _handle_initial_minister_guidance(
+        self, event: _InitialMinisterGuidanceEvent
+    ) -> None:
         self.correction_comment = event.comment
 
     def _handle_minister_correction_requested(
         self, event: _MinisterCorrectionRequestedEvent
-    ):
+    ) -> None:
         self.correction_comment = event.comment
         self.status = PlanningStatus.NEEDS_CORRECTION
         # Side effect: Reset office approvals
         for office in EXPENSES_CLOSED:
             EXPENSES_CLOSED[office] = False
 
-    def approve(self):
+    def approve(self) -> None:
         if self.status != PlanningStatus.IN_REVIEW:
             raise ValueError(
                 f"Planning is in state {self.status}, cannot approve unless it is in state IN_REVIEW"
             )
         self.event_store.emit(_PlanningApprovedEvent())
 
-    def _handle_approved(self, _event: _PlanningApprovedEvent):
+    def _handle_approved(self, _event: _PlanningApprovedEvent) -> None:
         self.status = PlanningStatus.FINISHED
         self.correction_comment = None
         self.planning_year += 1
 
-    def reopen(self):
+    def reopen(self) -> None:
         if self.status != PlanningStatus.FINISHED:
             raise ValueError(
                 f"Planning is in state {self.status}, cannot reopen unless it is in state FINISHED"
             )
         self.event_store.emit(_PlanningReopenedEvent())
 
-    def _handle_planning_reopened(self, _event: _PlanningReopenedEvent):
+    def _handle_planning_reopened(self, _event: _PlanningReopenedEvent) -> None:
         self.status = PlanningStatus.NOT_STARTED
 
 

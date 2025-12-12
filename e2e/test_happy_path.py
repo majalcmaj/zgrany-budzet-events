@@ -3,7 +3,7 @@ import pytest
 
 
 @pytest.mark.e2e
-def test_budget_planning_flow(browser: Browser, base_url: str):
+def test_budget_planning_flow(browser: Browser, base_url: str) -> None:
 
     context = browser.new_context(
         http_credentials={"username": "mc", "password": "MiniCyfr1!"},

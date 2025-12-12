@@ -13,7 +13,7 @@ class PlanningStatus(Enum):
 
 @dataclass
 class Expense:
-    chapter: int
+    chapter: int | str
     task_name: str
     financial_needs: int
     role: str
