@@ -15,10 +15,7 @@ def dashboard():
 
         if action == "start":
             deadline = request.form.get("deadline")
-            if not deadline:
-                flash("Termin jest wymagany!", "error")
-            else:
-                planning_state.start_planning()
+            planning_state.start_planning(deadline)
         elif action == "submit_minister":
             planning_state.submit_to_minister()
         elif action == "reopen":
