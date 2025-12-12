@@ -1,6 +1,8 @@
 from playwright.sync_api import Browser, expect
+import pytest
 
 
+@pytest.mark.e2e
 def test_budget_planning_flow(browser: Browser, base_url: str):
 
     context = browser.new_context(

@@ -1,0 +1,2 @@
+{"module": "flaskr.events.replay_wrapper_test", "type": "MockEvent", "payload": {"id": 1}}
+{"module": "flaskr.events.replay_wrapper_test", "type": "MockEvent", "payload": {"id": 2}}

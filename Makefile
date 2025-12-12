@@ -6,7 +6,7 @@ debug:
 run:
 	gunicorn --bind 0.0.0.0:5000 --workers 1 --threads 8 flaskr.main:app
 
-all-checks: lint typecheck test
+all-checks: lint typecheck test verify
 
 lint:
 	poetry run black --check .
@@ -18,9 +18,12 @@ typecheck:
 	poetry run mypy .
 
 test:
-	poetry run pytest
+	poetry run pytest -m "not e2e"
 
-test-headed:
+verify:
+	poetry run pytest -m e2e	
+
+verify-headed:
 	poetry run pytest --headed
 
 init-db:
