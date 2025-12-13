@@ -1,6 +1,7 @@
 from .event_store import DefaultEventStore
 from .replay_wrapper import NoopEventRepository
 import pytest
+from typing import Generator
 
 
 class MockEvent:
@@ -36,7 +37,7 @@ class Subscriber:
 
 
 @pytest.fixture
-def event_store() -> DefaultEventStore:  # type: ignore[misc]
+def event_store() -> Generator[DefaultEventStore, None, None]:
     store = DefaultEventStore(NoopEventRepository())
     yield store
     store.destroy()

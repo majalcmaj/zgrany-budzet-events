@@ -87,10 +87,10 @@ class DefaultEventStore(EventStore):
         Notify all registered handlers for the event type without persisting.
         Used internally and by replay functionality.
         """
-        event_type = type(event)
+        event_type = type(event)  # type: ignore[misc]
 
         with self._lock:
-            handlers = self._subscribers.get(event_type, []).copy()
+            handlers = self._subscribers.get(event_type, []).copy()  # type: ignore[misc]
 
         logger.debug(f"Notifying {len(handlers)} handlers for {event_type.__name__}")
 

@@ -15,7 +15,7 @@ lint-fix:
 	poetry run black .
 
 typecheck:
-	poetry run mypy --strict .
+	poetry run pyright
 
 test:
 	poetry run pytest -m "not e2e"

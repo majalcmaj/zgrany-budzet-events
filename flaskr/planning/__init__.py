@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from flask import Blueprint, render_template, request, redirect, url_for, session
 from werkzeug.wrappers import Response
 from ..auth import auth_required
 from .chief import chief_bp

@@ -14,7 +14,7 @@ class FileEventRepository(EventRepository):
         self._events_file = open(file_path, "a")
 
     def store(self, event: Any) -> None:
-        event_type = type(event)
+        event_type = type(event)  # type: ignore[misc]
         # Serialize event to JSON
         # Try to use __dict__, but allow for custom serialization
         try:

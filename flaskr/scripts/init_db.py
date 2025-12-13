@@ -33,6 +33,7 @@ def init_database() -> None:
         print(f"Error: {populate_path} not found.")
         return
 
+    conn = None
     try:
         # Connect to SQLite database
         conn = sqlite3.connect(db_path)

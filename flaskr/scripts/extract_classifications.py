@@ -25,7 +25,7 @@ def extract_dzialy() -> dict[str, str]:
     # Parse działów - pattern: "010 Rolnictwo i łowiectwo"
     # Looking for 3-digit code followed by text
     lines = text.split("\n")
-    dzialy = {}
+    dzialy: dict[str, str] = {}
 
     for line in lines:
         # Match pattern: 3 digits at start, followed by text
@@ -57,7 +57,7 @@ def extract_rozdzialy() -> dict[str, str]:
 
     # Parse rozdziałów - pattern: "01009 Spółki wodne"
     lines = text.split("\n")
-    rozdzialy = {}
+    rozdzialy: dict[str, str] = {}
 
     for line in lines:
         # Match pattern: 5 digits at start, followed by text

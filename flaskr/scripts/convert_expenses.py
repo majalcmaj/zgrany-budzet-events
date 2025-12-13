@@ -3,7 +3,7 @@
 Script to convert Excel expense data to JSON format.
 Usage: python convert_expenses.py <path_to_excel_file.xlsx>
 """
-import openpyxl
+import openpyxl  # type: ignore[import-untyped]
 import json
 import sys
 from pathlib import Path
@@ -59,7 +59,7 @@ def convert_excel_to_json(excel_path: Path) -> int:
 
     sheet = workbook["podział limitów"]
 
-    expenses = []
+    expenses: list[dict[str, Any]] = []
 
     for row in sheet.iter_rows(min_row=2, values_only=True):
         # Skip empty rows

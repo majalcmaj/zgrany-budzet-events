@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect, url_for, flash
+from flask import Blueprint, request, render_template, redirect, url_for
 from werkzeug.wrappers import Response
 from ...auth import auth_required
 
@@ -25,13 +25,11 @@ def dashboard() -> str | Response:
 
         return redirect(url_for("planning.chief.dashboard"))
 
-    offices_status = []
+    offices_status: list[dict[str, object]] = []
     total_all_needs = 0
     for office in OFFICES:
         expenses = EXPENSES.get(office, [])
-        total_needs = sum(
-            e.financial_needs for e in expenses if e.financial_needs is not None
-        )
+        total_needs = sum(e.financial_needs for e in expenses)
         task_count = len(expenses)
         is_submitted = EXPENSES_CLOSED.get(office, False)
 

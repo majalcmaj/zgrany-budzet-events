@@ -21,9 +21,7 @@ def list_expenses() -> str | Response:
     if "role" not in session or session["role"] not in OFFICES:
         return redirect(url_for("planning.index"))
     current_expenses = EXPENSES[session["role"]]
-    expenses_sum = sum(
-        e.financial_needs for e in current_expenses if e.financial_needs is not None
-    )
+    expenses_sum = sum(e.financial_needs for e in current_expenses)
     return render_template(
         "expenses_list.html",
         expenses=current_expenses,
