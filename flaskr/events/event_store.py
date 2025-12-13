@@ -1,9 +1,9 @@
-from typing import Protocol, runtime_checkable
-from typing import Callable, Any
 import inspect
-from .event_repository import EventRepository
-from logging import getLogger
 import threading
+from logging import getLogger
+from typing import Any, Callable, Protocol, runtime_checkable
+
+from .event_repository import EventRepository
 
 logger = getLogger(__name__)
 

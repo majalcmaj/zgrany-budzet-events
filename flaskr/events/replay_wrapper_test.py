@@ -1,6 +1,5 @@
-from .replay_wrapper import ReplayWrapper
 from .event_store import DefaultEventStore, EventStore
-from .replay_wrapper import NoopEventRepository
+from .replay_wrapper import NoopEventRepository, ReplayWrapper
 
 
 class MockEvent:

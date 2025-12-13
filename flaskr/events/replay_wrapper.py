@@ -1,8 +1,9 @@
-import json
 import importlib
-from .event_store import EventStore
+import json
+from typing import Any, Callable
+
 from .event_repository import EventRepository
-from typing import Callable, Any
+from .event_store import EventStore
 
 
 class ReplayWrapper(EventStore):

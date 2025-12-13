@@ -1,6 +1,6 @@
 from ..events.event_store import DefaultEventStore
+from ..events.replay_wrapper import NoopEventRepository, ReplayWrapper
 from ..planning.state import PlanningState, PlanningStatus
-from ..events.replay_wrapper import ReplayWrapper, NoopEventRepository
 
 
 def test_state_replay() -> None:

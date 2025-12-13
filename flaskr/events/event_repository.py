@@ -1,6 +1,5 @@
 import json
-from typing import Any
-from typing import Protocol
+from typing import Any, Protocol
 
 
 class EventRepository(Protocol):

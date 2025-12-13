@@ -1,4 +1,5 @@
 from flask import Flask
+
 from .db import db
 from .events import init_event_extension
 

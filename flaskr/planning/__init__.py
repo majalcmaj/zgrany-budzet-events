@@ -1,12 +1,14 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
-from werkzeug.wrappers import Response
-from ..auth import auth_required
-from .chief import chief_bp
-from .minister import minister_bp
-from ..constants import OFFICES, CHIEF, OFFICES_NAME, OFFICES_SINGLE
-from .expenses import expenses_bp, create_expenses
-from .state import EXPENSES
 from random import randrange
+
+from flask import Blueprint, redirect, render_template, request, session, url_for
+from werkzeug.wrappers import Response
+
+from ..auth import auth_required
+from ..constants import CHIEF, OFFICES, OFFICES_NAME, OFFICES_SINGLE
+from .chief import chief_bp
+from .expenses import create_expenses, expenses_bp
+from .minister import minister_bp
+from .state import EXPENSES
 
 planning_bp = Blueprint("planning", __name__)
 planning_bp.register_blueprint(chief_bp, url_prefix="/chief")

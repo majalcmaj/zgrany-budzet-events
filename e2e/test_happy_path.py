@@ -1,5 +1,5 @@
-from playwright.sync_api import Browser, expect
 import pytest
+from playwright.sync_api import Browser, expect
 
 
 @pytest.mark.e2e

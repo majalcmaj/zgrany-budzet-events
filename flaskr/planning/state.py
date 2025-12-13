@@ -1,7 +1,8 @@
-from .types import Expense, PlanningStatus
-from ..constants import OFFICES
-from ..events import events, EventStore
 from dataclasses import dataclass
+
+from ..constants import OFFICES
+from ..events import EventStore, events
+from .types import Expense, PlanningStatus
 
 __all__ = [
     "PlanningStatus",

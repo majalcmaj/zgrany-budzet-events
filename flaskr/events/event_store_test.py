@@ -1,7 +1,9 @@
+from typing import Generator
+
+import pytest
+
 from .event_store import DefaultEventStore
 from .replay_wrapper import NoopEventRepository
-import pytest
-from typing import Generator
 
 
 class MockEvent:

@@ -1,19 +1,19 @@
-import pytest
 import threading
 import time
 from typing import Generator
 
+import pytest
 from flask import Flask
-
 from werkzeug.serving import make_server
+
+from flaskr.constants import OFFICES
 from flaskr.main import app, db
 from flaskr.planning.state import (
-    planning_state,
-    PlanningStatus,
     EXPENSES,
     EXPENSES_CLOSED,
+    PlanningStatus,
+    planning_state,
 )
-from flaskr.constants import OFFICES
 
 
 class ServerThread(threading.Thread):

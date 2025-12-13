@@ -3,11 +3,12 @@
 Script to convert Excel expense data to JSON format.
 Usage: python convert_expenses.py <path_to_excel_file.xlsx>
 """
-import openpyxl  # type: ignore[import-untyped]
 import json
 import sys
 from pathlib import Path
 from typing import Any
+
+import openpyxl  # type: ignore[import-untyped]
 
 
 def safe_int(value: Any) -> int | None:

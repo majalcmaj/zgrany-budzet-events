@@ -2,10 +2,11 @@
 """
 Script to extract classification data from PDF files.
 """
-import PyPDF2
-import re
 import json
+import re
 from pathlib import Path
+
+import PyPDF2
 
 
 def extract_dzialy() -> dict[str, str]:

@@ -1,9 +1,9 @@
-from flask import Blueprint, request, render_template, redirect, url_for
+from flask import Blueprint, redirect, render_template, request, url_for
 from werkzeug.wrappers import Response
-from ...auth import auth_required
 
+from ...auth import auth_required
 from ...constants import OFFICES
-from ..state import planning_state, PlanningStatus, EXPENSES, EXPENSES_CLOSED
+from ..state import EXPENSES, EXPENSES_CLOSED, PlanningStatus, planning_state
 
 chief_bp = Blueprint("chief", __name__)
 

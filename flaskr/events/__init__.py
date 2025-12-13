@@ -1,8 +1,10 @@
-from flask import current_app, Flask
-from .event_store import EventStore, DefaultEventStore
-from .event_repository import FileEventRepository
-from logging import getLogger
 import atexit
+from logging import getLogger
+
+from flask import Flask, current_app
+
+from .event_repository import FileEventRepository
+from .event_store import DefaultEventStore, EventStore
 
 logger = getLogger(__name__)
 

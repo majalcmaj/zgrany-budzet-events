@@ -12,9 +12,9 @@ lint:
 	poetry run black --check .
 
 lint-fix:
-	poetry run black .
-	poetry run isort -rc .
+	poetry run isort .
 	poetry run autoflake --in-place --remove-all-unused-imports --recursive .
+	poetry run black .
 
 typecheck:
 	poetry run pyright

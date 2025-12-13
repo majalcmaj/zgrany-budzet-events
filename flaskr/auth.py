@@ -1,6 +1,7 @@
 from functools import wraps
-from flask import request, Response
-from typing import Callable, Any, TypeVar, cast
+from typing import Any, Callable, TypeVar, cast
+
+from flask import Response, request
 
 F = TypeVar("F", bound=Callable[..., Any])
 

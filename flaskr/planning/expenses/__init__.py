@@ -1,14 +1,15 @@
-from ...auth import auth_required
 import json
 import random
 from pathlib import Path
 
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from werkzeug.wrappers import Response
+
+from ...auth import auth_required
 from ...constants import OFFICES, OFFICES_GENITIVE
-from ..state import planning_state, PlanningStatus, EXPENSES, EXPENSES_CLOSED
+from ...db import Section, db
+from ..state import EXPENSES, EXPENSES_CLOSED, PlanningStatus, planning_state
 from ..types import Expense
-from ...db import db, Section
 
 __all__ = ["expenses_bp", "create_expenses"]
 
