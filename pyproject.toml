@@ -37,6 +37,9 @@ package-mode = false
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 
+[tool.isort]
+profile = "black"
+
 [tool.pyright]
 include = ["e2e", "flaskr"]
 exclude = ["**/node_modules", "**/__pycache__"]
