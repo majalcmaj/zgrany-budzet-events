@@ -12,7 +12,7 @@ from ..planning_aggregate import (
     EXPENSES,
     EXPENSES_CLOSED,
     PlanningStatus,
-    planning_state,
+    planning_aggregate,
 )
 from ..types import Expense
 
@@ -32,7 +32,7 @@ def list_expenses() -> str | Response:
         "expenses_list.html",
         expenses=current_expenses,
         closed=EXPENSES_CLOSED[session["role"]],
-        state=planning_state,
+        state=planning_aggregate,
         PlanningStatus=PlanningStatus,
         expenses_sum=expenses_sum,
         offices_genitive=OFFICES_GENITIVE,
@@ -46,7 +46,7 @@ def add_expense() -> str | Response:
         return redirect(url_for("planning.index"))
 
     # Allow editing if status is IN_PROGRESS
-    can_edit = planning_state.status == PlanningStatus.IN_PROGRESS
+    can_edit = planning_aggregate.status == PlanningStatus.IN_PROGRESS
 
     if EXPENSES_CLOSED[session["role"]] or not can_edit:
         return redirect(url_for("planning.expenses.list_expenses"))
@@ -131,7 +131,7 @@ def sections() -> str | Response:
 @expenses_bp.route("/close", methods=["POST"])
 @auth_required
 def close_expenses() -> str | Response:
-    can_edit = planning_state.status in [
+    can_edit = planning_aggregate.status in [
         PlanningStatus.IN_PROGRESS,
         PlanningStatus.NEEDS_CORRECTION,
     ]

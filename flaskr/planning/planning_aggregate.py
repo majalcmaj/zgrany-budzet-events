@@ -8,8 +8,8 @@ __all__ = [
     "PlanningStatus",
     "EXPENSES",
     "EXPENSES_CLOSED",
-    "planning_state",
-    "PlanningState",
+    "planning_aggregate",
+    "PlanningAggregate",
 ]
 
 EXPENSES: dict[str, list[Expense]] = {office: [] for office in OFFICES}
@@ -43,7 +43,7 @@ class _PlanningReopenedEvent:
     pass
 
 
-class PlanningState:
+class PlanningAggregate:
     def __init__(self, event_store: EventStore | None = None):
         # TODO: Move to main.py after cleanup
         self.event_store = event_store or events()
@@ -136,4 +136,4 @@ class PlanningState:
         self.status = PlanningStatus.NOT_STARTED
 
 
-planning_state = PlanningState()
+planning_aggregate = PlanningAggregate()

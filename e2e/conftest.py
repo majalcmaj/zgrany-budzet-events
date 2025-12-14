@@ -12,7 +12,7 @@ from flaskr.planning.planning_aggregate import (
     EXPENSES,
     EXPENSES_CLOSED,
     PlanningStatus,
-    planning_state,
+    planning_aggregate,
 )
 
 
@@ -60,10 +60,10 @@ def server() -> Generator[ServerThread, None, None]:
 
 @pytest.fixture(autouse=True)
 def reset_state() -> Generator[None, None, None]:
-    planning_state.status = PlanningStatus.NOT_STARTED
-    planning_state.deadline = None
-    planning_state.correction_comment = None
-    planning_state.planning_year = 2025
+    planning_aggregate.status = PlanningStatus.NOT_STARTED
+    planning_aggregate.deadline = None
+    planning_aggregate.correction_comment = None
+    planning_aggregate.planning_year = 2025
 
     # Reset expenses
     for office in OFFICES:

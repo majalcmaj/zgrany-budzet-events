@@ -7,7 +7,7 @@ from ..planning_aggregate import (
     EXPENSES,
     EXPENSES_CLOSED,
     PlanningStatus,
-    planning_state,
+    planning_aggregate,
 )
 
 chief_bp = Blueprint("chief", __name__)
@@ -22,11 +22,11 @@ def dashboard() -> str | Response:
         if action == "start":
             deadline = request.form.get("deadline")
             if deadline:
-                planning_state.start_planning(deadline)
+                planning_aggregate.start_planning(deadline)
         elif action == "submit_minister":
-            planning_state.submit_to_minister()
+            planning_aggregate.submit_to_minister()
         elif action == "reopen":
-            planning_state.reopen()
+            planning_aggregate.reopen()
 
         return redirect(url_for("planning.chief.dashboard"))
 
@@ -52,7 +52,7 @@ def dashboard() -> str | Response:
 
     return render_template(
         "chief_dashboard.html",
-        state=planning_state,
+        state=planning_aggregate,
         offices_status=offices_status,
         total_all_needs=total_all_needs,
         PlanningStatus=PlanningStatus,

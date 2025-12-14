@@ -7,7 +7,7 @@ from ..planning_aggregate import (
     EXPENSES,
     EXPENSES_CLOSED,
     PlanningStatus,
-    planning_state,
+    planning_aggregate,
 )
 
 minister_bp = Blueprint("minister", __name__)
@@ -21,9 +21,9 @@ def dashboard() -> str | Response:
         if action == "request_correction":
             comment = request.form.get("comment")
             if comment:
-                planning_state.request_correction(comment)
+                planning_aggregate.request_correction(comment)
         elif action == "approve":
-            planning_state.approve()
+            planning_aggregate.approve()
         return redirect(url_for("planning.minister.dashboard"))
 
     offices_status: list[dict[str, object]] = []
@@ -48,7 +48,7 @@ def dashboard() -> str | Response:
 
     return render_template(
         "minister_dashboard.html",
-        state=planning_state,
+        state=planning_aggregate,
         offices_status=offices_status,
         total_all_needs=total_all_needs,
         PlanningStatus=PlanningStatus,
