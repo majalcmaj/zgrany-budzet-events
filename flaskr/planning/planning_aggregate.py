@@ -16,6 +16,15 @@ EXPENSES: dict[str, list[Expense]] = {office: [] for office in OFFICES}
 EXPENSES_CLOSED = {office: False for office in OFFICES}
 
 
+class ExpenseAggregate:
+    def __init__(self, aggregate_id: str):
+        self.aggregate_id = aggregate_id
+        self.expenses: list[Expense] = []
+
+    def add_expense(self, expense: Expense) -> None:
+        self.expenses.append(expense)
+
+
 @dataclass
 class _PlanningStartedEvent:
     deadline: str
@@ -51,6 +60,7 @@ class PlanningAggregate:
         self.status = PlanningStatus.NOT_STARTED
         self.correction_comment: str | None = None
         self.planning_year = 2025
+        self.office_expense_ids: dict[str, str] = {}
         self.event_store.add_subscriber(self._handle_planning_started)
         self.event_store.add_subscriber(self._handle_submitted_to_minister)
         self.event_store.add_subscriber(self._handle_approved)

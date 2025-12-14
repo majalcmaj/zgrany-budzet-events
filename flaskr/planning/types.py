@@ -11,6 +11,12 @@ class PlanningStatus(Enum):
     FINISHED = "finished"
 
 
+class ExpenseStatus(Enum):
+    NOT_STARTED = "not_started"
+    OPEN = "open"
+    CLOSED = "closed"
+
+
 @dataclass
 class Expense:
     chapter: int | str
