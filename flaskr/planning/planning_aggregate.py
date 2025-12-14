@@ -52,6 +52,11 @@ class _PlanningReopenedEvent:
     pass
 
 
+@dataclass
+class _ExpenseAggregatesAssignedEvent:
+    office_ids: list[str]
+
+
 class PlanningAggregate:
     def __init__(self, event_store: EventStore | None = None):
         # TODO: Move to main.py after cleanup
@@ -96,7 +101,7 @@ class PlanningAggregate:
             )
         self.event_store.emit(_PlanningSubmittedEvent())
 
-    def _handle_submitted_to_minister(self, _event: _PlanningSubmittedEvent) -> None:
+    def _handle_submitted_to_minister(self, _: _PlanningSubmittedEvent) -> None:
         self.status = PlanningStatus.IN_REVIEW
         # Side effect: Reset office approvals
 
@@ -130,7 +135,7 @@ class PlanningAggregate:
             )
         self.event_store.emit(_PlanningApprovedEvent())
 
-    def _handle_approved(self, _event: _PlanningApprovedEvent) -> None:
+    def _handle_approved(self, _: _PlanningApprovedEvent) -> None:
         self.status = PlanningStatus.FINISHED
         self.correction_comment = None
         self.planning_year += 1
@@ -142,8 +147,26 @@ class PlanningAggregate:
             )
         self.event_store.emit(_PlanningReopenedEvent())
 
-    def _handle_planning_reopened(self, _event: _PlanningReopenedEvent) -> None:
+    def _handle_planning_reopened(self, _: _PlanningReopenedEvent) -> None:
         self.status = PlanningStatus.NOT_STARTED
+
+    def assign_expense_aggregates(self, office_ids: list[str]) -> None:
+        if self.status != PlanningStatus.NOT_STARTED:
+            raise ValueError(
+                f"Planning is in state {self.status}, cannot assign expense aggregates unless it is in state NOT_STARTED"
+            )
+        self.event_store.emit(_ExpenseAggregatesAssignedEvent(office_ids))
+
+    def _handle_expense_aggregates_assigned(
+        self, event: _ExpenseAggregatesAssignedEvent
+    ) -> None:
+        self.office_expense_ids = {
+            office_id: office_id for office_id in event.office_ids
+        }
 
 
 planning_aggregate = PlanningAggregate()
+expense_aggregates: dict[str, ExpenseAggregate] = {
+    office: ExpenseAggregate(aggregate_id=office) for office in OFFICES
+}
+planning_aggregate.assign_expense_aggregates(OFFICES)
