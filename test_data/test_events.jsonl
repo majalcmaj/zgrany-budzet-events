@@ -1,7 +1,7 @@
-{"module": "flaskr.planning.state", "type": "_InitialMinisterGuidanceEvent", "payload": {"comment": "Prosz\u0119 o oszcz\u0119dne planowanie."}}
-{"module": "flaskr.planning.state", "type": "_PlanningStartedEvent", "payload": {"deadline": "2025-05-20"}}
-{"module": "flaskr.planning.state", "type": "_PlanningSubmittedEvent", "payload": {}}
-{"module": "flaskr.planning.state", "type": "_MinisterCorrectionRequestedEvent", "payload": {"comment": "Prosz\u0119 zmniejszy\u0107 wydatki o 50 tys."}}
-{"module": "flaskr.planning.state", "type": "_PlanningStartedEvent", "payload": {"deadline": "2025-06-20"}}
-{"module": "flaskr.planning.state", "type": "_PlanningSubmittedEvent", "payload": {}}
-{"module": "flaskr.planning.state", "type": "_PlanningApprovedEvent", "payload": {}}
+{"module": "flaskr.planning.planning_aggregate", "type": "_InitialMinisterGuidanceEvent", "payload": {"comment": "Prosz\u0119 o oszcz\u0119dne planowanie."}}
+{"module": "flaskr.planning.planning_aggregate", "type": "_PlanningStartedEvent", "payload": {"deadline": "2025-05-20"}}
+{"module": "flaskr.planning.planning_aggregate", "type": "_PlanningSubmittedEvent", "payload": {}}
+{"module": "flaskr.planning.planning_aggregate", "type": "_MinisterCorrectionRequestedEvent", "payload": {"comment": "Prosz\u0119 zmniejszy\u0107 wydatki o 50 tys."}}
+{"module": "flaskr.planning.planning_aggregate", "type": "_PlanningStartedEvent", "payload": {"deadline": "2025-06-20"}}
+{"module": "flaskr.planning.planning_aggregate", "type": "_PlanningSubmittedEvent", "payload": {}}
+{"module": "flaskr.planning.planning_aggregate", "type": "_PlanningApprovedEvent", "payload": {}}

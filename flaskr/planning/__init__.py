@@ -8,7 +8,7 @@ from ..constants import CHIEF, OFFICES, OFFICES_NAME, OFFICES_SINGLE
 from .chief import chief_bp
 from .expenses import create_expenses, expenses_bp
 from .minister import minister_bp
-from .state import EXPENSES
+from .planning_aggregate import EXPENSES
 
 planning_bp = Blueprint("planning", __name__)
 planning_bp.register_blueprint(chief_bp, url_prefix="/chief")

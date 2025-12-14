@@ -8,7 +8,12 @@ from werkzeug.wrappers import Response
 from ...auth import auth_required
 from ...constants import OFFICES, OFFICES_GENITIVE
 from ...db import Section, db
-from ..state import EXPENSES, EXPENSES_CLOSED, PlanningStatus, planning_state
+from ..planning_aggregate import (
+    EXPENSES,
+    EXPENSES_CLOSED,
+    PlanningStatus,
+    planning_state,
+)
 from ..types import Expense
 
 __all__ = ["expenses_bp", "create_expenses"]

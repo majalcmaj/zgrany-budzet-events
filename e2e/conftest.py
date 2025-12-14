@@ -8,7 +8,7 @@ from werkzeug.serving import make_server
 
 from flaskr.constants import OFFICES
 from flaskr.main import app, db
-from flaskr.planning.state import (
+from flaskr.planning.planning_aggregate import (
     EXPENSES,
     EXPENSES_CLOSED,
     PlanningStatus,

@@ -3,7 +3,12 @@ from werkzeug.wrappers import Response
 
 from ...auth import auth_required
 from ...constants import OFFICES
-from ..state import EXPENSES, EXPENSES_CLOSED, PlanningStatus, planning_state
+from ..planning_aggregate import (
+    EXPENSES,
+    EXPENSES_CLOSED,
+    PlanningStatus,
+    planning_state,
+)
 
 minister_bp = Blueprint("minister", __name__)
 
