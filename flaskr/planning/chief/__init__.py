@@ -7,6 +7,9 @@ from ..planning_aggregate import (
     EXPENSES,
     EXPENSES_CLOSED,
     PlanningStatus,
+    ReopenPlanningCommand,
+    StartPlanningCommand,
+    SubmitToMinisterCommand,
     planning_aggregate,
 )
 from ..planning_service import planning_service
@@ -23,11 +26,11 @@ def dashboard() -> str | Response:
         if action == "start":
             deadline = request.form.get("deadline")
             if deadline:
-                planning_service.start_planning(deadline)
+                planning_service.execute(StartPlanningCommand("2025", deadline))
         elif action == "submit_minister":
-            planning_aggregate.submit_to_minister()
+            planning_service.execute(SubmitToMinisterCommand("2025"))
         elif action == "reopen":
-            planning_aggregate.reopen()
+            planning_service.execute(ReopenPlanningCommand("2025"))
 
         return redirect(url_for("planning.chief.dashboard"))
 

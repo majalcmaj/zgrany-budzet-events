@@ -30,32 +30,32 @@ class ExpenseAggregate:
 
 
 @dataclass
-class _PlanningStartedEvent(Event):
+class PlanningStartedEvent(Event):
     deadline: str
 
 
 @dataclass
-class _PlanningSubmittedEvent(Event):
+class PlanningSubmittedEvent(Event):
     pass
 
 
 @dataclass
-class _PlanningApprovedEvent(Event):
+class PlanningApprovedEvent(Event):
     pass
 
 
 @dataclass
-class _InitialMinisterGuidanceEvent(Event):
+class InitialMinisterGuidanceEvent(Event):
     comment: str
 
 
 @dataclass
-class _MinisterCorrectionRequestedEvent(Event):
+class MinisterCorrectionRequestedEvent(Event):
     comment: str
 
 
 @dataclass
-class _PlanningReopenedEvent(Event):
+class PlanningReopenedEvent(Event):
     pass
 
 
@@ -97,21 +97,21 @@ class RequestCorrectionCommand(Command):
 
 
 def planning_aggregate_stream_id(agg_id: str) -> str:
-    return "planning_aggregate-" + agg_id
+    return "pl_agg_" + agg_id
 
 
 class PlanningAggregate:
     def __init__(self, event_store: EventStore | None = None):
         # TODO: Move to main.py after cleanup
         self.event_store = event_store or events()
-        self.id = "pl_agg_2025"
+        self.id = "2025"
         self.stream_id = planning_aggregate_stream_id(self.id)
         self.deadline: str | None = None
         self.status = PlanningStatus.NOT_STARTED
         self.correction_comment: str | None = None
         self.planning_year = 2025
         self.office_expense_ids: dict[str, str] = {}
-        self.event_store.add_subscriber(self.id, self._apply)
+        self.event_store.add_subscriber(self.stream_id, self._apply)
 
     def process(self, command: Command) -> list[Event]:
         match command:
@@ -141,27 +141,27 @@ class PlanningAggregate:
         if not deadline:
             raise ValueError("Deadline is required")
 
-        return [_PlanningStartedEvent(stream_id=self.stream_id, deadline=deadline)]
+        return [PlanningStartedEvent(stream_id=self.stream_id, deadline=deadline)]
 
     def submit_to_minister(self) -> list[Event]:
         if self.status != PlanningStatus.IN_PROGRESS:
             raise ValueError(
                 f"Planning is in state {self.status}, cannot submit unless it is in state IN_PROGRESS"
             )
-        return [_PlanningSubmittedEvent(stream_id=self.stream_id)]
+        return [PlanningSubmittedEvent(stream_id=self.stream_id)]
 
     def approve(self) -> list[Event]:
         if self.status != PlanningStatus.IN_REVIEW:
             raise ValueError(
                 f"Planning is in state {self.status}, cannot approve unless it is in state IN_REVIEW"
             )
-        return [_PlanningApprovedEvent(self.stream_id)]
+        return [PlanningApprovedEvent(self.stream_id)]
 
     def request_correction(self, comment: str) -> list[Event]:
         if self.status == PlanningStatus.NOT_STARTED:
-            return [_InitialMinisterGuidanceEvent(self.stream_id, comment)]
+            return [InitialMinisterGuidanceEvent(self.stream_id, comment)]
         elif self.status == PlanningStatus.IN_REVIEW:
-            return [_MinisterCorrectionRequestedEvent(self.stream_id, comment)]
+            return [MinisterCorrectionRequestedEvent(self.stream_id, comment)]
         return []
 
     def reopen(self) -> list[Event]:
@@ -169,7 +169,7 @@ class PlanningAggregate:
             raise ValueError(
                 f"Planning is in state {self.status}, cannot reopen unless it is in state FINISHED"
             )
-        return [_PlanningReopenedEvent(self.stream_id)]
+        return [PlanningReopenedEvent(self.stream_id)]
 
     def assign_expense_aggregates(self, office_ids: list[str]) -> list[Event]:
         if self.status != PlanningStatus.NOT_STARTED:
@@ -180,17 +180,17 @@ class PlanningAggregate:
 
     def _apply(self, event: Event) -> None:
         match event:
-            case _PlanningStartedEvent() as e:
+            case PlanningStartedEvent() as e:
                 self._handle_planning_started(e)
-            case _PlanningSubmittedEvent() as e:
+            case PlanningSubmittedEvent() as e:
                 self._handle_submitted_to_minister(e)
-            case _PlanningApprovedEvent() as e:
+            case PlanningApprovedEvent() as e:
                 self._handle_approved(e)
-            case _InitialMinisterGuidanceEvent() as e:
+            case InitialMinisterGuidanceEvent() as e:
                 self._handle_initial_minister_guidance(e)
-            case _MinisterCorrectionRequestedEvent() as e:
+            case MinisterCorrectionRequestedEvent() as e:
                 self._handle_minister_correction_requested(e)
-            case _PlanningReopenedEvent() as e:
+            case PlanningReopenedEvent() as e:
                 self._handle_planning_reopened(e)
             case _ExpenseAggregatesAssignedEvent() as e:
                 self._handle_expense_aggregates_assigned(e)
@@ -199,7 +199,7 @@ class PlanningAggregate:
                     f"Got unhandled event type: {type(event)} in stream {event.stream_id}"
                 )
 
-    def _handle_planning_started(self, event: _PlanningStartedEvent) -> None:
+    def _handle_planning_started(self, event: PlanningStartedEvent) -> None:
         self.deadline = event.deadline
         self.status = PlanningStatus.IN_PROGRESS
 
@@ -207,7 +207,7 @@ class PlanningAggregate:
         for office in EXPENSES_CLOSED:
             EXPENSES_CLOSED[office] = False
 
-    def _handle_submitted_to_minister(self, _: _PlanningSubmittedEvent) -> None:
+    def _handle_submitted_to_minister(self, _: PlanningSubmittedEvent) -> None:
         self.status = PlanningStatus.IN_REVIEW
         # Side effect: Reset office approvals
 
@@ -215,12 +215,12 @@ class PlanningAggregate:
             EXPENSES_CLOSED[office] = True
 
     def _handle_initial_minister_guidance(
-        self, event: _InitialMinisterGuidanceEvent
+        self, event: InitialMinisterGuidanceEvent
     ) -> None:
         self.correction_comment = event.comment
 
     def _handle_minister_correction_requested(
-        self, event: _MinisterCorrectionRequestedEvent
+        self, event: MinisterCorrectionRequestedEvent
     ) -> None:
         self.correction_comment = event.comment
         self.status = PlanningStatus.NEEDS_CORRECTION
@@ -228,12 +228,12 @@ class PlanningAggregate:
         for office in EXPENSES_CLOSED:
             EXPENSES_CLOSED[office] = False
 
-    def _handle_approved(self, _: _PlanningApprovedEvent) -> None:
+    def _handle_approved(self, _: PlanningApprovedEvent) -> None:
         self.status = PlanningStatus.FINISHED
         self.correction_comment = None
         self.planning_year += 1
 
-    def _handle_planning_reopened(self, _: _PlanningReopenedEvent) -> None:
+    def _handle_planning_reopened(self, _: PlanningReopenedEvent) -> None:
         self.status = PlanningStatus.NOT_STARTED
 
     def _handle_expense_aggregates_assigned(

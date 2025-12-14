@@ -6,9 +6,12 @@ from ...constants import OFFICES
 from ..planning_aggregate import (
     EXPENSES,
     EXPENSES_CLOSED,
+    ApprovePlanningCommand,
     PlanningStatus,
+    RequestCorrectionCommand,
     planning_aggregate,
 )
+from ..planning_service import planning_service
 
 minister_bp = Blueprint("minister", __name__)
 
@@ -21,9 +24,9 @@ def dashboard() -> str | Response:
         if action == "request_correction":
             comment = request.form.get("comment")
             if comment:
-                planning_aggregate.request_correction(comment)
+                planning_service.execute(RequestCorrectionCommand("2025", comment))
         elif action == "approve":
-            planning_aggregate.approve()
+            planning_service.execute(ApprovePlanningCommand("2025"))
         return redirect(url_for("planning.minister.dashboard"))
 
     offices_status: list[dict[str, object]] = []
