@@ -7,7 +7,7 @@ from .types import Event
 
 logger = getLogger(__name__)
 
-__all__ = ["EventStore", "DefaultEventStore"]
+__all__ = ["EventStore", "DefaultEventStore", "TEvent"]
 
 TEvent = TypeVar("TEvent", bound=Event, covariant=True)
 
