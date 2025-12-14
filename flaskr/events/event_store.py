@@ -1,80 +1,61 @@
-import inspect
 import threading
 from logging import getLogger
-from typing import Any, Callable, List, Protocol, runtime_checkable
+from typing import Any, Callable, List, Protocol, TypeVar, runtime_checkable
 
 from .event_repository import EventRepository
+from .types import Event
 
 logger = getLogger(__name__)
 
 __all__ = ["EventStore", "DefaultEventStore"]
 
+TEvent = TypeVar("TEvent", bound=Event, covariant=True)
+
 
 @runtime_checkable
 class EventStore(Protocol):
-    def add_subscriber(self, handler: Callable[[Any], None]) -> None: ...
-    def remove_subscriber(self, handler: Callable[[Any], None]) -> bool: ...
-    def emit(self, events: List[Any]) -> None: ...
+    def add_subscriber(
+        self, stream_id: str, handler: Callable[[TEvent], None]
+    ) -> None: ...
+    def remove_subscriber(
+        self, stream_id: str, handler: Callable[[TEvent], None]
+    ) -> bool: ...
+    def emit(self, events: List[TEvent]) -> None: ...
     def destroy(self) -> None: ...
 
 
 class DefaultEventStore(EventStore):
     def __init__(self, event_repository: EventRepository) -> None:
         # Dictionary mapping event types to lists of handler functions
-        self._subscribers: dict[type, list[Callable[[Any], None]]] = {}
+        self._subscribers: dict[str, list[Callable[[Any], None]]] = {}
         self._event_repository = event_repository
         self._lock = threading.Lock()
 
-    def add_subscriber(self, handler: Callable[[Any], None]) -> None:
+    def add_subscriber(self, stream_id: str, handler: Callable[[TEvent], None]) -> None:
         """
         Add a subscriber handler function.
-        The handler's first parameter type annotation determines which event type it handles.
         """
-        sig = inspect.signature(handler)
-        params = list(sig.parameters.values())
-
-        if not params:
-            raise ValueError("Handler must accept at least one parameter (the event)")
-
-        # Get the type annotation of the first parameter
-        event_type = params[0].annotation
-
-        if event_type == inspect.Parameter.empty:
-            raise ValueError("Handler's first parameter must have a type annotation")
-
         with self._lock:
             # Add the handler to the list of subscribers for this event type
-            if event_type not in self._subscribers:
-                self._subscribers[event_type] = []
+            self._subscribers.setdefault(stream_id, []).append(handler)
 
-            self._subscribers[event_type].append(handler)
-
-    def remove_subscriber(self, handler: Callable[[Any], None]) -> bool:
+    def remove_subscriber(
+        self, stream_id: str, handler: Callable[[TEvent], None]
+    ) -> bool:
         """
         Remove a subscriber handler function.
         Returns True if the handler was found and removed, False otherwise.
         """
-        sig = inspect.signature(handler)
-        params = list(sig.parameters.values())
-
-        if not params:
-            return False
-
-        event_type = params[0].annotation
-
-        if event_type == inspect.Parameter.empty:
-            return False
-
         with self._lock:
-            if event_type in self._subscribers:
+            if stream_id in self._subscribers:
                 try:
-                    self._subscribers[event_type].remove(handler)
+                    self._subscribers[stream_id].remove(handler)
                     return True
                 except ValueError:
                     return False
             return False
 
-    def emit(self, events: List[Any]) -> None:
+    def emit(self, events: List[TEvent]) -> None:
         """
         Emit an event: persist it to the database and notify all registered handlers.
         """
@@ -84,17 +65,17 @@ class DefaultEventStore(EventStore):
                 self._event_repository.store(event)
             self._notify_subscribers(event)
 
-    def _notify_subscribers(self, event: Any) -> None:
+    def _notify_subscribers(self, event: Event) -> None:
         """
         Notify all registered handlers for the event type without persisting.
         Used internally and by replay functionality.
         """
-        event_type = type(event)  # type: ignore[misc]
-
         with self._lock:
-            handlers = self._subscribers.get(event_type, []).copy()  # type: ignore[misc]
+            handlers = self._subscribers.get(event.stream_id, []).copy()  # type: ignore[misc]
 
-        logger.debug(f"Notifying {len(handlers)} handlers for {event_type.__name__}")
+        logger.debug(
+            f"Notifying {len(handlers)} handlers for stream_id {event.stream_id}"
+        )
 
         for handler in handlers:
             try:
@@ -102,7 +83,7 @@ class DefaultEventStore(EventStore):
             except Exception as e:
                 logger.error(
                     f"Handler {handler.__name__ if hasattr(handler, '__name__') else handler} "
-                    f"failed for {event_type.__name__}: {e}",
+                    f"failed for {event.stream_id}: {e}",
                     exc_info=True,
                 )
 

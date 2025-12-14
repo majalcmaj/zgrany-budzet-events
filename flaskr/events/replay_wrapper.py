@@ -10,11 +10,11 @@ class ReplayWrapper(EventStore):
     def __init__(self, event_store: EventStore):
         self._event_store = event_store
 
-    def add_subscriber(self, handler: Callable[[Any], None]) -> None:
-        self._event_store.add_subscriber(handler)
+    def add_subscriber(self, stream_id: str, handler: Callable[[Any], None]) -> None:
+        self._event_store.add_subscriber(stream_id, handler)
 
-    def remove_subscriber(self, handler: Callable[[Any], None]) -> bool:
-        return self._event_store.remove_subscriber(handler)
+    def remove_subscriber(self, stream_id: str, handler: Callable[[Any], None]) -> bool:
+        return self._event_store.remove_subscriber(stream_id, handler)
 
     def emit(self, events: List[Any]) -> None:
         pass
@@ -34,7 +34,9 @@ class ReplayWrapper(EventStore):
                 event_module = event_data["module"]
                 event_class = getattr(importlib.import_module(event_module), event_type)
                 print(f"Replaying event: {event_type} from data {event_data}")
-                event = event_class(**event_data["payload"])
+                event = event_class(
+                    **{"stream_id": event_data["stream_id"], **event_data["payload"]}
+                )
                 self._event_store.emit([event])
 
 
