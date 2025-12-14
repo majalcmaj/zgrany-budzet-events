@@ -26,7 +26,12 @@ class ExpenseAggregate:
 
 
 @dataclass
-class _PlanningStartedEvent:
+class Event:
+    aggregate_id: str
+
+
+@dataclass
+class _PlanningStartedEvent(Event):
     deadline: str
 
 
@@ -57,10 +62,21 @@ class _ExpenseAggregatesAssignedEvent:
     office_ids: list[str]
 
 
+@dataclass
+class Command:
+    aggregate_id: str
+
+
+@dataclass
+class StartPlanningCommand(Command):
+    deadline: str
+
+
 class PlanningAggregate:
     def __init__(self, event_store: EventStore | None = None):
         # TODO: Move to main.py after cleanup
         self.event_store = event_store or events()
+        self.id = "planning_aggregate"
         self.deadline: str | None = None
         self.status = PlanningStatus.NOT_STARTED
         self.correction_comment: str | None = None
@@ -73,7 +89,14 @@ class PlanningAggregate:
         self.event_store.add_subscriber(self._handle_minister_correction_requested)
         self.event_store.add_subscriber(self._handle_planning_reopened)
 
-    def start_planning(self, deadline: str) -> None:
+    def process(self, command: Command) -> list[Event]:
+        match command:
+            case StartPlanningCommand() as cmd:
+                return self.start_planning(cmd.deadline)
+            case _:
+                return []
+
+    def start_planning(self, deadline: str) -> list[Event]:
         if self.status not in (
             PlanningStatus.NOT_STARTED,
             PlanningStatus.NEEDS_CORRECTION,
@@ -84,7 +107,7 @@ class PlanningAggregate:
         if not deadline:
             raise ValueError("Deadline is required")
 
-        self.event_store.emit(_PlanningStartedEvent(deadline))
+        return [_PlanningStartedEvent(aggregate_id=self.id, deadline=deadline)]
 
     def _handle_planning_started(self, event: _PlanningStartedEvent) -> None:
         self.deadline = event.deadline
@@ -99,7 +122,7 @@ class PlanningAggregate:
             raise ValueError(
                 f"Planning is in state {self.status}, cannot submit unless it is in state IN_PROGRESS"
             )
-        self.event_store.emit(_PlanningSubmittedEvent())
+        self.event_store.emit([_PlanningSubmittedEvent()])
 
     def _handle_submitted_to_minister(self, _: _PlanningSubmittedEvent) -> None:
         self.status = PlanningStatus.IN_REVIEW
@@ -110,9 +133,9 @@ class PlanningAggregate:
 
     def request_correction(self, comment: str) -> None:
         if self.status == PlanningStatus.NOT_STARTED:
-            self.event_store.emit(_InitialMinisterGuidanceEvent(comment))
+            self.event_store.emit([_InitialMinisterGuidanceEvent(comment)])
         elif self.status == PlanningStatus.IN_REVIEW:
-            self.event_store.emit(_MinisterCorrectionRequestedEvent(comment))
+            self.event_store.emit([_MinisterCorrectionRequestedEvent(comment)])
 
     def _handle_initial_minister_guidance(
         self, event: _InitialMinisterGuidanceEvent
@@ -133,7 +156,7 @@ class PlanningAggregate:
             raise ValueError(
                 f"Planning is in state {self.status}, cannot approve unless it is in state IN_REVIEW"
             )
-        self.event_store.emit(_PlanningApprovedEvent())
+        self.event_store.emit([_PlanningApprovedEvent()])
 
     def _handle_approved(self, _: _PlanningApprovedEvent) -> None:
         self.status = PlanningStatus.FINISHED
@@ -145,7 +168,7 @@ class PlanningAggregate:
             raise ValueError(
                 f"Planning is in state {self.status}, cannot reopen unless it is in state FINISHED"
             )
-        self.event_store.emit(_PlanningReopenedEvent())
+        self.event_store.emit([_PlanningReopenedEvent()])
 
     def _handle_planning_reopened(self, _: _PlanningReopenedEvent) -> None:
         self.status = PlanningStatus.NOT_STARTED
@@ -155,7 +178,7 @@ class PlanningAggregate:
             raise ValueError(
                 f"Planning is in state {self.status}, cannot assign expense aggregates unless it is in state NOT_STARTED"
             )
-        self.event_store.emit(_ExpenseAggregatesAssignedEvent(office_ids))
+        self.event_store.emit([_ExpenseAggregatesAssignedEvent(office_ids)])
 
     def _handle_expense_aggregates_assigned(
         self, event: _ExpenseAggregatesAssignedEvent

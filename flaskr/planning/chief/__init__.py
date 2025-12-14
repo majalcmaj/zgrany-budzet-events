@@ -9,6 +9,7 @@ from ..planning_aggregate import (
     PlanningStatus,
     planning_aggregate,
 )
+from ..planning_service import planning_service
 
 chief_bp = Blueprint("chief", __name__)
 
@@ -22,7 +23,7 @@ def dashboard() -> str | Response:
         if action == "start":
             deadline = request.form.get("deadline")
             if deadline:
-                planning_aggregate.start_planning(deadline)
+                planning_service.start_planning(deadline)
         elif action == "submit_minister":
             planning_aggregate.submit_to_minister()
         elif action == "reopen":

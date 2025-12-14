@@ -1,6 +1,6 @@
 import importlib
 import json
-from typing import Any, Callable
+from typing import Any, Callable, List
 
 from .event_repository import EventRepository
 from .event_store import EventStore
@@ -16,7 +16,7 @@ class ReplayWrapper(EventStore):
     def remove_subscriber(self, handler: Callable[[Any], None]) -> bool:
         return self._event_store.remove_subscriber(handler)
 
-    def emit(self, event: Any) -> None:
+    def emit(self, events: List[Any]) -> None:
         pass
 
     def destroy(self) -> None:
@@ -33,8 +33,9 @@ class ReplayWrapper(EventStore):
                 event_type = event_data["type"]
                 event_module = event_data["module"]
                 event_class = getattr(importlib.import_module(event_module), event_type)
+                print(f"Replaying event: {event_type} from data {event_data}")
                 event = event_class(**event_data["payload"])
-                self._event_store.emit(event)
+                self._event_store.emit([event])
 
 
 class NoopEventRepository(EventRepository):

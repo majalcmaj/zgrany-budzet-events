@@ -1,7 +1,7 @@
 import inspect
 import threading
 from logging import getLogger
-from typing import Any, Callable, Protocol, runtime_checkable
+from typing import Any, Callable, List, Protocol, runtime_checkable
 
 from .event_repository import EventRepository
 
@@ -14,7 +14,7 @@ __all__ = ["EventStore", "DefaultEventStore"]
 class EventStore(Protocol):
     def add_subscriber(self, handler: Callable[[Any], None]) -> None: ...
     def remove_subscriber(self, handler: Callable[[Any], None]) -> bool: ...
-    def emit(self, event: Any) -> None: ...
+    def emit(self, events: List[Any]) -> None: ...
     def destroy(self) -> None: ...
 
 
@@ -74,13 +74,15 @@ class DefaultEventStore(EventStore):
                     return False
             return False
 
-    def emit(self, event: Any) -> None:
+    def emit(self, events: List[Any]) -> None:
         """
         Emit an event: persist it to the database and notify all registered handlers.
         """
-        with self._lock:
-            self._event_repository.store(event)
-        self._notify_subscribers(event)
+
+        for event in events:
+            with self._lock:
+                self._event_repository.store(event)
+            self._notify_subscribers(event)
 
     def _notify_subscribers(self, event: Any) -> None:
         """

@@ -18,7 +18,7 @@ class MockSubscriber:
 
     def handle_test_event(self, event: MockEvent) -> None:
         self.handled_events.append(event)
-        self.event_store.emit(MockEvent(21))
+        self.event_store.emit([MockEvent(21)])
 
 
 def test_replay() -> None:

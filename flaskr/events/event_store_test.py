@@ -51,7 +51,7 @@ def test_single_event_multiple_subscribers(event_store: DefaultEventStore) -> No
     event_store.add_subscriber(subscriber1.handle_test_event)
     event_store.add_subscriber(subscriber2.handle_test_event)
 
-    event_store.emit(MockEvent(1))
+    event_store.emit([MockEvent(1)])
 
     assert subscriber1.handled_events == [MockEvent(1)]
     assert subscriber2.handled_events == [MockEvent(1)]
@@ -65,9 +65,7 @@ def test_many_events(event_store: DefaultEventStore) -> None:
     event_store.add_subscriber(subscriber2.handle_test_event)
     event_store.add_subscriber(subscriber2.handle_test_event2)
 
-    event_store.emit(MockEvent(1))
-    event_store.emit(MockEvent2(1))
-    event_store.emit(MockEvent(2))
+    event_store.emit([MockEvent(1), MockEvent2(1), MockEvent(2)])
 
     assert subscriber1.handled_events == [MockEvent(1), MockEvent2(1), MockEvent(2)]
     assert subscriber2.handled_events == [MockEvent(1), MockEvent2(1), MockEvent(2)]
@@ -81,15 +79,13 @@ def test_different_events(event_store: DefaultEventStore) -> None:
     event_store.add_subscriber(subscriber2.handle_test_event2)
     event_store.add_subscriber(subscriber2.handle_test_event3)
 
-    event_store.emit(MockEvent(1))
-    event_store.emit(MockEvent2(2))
-    event_store.emit(MockEvent3(3))
+    event_store.emit([MockEvent(1), MockEvent2(2), MockEvent3(3)])
 
     assert subscriber1.handled_events == [MockEvent(1), MockEvent2(2)]
     assert subscriber2.handled_events == [MockEvent2(2), MockEvent3(3)]
 
 
-def test_non_class_method(event_store: DefaultEventStore) -> None:
+def test_subscibing_function(event_store: DefaultEventStore) -> None:
     events_handled: list[MockEvent] = []
 
     def handle_test_event(event: MockEvent) -> None:
@@ -97,7 +93,7 @@ def test_non_class_method(event_store: DefaultEventStore) -> None:
 
     event_store.add_subscriber(handle_test_event)
 
-    event_store.emit(MockEvent(1))
+    event_store.emit([MockEvent(1)])
 
     assert events_handled == [MockEvent(1)]
 
@@ -111,7 +107,7 @@ def test_remove_subscriber(event_store: DefaultEventStore) -> None:
     event_store.add_subscriber(subscriber2.handle_test_event)
 
     # Emit an event - both should receive it
-    event_store.emit(MockEvent(1))
+    event_store.emit([MockEvent(1)])
     assert subscriber1.handled_events == [MockEvent(1)]
     assert subscriber2.handled_events == [MockEvent(1)]
 
@@ -120,7 +116,7 @@ def test_remove_subscriber(event_store: DefaultEventStore) -> None:
     assert result is True
 
     # Emit another event - only subscriber2 should receive it
-    event_store.emit(MockEvent(2))
+    event_store.emit([MockEvent(2)])
     assert subscriber1.handled_events == [MockEvent(1)]  # No change
     assert subscriber2.handled_events == [MockEvent(1), MockEvent(2)]
 
