@@ -20,13 +20,9 @@ EXPENSES: dict[str, list[Expense]] = {office: [] for office in OFFICES}
 EXPENSES_CLOSED = {office: False for office in OFFICES}
 
 
-class ExpenseAggregate:
-    def __init__(self, aggregate_id: str):
-        self.aggregate_id = aggregate_id
-        self.expenses: list[Expense] = []
-
-    def add_expense(self, expense: Expense) -> None:
-        self.expenses.append(expense)
+@dataclass
+class PlanningScheduled(Event):
+    planning_year: int
 
 
 @dataclass
@@ -123,8 +119,6 @@ class PlanningAggregate:
                 return self.approve()
             case ReopenPlanningCommand():
                 return self.reopen()
-            case AssignExpenseAggregatesCommand() as cmd:
-                return self.assign_expense_aggregates(cmd.office_ids)
             case RequestCorrectionCommand() as cmd:
                 return self.request_correction(cmd.comment)
             case _:
@@ -170,13 +164,6 @@ class PlanningAggregate:
                 f"Planning is in state {self.status}, cannot reopen unless it is in state FINISHED"
             )
         return [PlanningReopenedEvent(self.stream_id)]
-
-    def assign_expense_aggregates(self, office_ids: list[str]) -> list[Event]:
-        if self.status != PlanningStatus.NOT_STARTED:
-            raise ValueError(
-                f"Planning is in state {self.status}, cannot assign expense aggregates unless it is in state NOT_STARTED"
-            )
-        return [_ExpenseAggregatesAssignedEvent(self.stream_id, office_ids)]
 
     def _apply(self, event: Event) -> None:
         match event:
@@ -245,7 +232,3 @@ class PlanningAggregate:
 
 
 planning_aggregate = PlanningAggregate()
-expense_aggregates: dict[str, ExpenseAggregate] = {
-    office: ExpenseAggregate(aggregate_id=office) for office in OFFICES
-}
-planning_aggregate.assign_expense_aggregates(OFFICES)
