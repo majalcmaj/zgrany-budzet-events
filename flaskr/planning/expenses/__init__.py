@@ -15,6 +15,9 @@ from ..planning_aggregate import (
     planning_aggregate,
 )
 from ..types import Expense
+from .aggregate import expense_stream_id
+
+print(f"expense_stream_id function loaded: {expense_stream_id}")
 
 __all__ = ["expenses_bp", "create_expenses"]
 

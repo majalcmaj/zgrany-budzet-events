@@ -237,6 +237,7 @@ planning_aggregate: PlanningAggregate | None = None
 
 
 def planning_scheduled_listener(event: PlanningScheduled) -> None:
+
     logger.warning(
         f"Planning scheduled for year {event.planning_year} for offices {event.offices}"
     )

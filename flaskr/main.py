@@ -1,7 +1,8 @@
 from flask import Flask
 
+from .constants import OFFICES
 from .db import db
-from .events import init_event_extension
+from .events import events, init_event_extension
 
 __all__ = ["app", "db"]
 
@@ -13,8 +14,17 @@ db.init_app(app)
 with app.app_context():
     init_event_extension(app)
     from .planning import planning_bp
+    from .planning.planning_aggregate import PlanningScheduled
 
     app.register_blueprint(planning_bp, url_prefix="/")
+
+    events().emit(
+        [
+            PlanningScheduled(
+                stream_id="planning_scheduled", planning_year=2025, offices=OFFICES
+            )
+        ]
+    )
 
 
 @app.route("/health")

@@ -11,9 +11,9 @@ class PlanningStatus(Enum):
     FINISHED = "finished"
 
 
-class ExpenseStatus(Enum):
+class ExpensesStatus(Enum):
     NOT_STARTED = "not_started"
-    OPEN = "open"
+    IN_PROGRESS = "in_progress"
     CLOSED = "closed"
 
 
