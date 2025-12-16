@@ -23,6 +23,7 @@ EXPENSES_CLOSED = {office: False for office in OFFICES}
 @dataclass
 class PlanningScheduled(Event):
     planning_year: int
+    offices: list[str]
 
 
 @dataclass
@@ -231,4 +232,23 @@ class PlanningAggregate:
         }
 
 
-planning_aggregate = PlanningAggregate()
+# TODO: no globals
+planning_aggregate: PlanningAggregate | None = None
+
+
+def planning_scheduled_listener(event: PlanningScheduled) -> None:
+    logger.warning(
+        f"Planning scheduled for year {event.planning_year} for offices {event.offices}"
+    )
+    global planning_aggregate
+    planning_aggregate = PlanningAggregate()
+
+
+events().add_subscriber("planning_scheduled", planning_scheduled_listener)
+events().emit(
+    [
+        PlanningScheduled(
+            stream_id="planning_scheduled", planning_year=2025, offices=OFFICES
+        )
+    ]
+)

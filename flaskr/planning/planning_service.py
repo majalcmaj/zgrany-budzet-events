@@ -8,6 +8,7 @@ __all__ = ["PlanningService", "planning_service"]
 class PlanningService:
     def __init__(self):
         self._event_store = events()
+        assert planning_aggregate is not None
         self._planning_aggregate = planning_aggregate
 
     def execute(self, command: Command) -> None:

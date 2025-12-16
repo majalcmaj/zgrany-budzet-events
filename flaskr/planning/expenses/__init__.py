@@ -20,6 +20,8 @@ __all__ = ["expenses_bp", "create_expenses"]
 
 expenses_bp = Blueprint("expenses", __name__)
 
+assert planning_aggregate is not None
+
 
 @expenses_bp.route("/")
 @auth_required

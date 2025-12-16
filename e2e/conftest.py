@@ -60,6 +60,7 @@ def server() -> Generator[ServerThread, None, None]:
 
 @pytest.fixture(autouse=True)
 def reset_state() -> Generator[None, None, None]:
+    assert planning_aggregate is not None
     planning_aggregate.status = PlanningStatus.NOT_STARTED
     planning_aggregate.deadline = None
     planning_aggregate.correction_comment = None
