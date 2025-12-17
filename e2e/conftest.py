@@ -7,12 +7,12 @@ from flask import Flask
 from werkzeug.serving import make_server
 
 from flaskr.constants import OFFICES
+from flaskr.extensions import ctx
 from flaskr.main import app, db
 from flaskr.planning.planning_aggregate import (
     EXPENSES,
     EXPENSES_CLOSED,
     PlanningStatus,
-    planning_aggregate,
 )
 
 
@@ -60,6 +60,7 @@ def server() -> Generator[ServerThread, None, None]:
 
 @pytest.fixture(autouse=True)
 def reset_state() -> Generator[None, None, None]:
+    planning_aggregate = ctx().planning_aggregate
     assert planning_aggregate is not None
     planning_aggregate.status = PlanningStatus.NOT_STARTED
     planning_aggregate.deadline = None

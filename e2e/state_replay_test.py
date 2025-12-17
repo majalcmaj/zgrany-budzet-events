@@ -1,6 +1,6 @@
-from ..events.event_store import DefaultEventStore
-from ..events.replay_wrapper import NoopEventRepository, ReplayWrapper
-from ..planning.planning_aggregate import PlanningAggregate, PlanningStatus
+from flaskr.events.event_store import DefaultEventStore
+from flaskr.events.replay_wrapper import NoopEventRepository, ReplayWrapper
+from flaskr.planning.planning_aggregate import PlanningAggregate, PlanningStatus
 
 
 def test_state_replay() -> None:

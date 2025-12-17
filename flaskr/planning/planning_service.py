@@ -1,19 +1,12 @@
-from flaskr.events import events
+from ..events import events
+from ..events.types import Command
 
-from .planning_aggregate import Command, planning_aggregate
-
-__all__ = ["PlanningService", "planning_service"]
+__all__ = ["PlanningService"]
 
 
 class PlanningService:
-    def __init__(self):
-        self._event_store = events()
-        assert planning_aggregate is not None
-        self._planning_aggregate = planning_aggregate
-
     def execute(self, command: Command) -> None:
-        events = self._planning_aggregate.process(command)
-        self._event_store.emit(events)
+        from .planning_aggregate import get_planning_aggregate
 
-
-planning_service = PlanningService()
+        event_list = get_planning_aggregate().process(command)
+        events().emit(event_list)

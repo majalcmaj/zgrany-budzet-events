@@ -1,6 +1,8 @@
 from flask import Blueprint, redirect, render_template, request, url_for
 from werkzeug.wrappers import Response
 
+from flaskr.extensions import ctx
+
 from ...auth import auth_required
 from ...constants import OFFICES
 from ..planning_aggregate import (
@@ -9,9 +11,7 @@ from ..planning_aggregate import (
     ApprovePlanningCommand,
     PlanningStatus,
     RequestCorrectionCommand,
-    planning_aggregate,
 )
-from ..planning_service import planning_service
 
 minister_bp = Blueprint("minister", __name__)
 
@@ -24,9 +24,11 @@ def dashboard() -> str | Response:
         if action == "request_correction":
             comment = request.form.get("comment")
             if comment:
-                planning_service.execute(RequestCorrectionCommand("2025", comment))
+                ctx().planning_service.execute(
+                    RequestCorrectionCommand("2025", comment)
+                )
         elif action == "approve":
-            planning_service.execute(ApprovePlanningCommand("2025"))
+            ctx().planning_service.execute(ApprovePlanningCommand("2025"))
         return redirect(url_for("planning.minister.dashboard"))
 
     offices_status: list[dict[str, object]] = []
@@ -51,7 +53,7 @@ def dashboard() -> str | Response:
 
     return render_template(
         "minister_dashboard.html",
-        state=planning_aggregate,
+        state=ctx().planning_aggregate,
         offices_status=offices_status,
         total_all_needs=total_all_needs,
         PlanningStatus=PlanningStatus,

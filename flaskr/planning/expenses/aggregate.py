@@ -9,7 +9,7 @@ from ..types import Expense, ExpensesStatus
 logger = logging.getLogger(__name__)
 
 __all__ = [
-    "ExpensesAggregate",
+    "ExpenseListAggregate",
     "AddExpenseCommand",
 ]
 
@@ -20,27 +20,32 @@ class ExpenseAdded(Event):
 
 
 @dataclass
+class ExpenseListCreated(Event):
+    expense_list_id: str
+    parent_planning_id: str
+
+
+@dataclass
 class AddExpenseCommand(Command):
     expense: Expense
 
 
-def expense_stream_id(expense_id: str | None) -> str:
+def expense_list_stream_id(expense_id: str | None) -> str:
     assert expense_id is not None
     return f"expenses-{expense_id}"
 
 
-class ExpensesAggregate:
+class ExpenseListAggregate:
     def __init__(self):
         self.id: str | None = None
         self.expenses: list[Expense] = []
         self.status: ExpensesStatus = ExpensesStatus.NOT_STARTED
 
     def process(self, command: Command) -> list[Event]:
-
         match command:
             case AddExpenseCommand(expense=expense):
                 if self.status == ExpensesStatus.IN_PROGRESS:
-                    return [ExpenseAdded(expense_stream_id(self.id), expense)]
+                    return [ExpenseAdded(expense_list_stream_id(self.id), expense)]
                 raise ValueError(
                     f"Cannot add expense when not in progress; status: {self.status}"
                 )
@@ -48,20 +53,42 @@ class ExpensesAggregate:
                 return []
 
 
-expenses_aggregetes: dict[str, ExpensesAggregate] = {}
+expenses_aggregates: dict[str, ExpenseListAggregate] = {}
+
+
+def expense_list_created_listener(event: ExpenseListCreated) -> None:
+    logger.warning(f"Creating expense list aggregate for id {event.expense_list_id}")
+    aggregate = ExpenseListAggregate()
+    aggregate.id = event.expense_list_id
+    expenses_aggregates[event.expense_list_id] = aggregate
+
+
+events().add_subscriber("expense_list_created", expense_list_created_listener)
+
+
+def office_year_to_expense_list_id(office_id: str, year: int) -> str:
+    return f"expenses-{office_id}-{year}"
 
 
 def planning_scheduled_listener(event: PlanningScheduled) -> None:
     logger.warning(
         f"Creating expenses aggregates for planning id {event.planning_year}"
     )
-    for office in event.offices:
-        expense_agg = ExpensesAggregate()
-        expense_agg.id = f"{event.planning_year}-{office}"
-        expenses_aggregetes[expense_agg.id] = expense_agg
-        logger.warning(
-            f"Created expenses aggregate with id {expense_agg.id} for office {office}"
-        )
+    events().emit(
+        [
+            ExpenseListCreated(
+                stream_id="expense_list_created",
+                expense_list_id=expense_list_stream_id(id),
+                parent_planning_id=str(event.planning_year),
+            )
+            for id in map(
+                lambda office: office_year_to_expense_list_id(
+                    office, event.planning_year
+                ),
+                event.offices,
+            )
+        ]
+    )
 
 
 events().add_subscriber("planning_scheduled", planning_scheduled_listener)

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from ..constants import OFFICES
 from ..events import EventStore, events
-from ..events.types import Event
+from ..events.types import Command, Event
 from .types import Expense, PlanningStatus
 
 logger = logging.getLogger(__name__)
@@ -12,7 +12,6 @@ __all__ = [
     "PlanningStatus",
     "EXPENSES",
     "EXPENSES_CLOSED",
-    "planning_aggregate",
     "PlanningAggregate",
 ]
 
@@ -62,11 +61,6 @@ class _ExpenseAggregatesAssignedEvent(Event):
 
 
 @dataclass
-class Command:
-    aggregate_id: str
-
-
-@dataclass
 class StartPlanningCommand(Command):
     deadline: str
 
@@ -98,9 +92,8 @@ def planning_aggregate_stream_id(agg_id: str) -> str:
 
 
 class PlanningAggregate:
-    def __init__(self, event_store: EventStore | None = None):
+    def __init__(self, event_store: EventStore):
         # TODO: Move to main.py after cleanup
-        self.event_store = event_store or events()
         self.id = "2025"
         self.stream_id = planning_aggregate_stream_id(self.id)
         self.deadline: str | None = None
@@ -108,7 +101,7 @@ class PlanningAggregate:
         self.correction_comment: str | None = None
         self.planning_year = 2025
         self.office_expense_ids: dict[str, str] = {}
-        self.event_store.add_subscriber(self.stream_id, self._apply)
+        event_store.add_subscriber(self.stream_id, self._apply)
 
     def process(self, command: Command) -> list[Event]:
         match command:
@@ -232,23 +225,19 @@ class PlanningAggregate:
         }
 
 
-# TODO: no globals
-planning_aggregate: PlanningAggregate | None = None
-
-
 def planning_scheduled_listener(event: PlanningScheduled) -> None:
     logger.warning(
         f"Planning scheduled for year {event.planning_year} for offices {event.offices}"
     )
-    global planning_aggregate
-    planning_aggregate = PlanningAggregate()
+
+    from flaskr.extensions import ctx
+
+    ctx().planning_aggregate = PlanningAggregate(events())
 
 
-events().add_subscriber("planning_scheduled", planning_scheduled_listener)
-events().emit(
-    [
-        PlanningScheduled(
-            stream_id="planning_scheduled", planning_year=2025, offices=OFFICES
-        )
-    ]
-)
+def get_planning_aggregate() -> PlanningAggregate:
+    from flaskr.extensions import ctx
+
+    agg = ctx().planning_aggregate
+    assert agg is not None
+    return agg

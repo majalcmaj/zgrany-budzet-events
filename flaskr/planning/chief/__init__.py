@@ -1,6 +1,8 @@
 from flask import Blueprint, redirect, render_template, request, url_for
 from werkzeug.wrappers import Response
 
+from flaskr.extensions import ctx
+
 from ...auth import auth_required
 from ...constants import OFFICES
 from ..planning_aggregate import (
@@ -10,9 +12,7 @@ from ..planning_aggregate import (
     ReopenPlanningCommand,
     StartPlanningCommand,
     SubmitToMinisterCommand,
-    planning_aggregate,
 )
-from ..planning_service import planning_service
 
 chief_bp = Blueprint("chief", __name__)
 
@@ -26,11 +26,11 @@ def dashboard() -> str | Response:
         if action == "start":
             deadline = request.form.get("deadline")
             if deadline:
-                planning_service.execute(StartPlanningCommand("2025", deadline))
+                ctx().planning_service.execute(StartPlanningCommand("2025", deadline))
         elif action == "submit_minister":
-            planning_service.execute(SubmitToMinisterCommand("2025"))
+            ctx().planning_service.execute(SubmitToMinisterCommand("2025"))
         elif action == "reopen":
-            planning_service.execute(ReopenPlanningCommand("2025"))
+            ctx().planning_service.execute(ReopenPlanningCommand("2025"))
 
         return redirect(url_for("planning.chief.dashboard"))
 
@@ -56,7 +56,7 @@ def dashboard() -> str | Response:
 
     return render_template(
         "chief_dashboard.html",
-        state=planning_aggregate,
+        state=ctx().planning_aggregate,
         offices_status=offices_status,
         total_all_needs=total_all_needs,
         PlanningStatus=PlanningStatus,

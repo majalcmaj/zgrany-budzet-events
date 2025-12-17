@@ -2,8 +2,18 @@ import json
 import random
 from pathlib import Path
 
-from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from flask import (
+    Blueprint,
+    flash,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from werkzeug.wrappers import Response
+
+from flaskr.extensions import ctx
 
 from ...auth import auth_required
 from ...constants import OFFICES, OFFICES_GENITIVE
@@ -12,18 +22,16 @@ from ..planning_aggregate import (
     EXPENSES,
     EXPENSES_CLOSED,
     PlanningStatus,
-    planning_aggregate,
+    get_planning_aggregate,
 )
 from ..types import Expense
-from .aggregate import expense_stream_id
+from .aggregate import expense_list_stream_id
 
-print(f"expense_stream_id function loaded: {expense_stream_id}")
+print(f"expense_stream_id function loaded: {expense_list_stream_id}")
 
 __all__ = ["expenses_bp", "create_expenses"]
 
 expenses_bp = Blueprint("expenses", __name__)
-
-assert planning_aggregate is not None
 
 
 @expenses_bp.route("/")
@@ -37,7 +45,7 @@ def list_expenses() -> str | Response:
         "expenses_list.html",
         expenses=current_expenses,
         closed=EXPENSES_CLOSED[session["role"]],
-        state=planning_aggregate,
+        state=ctx().planning_aggregate,
         PlanningStatus=PlanningStatus,
         expenses_sum=expenses_sum,
         offices_genitive=OFFICES_GENITIVE,
@@ -51,8 +59,7 @@ def add_expense() -> str | Response:
         return redirect(url_for("planning.index"))
 
     # Allow editing if status is IN_PROGRESS
-    can_edit = planning_aggregate.status == PlanningStatus.IN_PROGRESS
-
+    can_edit = get_planning_aggregate().status == PlanningStatus.IN_PROGRESS
     if EXPENSES_CLOSED[session["role"]] or not can_edit:
         return redirect(url_for("planning.expenses.list_expenses"))
 
@@ -136,7 +143,7 @@ def sections() -> str | Response:
 @expenses_bp.route("/close", methods=["POST"])
 @auth_required
 def close_expenses() -> str | Response:
-    can_edit = planning_aggregate.status in [
+    can_edit = get_planning_aggregate().status in [
         PlanningStatus.IN_PROGRESS,
         PlanningStatus.NEEDS_CORRECTION,
     ]
