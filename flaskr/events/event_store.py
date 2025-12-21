@@ -1,6 +1,6 @@
 import threading
 from logging import getLogger
-from typing import Any, Callable, List, Optional, Protocol, TypeVar, runtime_checkable
+from typing import Any, Callable, List, Protocol, TypeVar, runtime_checkable
 
 from .event_repository import EventRepository
 from .types import Event
@@ -76,8 +76,11 @@ class DefaultEventStore(EventStore):
         Used internally and by replay functionality.
         """
         with self._lock:
-            handlers = self._subscribers.get(event.stream_id, []).copy()  # type: ignore[misc]
-
+            handlers = [  # type: ignore[misc]
+                *self._subscribers.get(event.stream_id, []),
+                *self._subscribers.get(_ALL_STREAMS, []),
+            ]
+        # type: ignore[misc],
         logger.debug(
             f"Notifying {len(handlers)} handlers for stream_id {event.stream_id}"
         )
