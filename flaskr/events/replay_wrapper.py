@@ -1,6 +1,6 @@
 import importlib
 import json
-from typing import Any, Callable, List
+from typing import Any, Callable, List, Type
 
 from .event_repository import EventRepository
 from .event_store import ALL_STREAMS, EventStore
@@ -11,9 +11,12 @@ class ReplayWrapper(EventStore):
         self._event_store = event_store
 
     def add_subscriber(
-        self, handler: Callable[[Any], None], stream_id: str = ALL_STREAMS
+        self,
+        handler: Callable[[Any], None],
+        stream_id: str = ALL_STREAMS,
+        event_type: Type[Any] = object,
     ) -> None:
-        self._event_store.add_subscriber(handler, stream_id)
+        self._event_store.add_subscriber(handler, stream_id, event_type)
 
     def remove_subscriber(self, stream_id: str, handler: Callable[[Any], None]) -> bool:
         return self._event_store.remove_subscriber(stream_id, handler)

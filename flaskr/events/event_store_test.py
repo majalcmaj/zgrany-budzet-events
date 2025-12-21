@@ -79,12 +79,17 @@ def test_single_stream_many_subscribers(event_store: DefaultEventStore) -> None:
     assert subscriber2.handled_events == events
 
 
-def test_many_events(event_store: DefaultEventStore) -> None:
+def test_many_events_in_stream(event_store: DefaultEventStore) -> None:
     subscriber1 = Subscriber()
     subscriber2 = Subscriber()
     event_store.add_subscriber(subscriber1.apply, "s")
     event_store.add_subscriber(subscriber2.apply, "s")
-    events = [MockEvent("s", 1), MockEvent("s", 2), MockEvent("s", 3)]
+    events = [
+        MockEvent("s", 1),
+        MockEvent("s", 2),
+        MockEvent("s", 3),
+        OtherEvent("s", 4),
+    ]
 
     event_store.emit(events)
 
@@ -115,6 +120,24 @@ def test_different_streams(event_store: DefaultEventStore) -> None:
     assert subscriber2.handled_events == [
         MockEvent("stream2", 2),
         MockEvent("common_stream", 3),
+    ]
+
+
+def test_subscribing_by_type(event_store: EventStore) -> None:
+    subscriber = Subscriber()
+    event_store.add_subscriber(subscriber.apply, event_type=MockEvent)
+
+    event_store.emit(
+        [
+            MockEvent("any_stream", 1),
+            OtherEvent("other_stream", 2),
+            MockEvent("yet_another", 3),
+        ]
+    )
+
+    assert subscriber.handled_events == [
+        MockEvent("any_stream", 1),
+        MockEvent("yet_another", 3),
     ]
 
 
