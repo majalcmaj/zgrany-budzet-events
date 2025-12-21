@@ -2,7 +2,7 @@ import logging
 from dataclasses import dataclass
 
 from ..constants import OFFICES
-from ..events import EventStore, events
+from ..events import EventStore
 from ..events.types import Command, Event
 from .types import Expense, PlanningStatus
 
@@ -21,6 +21,7 @@ EXPENSES_CLOSED = {office: False for office in OFFICES}
 
 @dataclass
 class PlanningScheduled(Event):
+    id: str
     planning_year: int
     offices: list[str]
 
@@ -205,9 +206,6 @@ class PlanningAggregate:
     ) -> None:
         self.correction_comment = event.comment
         self.status = PlanningStatus.NEEDS_CORRECTION
-        # Side effect: Reset office approvals
-        for office in EXPENSES_CLOSED:
-            EXPENSES_CLOSED[office] = False
 
     def _handle_approved(self, _: PlanningApprovedEvent) -> None:
         self.status = PlanningStatus.FINISHED
@@ -223,16 +221,6 @@ class PlanningAggregate:
         self.office_expense_ids = {
             office_id: office_id for office_id in event.office_ids
         }
-
-
-def planning_scheduled_listener(event: PlanningScheduled) -> None:
-    logger.warning(
-        f"Planning scheduled for year {event.planning_year} for offices {event.offices}"
-    )
-
-    from flaskr.extensions import ctx
-
-    ctx().planning_aggregate = PlanningAggregate(events())
 
 
 def get_planning_aggregate() -> PlanningAggregate:

@@ -19,6 +19,7 @@ class ExpensesStatus(Enum):
 
 @dataclass
 class Expense:
+    id: str
     chapter: int | str
     task_name: str
     financial_needs: int

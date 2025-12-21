@@ -6,7 +6,7 @@ from werkzeug.wrappers import Response
 from ..auth import auth_required
 from ..constants import CHIEF, OFFICES, OFFICES_NAME, OFFICES_SINGLE
 from .chief import chief_bp
-from .expenses import create_expenses, expenses_bp
+from .expenses.views import create_expenses, expenses_bp
 from .minister import minister_bp
 from .planning_aggregate import EXPENSES
 
