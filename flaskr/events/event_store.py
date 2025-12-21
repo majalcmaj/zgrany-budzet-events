@@ -1,6 +1,6 @@
 import threading
 from logging import getLogger
-from typing import Any, Callable, List, Protocol, TypeVar, runtime_checkable
+from typing import Any, Callable, List, Optional, Protocol, TypeVar, runtime_checkable
 
 from .event_repository import EventRepository
 from .types import Event
@@ -11,11 +11,13 @@ __all__ = ["EventStore", "DefaultEventStore", "TEvent"]
 
 TEvent = TypeVar("TEvent", bound=Event, covariant=True)
 
+_ALL_STREAMS = "__all_streams__"
+
 
 @runtime_checkable
 class EventStore(Protocol):
     def add_subscriber(
-        self, stream_id: str, handler: Callable[[TEvent], None]
+        self, handler: Callable[[TEvent], None], stream_id: str = _ALL_STREAMS
     ) -> None: ...
     def remove_subscriber(
         self, stream_id: str, handler: Callable[[TEvent], None]
@@ -31,10 +33,13 @@ class DefaultEventStore(EventStore):
         self._event_repository = event_repository
         self._lock = threading.Lock()
 
-    def add_subscriber(self, stream_id: str, handler: Callable[[TEvent], None]) -> None:
+    def add_subscriber(
+        self, handler: Callable[[TEvent], None], stream_id: str = _ALL_STREAMS
+    ) -> None:
         """
         Add a subscriber handler function.
         """
+
         with self._lock:
             # Add the handler to the list of subscribers for this event type
             self._subscribers.setdefault(stream_id, []).append(handler)

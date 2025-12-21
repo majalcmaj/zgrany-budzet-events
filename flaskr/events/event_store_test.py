@@ -3,7 +3,7 @@ from typing import Generator
 
 import pytest
 
-from .event_store import DefaultEventStore
+from .event_store import DefaultEventStore, EventStore
 from .replay_wrapper import NoopEventRepository
 from .types import Event
 
@@ -14,6 +14,14 @@ class MockEvent(Event):
 
     def __eq__(self, other: object) -> bool:
         return isinstance(other, MockEvent) and self.id == other.id
+
+
+@dataclass
+class OtherEvent(Event):
+    id: int
+
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, OtherEvent) and self.id == other.id
 
 
 class Subscriber:
@@ -31,9 +39,9 @@ def event_store() -> Generator[DefaultEventStore, None, None]:
     store.destroy()
 
 
-def test_stream_without_subscribers(event_store: DefaultEventStore) -> None:
+def test_streams_do_not_leak_events(event_store: DefaultEventStore) -> None:
     subscriber = Subscriber()
-    event_store.add_subscriber("other_stream", subscriber.apply)
+    event_store.add_subscriber(subscriber.apply, "other_stream")
     events = [MockEvent("s", 1)]
 
     event_store.emit(events)
@@ -41,11 +49,28 @@ def test_stream_without_subscribers(event_store: DefaultEventStore) -> None:
     assert subscriber.handled_events == []
 
 
+def test_subscriber_receives_all_events_when_no_filtering_specified(
+    event_store: EventStore,
+):
+    subscriber = Subscriber()
+    event_store.add_subscriber(subscriber.apply)
+
+    events = [
+        MockEvent("some_stream", 1),
+        MockEvent("other_stream", 2),
+        OtherEvent("whatever_stream", 3),
+    ]
+
+    event_store.emit(events)
+
+    assert subscriber.handled_events == events
+
+
 def test_single_stream_many_subscribers(event_store: DefaultEventStore) -> None:
     subscriber1 = Subscriber()
     subscriber2 = Subscriber()
-    event_store.add_subscriber("s", subscriber1.apply)
-    event_store.add_subscriber("s", subscriber2.apply)
+    event_store.add_subscriber(subscriber1.apply, "s")
+    event_store.add_subscriber(subscriber2.apply, "s")
     events = [MockEvent("s", 1)]
 
     event_store.emit(events)
@@ -57,8 +82,8 @@ def test_single_stream_many_subscribers(event_store: DefaultEventStore) -> None:
 def test_many_events(event_store: DefaultEventStore) -> None:
     subscriber1 = Subscriber()
     subscriber2 = Subscriber()
-    event_store.add_subscriber("s", subscriber1.apply)
-    event_store.add_subscriber("s", subscriber2.apply)
+    event_store.add_subscriber(subscriber1.apply, "s")
+    event_store.add_subscriber(subscriber2.apply, "s")
     events = [MockEvent("s", 1), MockEvent("s", 2), MockEvent("s", 3)]
 
     event_store.emit(events)
@@ -70,10 +95,10 @@ def test_many_events(event_store: DefaultEventStore) -> None:
 def test_different_streams(event_store: DefaultEventStore) -> None:
     subscriber1 = Subscriber()
     subscriber2 = Subscriber()
-    event_store.add_subscriber("stream1", subscriber1.apply)
-    event_store.add_subscriber("stream2", subscriber2.apply)
-    event_store.add_subscriber("common_stream", subscriber1.apply)
-    event_store.add_subscriber("common_stream", subscriber2.apply)
+    event_store.add_subscriber(subscriber1.apply, "stream1")
+    event_store.add_subscriber(subscriber2.apply, "stream2")
+    event_store.add_subscriber(subscriber1.apply, "common_stream")
+    event_store.add_subscriber(subscriber2.apply, "common_stream")
 
     event_store.emit(
         [
@@ -98,8 +123,8 @@ def test_remove_subscriber(event_store: DefaultEventStore) -> None:
     subscriber1 = Subscriber()
     subscriber2 = Subscriber()
 
-    event_store.add_subscriber("s", subscriber1.apply)
-    event_store.add_subscriber("s", subscriber2.apply)
+    event_store.add_subscriber(subscriber1.apply, "s")
+    event_store.add_subscriber(subscriber2.apply, "s")
 
     # Emit an event - both should receive it
     event_store.emit([MockEvent("s", 1)])
