@@ -143,6 +143,7 @@ def test_subscribing_by_type(event_store: EventStore) -> None:
 
 def test_remove_subscriber(event_store: DefaultEventStore) -> None:
     """Test that remove_subscriber correctly removes handlers."""
+    # TODO: Add test for removing subscribers for all events and for types
     subscriber1 = Subscriber()
     subscriber2 = Subscriber()
 
@@ -155,7 +156,7 @@ def test_remove_subscriber(event_store: DefaultEventStore) -> None:
     assert subscriber2.handled_events == [MockEvent("s", 1)]
 
     # Remove subscriber1
-    result = event_store.remove_subscriber("s", subscriber1.apply)
+    result = event_store.remove_subscriber(subscriber1.apply, "s")
     assert result is True
 
     # Emit another event - only subscriber2 should receive it
@@ -164,5 +165,5 @@ def test_remove_subscriber(event_store: DefaultEventStore) -> None:
     assert subscriber2.handled_events == [MockEvent("s", 1), MockEvent("s", 2)]
 
     # Try to remove subscriber1 again - should return False
-    result = event_store.remove_subscriber("s", subscriber1.apply)
+    result = event_store.remove_subscriber(subscriber1.apply, "s")
     assert result is False

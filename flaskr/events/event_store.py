@@ -31,7 +31,10 @@ class EventStore(Protocol):
         event_type: Type[Any] = object,
     ) -> None: ...
     def remove_subscriber(
-        self, stream_id: str, handler: Callable[[TEvent], None]
+        self,
+        handler: Callable[[TEvent], None],
+        stream_id: str = ALL_STREAMS,
+        event_type: Type[Any] = object,
     ) -> bool: ...
     def emit(self, events: List[TEvent]) -> None: ...
     def destroy(self) -> None: ...
@@ -40,7 +43,7 @@ class EventStore(Protocol):
 class DefaultEventStore(EventStore):
     def __init__(self, event_repository: EventRepository) -> None:
         # Dictionary mapping event types to lists of handler functions
-        self._subscribers: dict[str, list[Callable[[Any], None]]] = {}
+        self._subscribers: dict[str, list[tuple[Type[Any], Callable[[Any], None]]]] = {}
         self._event_repository = event_repository
         self._lock = threading.Lock()
 
@@ -56,10 +59,13 @@ class DefaultEventStore(EventStore):
 
         with self._lock:
             # Add the handler to the list of subscribers for this event type
-            self._subscribers.setdefault(stream_id, []).append(handler)
+            self._subscribers.setdefault(stream_id, []).append((event_type, handler))
 
     def remove_subscriber(
-        self, stream_id: str, handler: Callable[[TEvent], None]
+        self,
+        handler: Callable[[TEvent], None],
+        stream_id: str = ALL_STREAMS,
+        event_type: Type[Any] = object,
     ) -> bool:
         """
         Remove a subscriber handler function.
@@ -68,7 +74,7 @@ class DefaultEventStore(EventStore):
         with self._lock:
             if stream_id in self._subscribers:
                 try:
-                    self._subscribers[stream_id].remove(handler)
+                    self._subscribers[stream_id].remove((event_type, handler))
                     return True
                 except ValueError:
                     return False
@@ -90,18 +96,19 @@ class DefaultEventStore(EventStore):
         Used internally and by replay functionality.
         """
         with self._lock:
-            handlers = [  # type: ignore[misc]
+            type_handler_tuples = [  # type: ignore[misc]
                 *self._subscribers.get(event.stream_id, []),
                 *self._subscribers.get(ALL_STREAMS, []),
             ]
         # type: ignore[misc],
         logger.debug(
-            f"Notifying {len(handlers)} handlers for stream_id {event.stream_id}"
+            f"Notifying {len(type_handler_tuples)} handlers for stream_id {event.stream_id}"
         )
 
-        for handler in handlers:
+        for event_type, handler in type_handler_tuples:
             try:
-                handler(event)
+                if isinstance(event, event_type):
+                    handler(event)
             except Exception as e:
                 logger.error(
                     f"Handler {handler.__name__ if hasattr(handler, '__name__') else handler} "

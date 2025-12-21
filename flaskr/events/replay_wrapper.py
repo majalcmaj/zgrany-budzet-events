@@ -18,8 +18,13 @@ class ReplayWrapper(EventStore):
     ) -> None:
         self._event_store.add_subscriber(handler, stream_id, event_type)
 
-    def remove_subscriber(self, stream_id: str, handler: Callable[[Any], None]) -> bool:
-        return self._event_store.remove_subscriber(stream_id, handler)
+    def remove_subscriber(
+        self,
+        handler: Callable[[Any], None],
+        stream_id: str = ALL_STREAMS,
+        event_type: Type[Any] = object,
+    ) -> bool:
+        return self._event_store.remove_subscriber(handler, stream_id, event_type)
 
     def emit(self, events: List[Any]) -> None:
         pass
