@@ -7,17 +7,17 @@ from .types import Event
 
 logger = getLogger(__name__)
 
-__all__ = ["EventStore", "DefaultEventStore", "TEvent"]
+__all__ = ["EventStore", "DefaultEventStore", "TEvent", "ALL_STREAMS"]
 
 TEvent = TypeVar("TEvent", bound=Event, covariant=True)
 
-_ALL_STREAMS = "__all_streams__"
+ALL_STREAMS = "__all_streams__"
 
 
 @runtime_checkable
 class EventStore(Protocol):
     def add_subscriber(
-        self, handler: Callable[[TEvent], None], stream_id: str = _ALL_STREAMS
+        self, handler: Callable[[TEvent], None], stream_id: str = ALL_STREAMS
     ) -> None: ...
     def remove_subscriber(
         self, stream_id: str, handler: Callable[[TEvent], None]
@@ -34,7 +34,7 @@ class DefaultEventStore(EventStore):
         self._lock = threading.Lock()
 
     def add_subscriber(
-        self, handler: Callable[[TEvent], None], stream_id: str = _ALL_STREAMS
+        self, handler: Callable[[TEvent], None], stream_id: str = ALL_STREAMS
     ) -> None:
         """
         Add a subscriber handler function.
@@ -78,7 +78,7 @@ class DefaultEventStore(EventStore):
         with self._lock:
             handlers = [  # type: ignore[misc]
                 *self._subscribers.get(event.stream_id, []),
-                *self._subscribers.get(_ALL_STREAMS, []),
+                *self._subscribers.get(ALL_STREAMS, []),
             ]
         # type: ignore[misc],
         logger.debug(

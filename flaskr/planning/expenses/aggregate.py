@@ -103,7 +103,7 @@ def expense_list_created_listener(event: ExpenseListCreated) -> None:
     expenses_aggregates[event.expense_list_id] = aggregate
 
 
-events().add_subscriber("expense_list_created", expense_list_created_listener)
+events().add_subscriber(expense_list_created_listener, "expense_list_created")
 
 
 def office_year_to_expense_list_id(office_id: str, year: int) -> str:

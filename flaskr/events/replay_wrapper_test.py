@@ -16,7 +16,7 @@ class MockEvent(Event):
 class MockSubscriber:
     def __init__(self, event_store: EventStore):
         self.handled_events: list[MockEvent] = []
-        event_store.add_subscriber("s", self.handle_test_event)
+        event_store.add_subscriber(self.handle_test_event, "s")
         self.event_store = event_store
 
     def handle_test_event(self, event: MockEvent) -> None:

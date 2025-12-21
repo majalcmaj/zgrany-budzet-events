@@ -102,7 +102,7 @@ class PlanningAggregate:
         self.correction_comment: str | None = None
         self.planning_year = 2025
         self.office_expense_ids: dict[str, str] = {}
-        event_store.add_subscriber(self.stream_id, self._apply)
+        event_store.add_subscriber(self._apply, self.stream_id)
 
     def process(self, command: Command) -> list[Event]:
         match command:
