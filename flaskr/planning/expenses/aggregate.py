@@ -26,6 +26,7 @@ class ExpenseAdded(Event):
 @dataclass
 class ExpenseListCreated(Event):
     expense_list_id: str
+    office: str
     parent_planning_id: str
 
 

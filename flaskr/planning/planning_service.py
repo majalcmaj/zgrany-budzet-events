@@ -48,7 +48,8 @@ class PlanningService:
             ExpenseListCreated(
                 stream_id=expense_list_stream_id(id),
                 expense_list_id=id,
+                office=office,
                 parent_planning_id=planning_aggregate_id,
             )
-            for id in OFFICES
+            for id, office in map(lambda o: (o, str(uuid4)), OFFICES)
         ]
