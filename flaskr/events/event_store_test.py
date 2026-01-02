@@ -141,6 +141,25 @@ def test_subscribing_by_type(event_store: EventStore) -> None:
     ]
 
 
+def test_subscribing_by_stream_and_type(event_store: EventStore) -> None:
+    subscriber = Subscriber()
+    event_store.add_subscriber(
+        subscriber.apply, stream_id="yet_another", event_type=MockEvent
+    )
+
+    event_store.emit(
+        [
+            MockEvent("any_stream", 1),
+            OtherEvent("other_stream", 2),
+            MockEvent("yet_another", 3),
+        ]
+    )
+
+    assert subscriber.handled_events == [
+        MockEvent("yet_another", 3),
+    ]
+
+
 def test_remove_subscriber(event_store: DefaultEventStore) -> None:
     """Test that remove_subscriber correctly removes handlers."""
     # TODO: Add test for removing subscribers for all events and for types
