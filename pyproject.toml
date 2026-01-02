@@ -35,6 +35,7 @@ dev = [
 package-mode = false
 
 [tool.pytest.ini_options]
+markers = ["e2e: marks tests as end-to-end"]
 pythonpath = ["src"]
 
 [tool.isort]

@@ -1,2 +1,0 @@
-[pytest]
-markers = ["e2e: marks tests as end-to-end"]
