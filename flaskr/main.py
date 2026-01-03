@@ -1,8 +1,7 @@
 from flask import Flask
 
-
 from .db import db
-from .events import init_event_extension
+from .events import init_event_extension, init_kurrentdb
 
 __all__ = ["app", "db"]
 
@@ -13,6 +12,7 @@ app.secret_key = "super_secret_key_for_demo_only"
 db.init_app(app)
 with app.app_context():
     init_event_extension(app)
+    init_kurrentdb(app)
     from flaskr.extensions import ctx, init_context_extension
 
     init_context_extension(app)

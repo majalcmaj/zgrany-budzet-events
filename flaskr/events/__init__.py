@@ -2,6 +2,7 @@ import atexit
 from logging import getLogger
 
 from flask import Flask, current_app
+from kurrentdbclient import KurrentDBClient
 
 from .event_repository import FileEventRepository
 from .event_store import DefaultEventStore, EventStore
@@ -9,6 +10,16 @@ from .event_store import DefaultEventStore, EventStore
 logger = getLogger(__name__)
 
 __all__ = ["init_event_extension", "events", "EventStore"]
+
+
+def init_kurrentdb(app: Flask) -> None:
+    assert app is not None
+    if "kurrent-db" in app.extensions:
+        raise ValueError("Kurrent Db already initialised")
+    logger.info("Registering kurrentdb")
+    app.extensions["kurrent-db"] = KurrentDBClient(
+        uri="kurrentdb://localhost:2113?Tls=false"
+    )
 
 
 def init_event_extension(app: Flask) -> None:

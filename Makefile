@@ -30,3 +30,6 @@ verify-headed:
 
 init-db:
 	poetry run python flaskr/scripts/init_db.py
+
+run-eventstore:
+	docker run -d --name kurrentdb -it -p 2113:2113 --env "HOME=/tmp" docker.eventstore.com/kurrent-latest/kurrentdb:25.1.1-x64-8.0-bookworm-slim --rm --insecure
