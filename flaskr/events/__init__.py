@@ -22,6 +22,12 @@ def init_kurrentdb(app: Flask) -> None:
     )
 
 
+def get_kurrent_client() -> KurrentDBClient:
+    if "kurrent-db" not in current_app.extensions:
+        raise ValueError("kurrent-db client not initialised")
+    return current_app.extensions["kurrent-db"]
+
+
 def init_event_extension(app: Flask) -> None:
     assert app is not None, "Flask app is required"
     if "event-extension" in app.extensions:

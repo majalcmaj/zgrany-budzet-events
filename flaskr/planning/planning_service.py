@@ -8,7 +8,7 @@ from flaskr.planning.expenses.aggregate import (
 )
 from flaskr.planning.planning_aggregate import (
     PlanningScheduled,
-    planning_aggregate_stream_id,
+    planning_id_to_stream,
 )
 
 from ..events import events
@@ -34,7 +34,7 @@ class PlanningService:
         events().emit(
             [
                 PlanningScheduled(
-                    stream_id=planning_aggregate_stream_id(planning_id),
+                    stream_id=planning_id_to_stream(planning_id),
                     id=planning_id,
                     planning_year=2025,
                     offices=OFFICES,

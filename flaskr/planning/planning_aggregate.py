@@ -2,7 +2,6 @@ import logging
 from dataclasses import dataclass
 
 from ..constants import OFFICES
-from ..events import EventStore
 from ..events.types import Command, Event
 from .types import Expense, PlanningStatus
 
@@ -88,21 +87,19 @@ class RequestCorrectionCommand(Command):
     comment: str
 
 
-def planning_aggregate_stream_id(agg_id: str) -> str:
-    return "pl_agg_" + agg_id
+def planning_id_to_stream(id: str) -> str:
+    return "Planning:" + id
 
 
 class PlanningAggregate:
-    def __init__(self, event_store: EventStore):
-        # TODO: Move to main.py after cleanup
-        self.id = "2025"
-        self.stream_id = planning_aggregate_stream_id(self.id)
+    def __init__(self, id: str):
+        self.id = id
+        self.stream_id = planning_id_to_stream(self.id)
         self.deadline: str | None = None
         self.status = PlanningStatus.NOT_STARTED
         self.correction_comment: str | None = None
         self.planning_year = 2025
         self.office_expense_ids: dict[str, str] = {}
-        event_store.add_subscriber(self._apply, self.stream_id)
 
     def process(self, command: Command) -> list[Event]:
         match command:
@@ -160,7 +157,7 @@ class PlanningAggregate:
             )
         return [PlanningReopenedEvent(self.stream_id)]
 
-    def _apply(self, event: Event) -> None:
+    def apply(self, event: Event) -> None:
         match event:
             case PlanningStartedEvent() as e:
                 self._handle_planning_started(e)
