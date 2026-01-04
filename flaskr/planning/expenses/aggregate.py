@@ -1,6 +1,8 @@
 import logging
 from dataclasses import dataclass
 
+from flaskr.events.serialisation import event
+
 from ...events import events
 from ...events.types import Event
 from ..planning_aggregate import (
@@ -23,6 +25,7 @@ class ExpenseAdded(Event):
     expense: Expense
 
 
+@event("ExpenseListCreated")
 @dataclass
 class ExpenseListCreated(Event):
     expense_list_id: str
@@ -40,6 +43,7 @@ class RemoveExpenseCommand(Command):
     expense_id: str
 
 
+@event("ExpenseRemoved")
 @dataclass
 class ExpenseRemovedEvent(Event):
     expense_id: str

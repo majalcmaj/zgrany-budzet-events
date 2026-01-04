@@ -1,7 +1,9 @@
 import logging
 from dataclasses import dataclass
 
-from ..constants import OFFICES
+from flaskr.constants import OFFICES
+from flaskr.events.serialisation import event
+
 from ..events.types import Command, Event
 from .types import Expense, PlanningStatus
 
@@ -19,6 +21,7 @@ EXPENSES_CLOSED = {office: False for office in OFFICES}
 
 
 @dataclass
+@event(type="PlanningScheduled")
 class PlanningScheduled(Event):
     id: str
     planning_year: int
@@ -26,37 +29,44 @@ class PlanningScheduled(Event):
 
 
 @dataclass
+@event(type="PlanningStarted")
 class PlanningStartedEvent(Event):
     deadline: str
 
 
 @dataclass
+@event("PlanningSubmitted")
 class PlanningSubmittedEvent(Event):
     pass
 
 
 @dataclass
+@event("PlanningApproved")
 class PlanningApprovedEvent(Event):
     pass
 
 
 @dataclass
+@event("InitialMinisterGuidance")
 class InitialMinisterGuidanceEvent(Event):
     comment: str
 
 
 @dataclass
+@event("MinisterCorrectionRequested")
 class MinisterCorrectionRequestedEvent(Event):
     comment: str
 
 
 @dataclass
+@event("PlanningReopenedEvent")
 class PlanningReopenedEvent(Event):
     pass
 
 
 @dataclass
-class _ExpenseAggregatesAssignedEvent(Event):
+@event("ExpenseAssigned")
+class ExpenseAssignedEvent(Event):
     office_ids: list[str]
 
 
@@ -91,6 +101,11 @@ def planning_id_to_stream(id: str) -> str:
     return "Planning:" + id
 
 
+def stream_to_planning_id(stream_id: str) -> str:
+    assert stream_id.startswith("Planning:")
+    return stream_id.removeprefix("Planning:")
+
+
 class PlanningAggregate:
     def __init__(self, id: str):
         self.id = id
@@ -98,7 +113,7 @@ class PlanningAggregate:
         self.deadline: str | None = None
         self.status = PlanningStatus.NOT_STARTED
         self.correction_comment: str | None = None
-        self.planning_year = 2025
+        self.planning_year: int | None = None
         self.office_expense_ids: dict[str, str] = {}
 
     def process(self, command: Command) -> list[Event]:
@@ -159,6 +174,8 @@ class PlanningAggregate:
 
     def apply(self, event: Event) -> None:
         match event:
+            case PlanningScheduled() as e:
+                self._handle_scheduled(e)
             case PlanningStartedEvent() as e:
                 self._handle_planning_started(e)
             case PlanningSubmittedEvent() as e:
@@ -171,12 +188,19 @@ class PlanningAggregate:
                 self._handle_minister_correction_requested(e)
             case PlanningReopenedEvent() as e:
                 self._handle_planning_reopened(e)
-            case _ExpenseAggregatesAssignedEvent() as e:
+            case ExpenseAssignedEvent() as e:
                 self._handle_expense_aggregates_assigned(e)
             case _:
                 logger.error(
                     f"Got unhandled event type: {type(event)} in stream {event.stream_id}"
                 )
+
+    def _handle_scheduled(self, event: PlanningScheduled) -> None:
+        print("Handle scheduled")
+        self.planning_year = event.planning_year
+        self.office_expense_ids = {
+            office: office for office in event.offices
+        }  # TODO: fix this
 
     def _handle_planning_started(self, event: PlanningStartedEvent) -> None:
         self.deadline = event.deadline
@@ -207,14 +231,13 @@ class PlanningAggregate:
     def _handle_approved(self, _: PlanningApprovedEvent) -> None:
         self.status = PlanningStatus.FINISHED
         self.correction_comment = None
+        assert self.planning_year is not None
         self.planning_year += 1
 
     def _handle_planning_reopened(self, _: PlanningReopenedEvent) -> None:
         self.status = PlanningStatus.NOT_STARTED
 
-    def _handle_expense_aggregates_assigned(
-        self, event: _ExpenseAggregatesAssignedEvent
-    ) -> None:
+    def _handle_expense_aggregates_assigned(self, event: ExpenseAssignedEvent) -> None:
         self.office_expense_ids = {
             office_id: office_id for office_id in event.office_ids
         }

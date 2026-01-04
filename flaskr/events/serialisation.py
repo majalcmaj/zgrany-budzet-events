@@ -1,19 +1,23 @@
 import json
-from typing import Dict, Type
+from typing import Dict, TypeVar
 
 from flaskr.events.types import Event
 
-event_types: Dict[str, Type[Event]] = {}
+T = TypeVar("T", bound=type)
+event_types: Dict[str, type] = {}
 
 
-def event(cls: Type[Event], type: str) -> Type[Event]:
-    if type in event_types:
-        raise ValueError(
-            f"Cannot register {cls} as event type {type} - type already taken by {event_types[type]} "
-        )
-    event_types[type] = cls
-    cls.type = type
-    return cls
+def event(type: str):
+    def decorator(cls: T) -> T:
+        if type in event_types:
+            raise ValueError(
+                f"Cannot register {cls} as event type {type} - type already taken by {event_types[type]} "
+            )
+        event_types[type] = cls
+        cls.type = type
+        return cls
+
+    return decorator
 
 
 def serialise_event(event: Event) -> str:

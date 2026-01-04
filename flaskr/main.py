@@ -13,14 +13,14 @@ db.init_app(app)
 with app.app_context():
     init_event_extension(app)
     init_kurrentdb(app)
-    from flaskr.extensions import ctx, init_context_extension
+    from flaskr.extensions import init_context_extension
 
     init_context_extension(app)
 
     from .planning.views import planning_bp
 
     app.register_blueprint(planning_bp, url_prefix="/")
-    ctx().planning_service.schedule_planning()
+    # ctx().planning_service.schedule_planning()
 
 
 @app.route("/health")

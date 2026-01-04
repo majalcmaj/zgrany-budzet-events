@@ -56,7 +56,7 @@ def dashboard() -> str | Response:
 
     return render_template(
         "chief_dashboard.html",
-        state=ctx().planning_aggregate,
+        state=ctx().planning_service.get_current_planning(),
         offices_status=offices_status,
         total_all_needs=total_all_needs,
         PlanningStatus=PlanningStatus,
